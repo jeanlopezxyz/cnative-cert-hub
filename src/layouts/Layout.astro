@@ -37,19 +37,20 @@ const baseUrl = (import.meta.env.BASE_URL || '/').endsWith('/')
   : import.meta.env.BASE_URL + '/';
 
 // SEO URLs
-const siteUrl = 'https://cnativecerthub.xyz';
-const currentPath = Astro.url.pathname.replace(/^\/+/, '');
-const canonicalURL = new URL(`/${currentPath}`, siteUrl).href.replace(/\/$/, '') || siteUrl;
+const siteUrl = 'https://jeanlopezxyz.github.io';
+const basePath = '/cnative-cert-hub';
+const currentPath = Astro.url.pathname.replace(basePath, '').replace(/^\/+/, '');
+const canonicalURL = new URL(`${basePath}/${currentPath}`, siteUrl).href.replace(/\/$/, '');
 
 // Default OG Image (1200x630 for optimal social sharing)
-const ogImage = image || `${siteUrl}/og-image.png`;
+const ogImage = image || `${siteUrl}${basePath}/og-image.png`;
 
 // Hreflang URLs
 const pathWithoutLang = currentPath.replace(/^(es|pt)\//, '');
 const hreflangUrls = {
-  en: `${siteUrl}/${pathWithoutLang}`.replace(/\/$/, '') || siteUrl,
-  es: `${siteUrl}/es/${pathWithoutLang}`.replace(/\/$/, ''),
-  pt: `${siteUrl}/pt/${pathWithoutLang}`.replace(/\/$/, ''),
+  en: `${siteUrl}${basePath}/${pathWithoutLang}`.replace(/\/$/, ''),
+  es: `${siteUrl}${basePath}/es/${pathWithoutLang}`.replace(/\/$/, ''),
+  pt: `${siteUrl}${basePath}/pt/${pathWithoutLang}`.replace(/\/$/, ''),
 };
 ---
 
@@ -205,19 +206,19 @@ const hreflangUrls = {
       "@type": "WebSite",
       "name": "Cloud Native Certification Resources Hub",
       "description": finalDescription,
-      "url": siteUrl,
+      "url": `${siteUrl}${basePath}`,
       "inLanguage": [lang, "en", "es", "pt"],
       "publisher": {
         "@type": "Organization",
         "name": "CNative CertHub",
         "logo": {
           "@type": "ImageObject",
-          "url": `${siteUrl}/favicon.svg`
+          "url": `${siteUrl}${basePath}/favicon.svg`
         }
       },
       "potentialAction": {
         "@type": "SearchAction",
-        "target": `${siteUrl}/?q={search_term_string}`,
+        "target": `${siteUrl}${basePath}/?q={search_term_string}`,
         "query-input": "required name=search_term_string"
       }
     })} />
@@ -230,7 +231,7 @@ const hreflangUrls = {
           "@type": "ListItem",
           "position": 1,
           "name": "Home",
-          "item": siteUrl
+          "item": `${siteUrl}${basePath}`
         },
         {
           "@type": "ListItem",

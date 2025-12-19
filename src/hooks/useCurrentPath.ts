@@ -65,10 +65,11 @@ export function useCurrentPath(
 
   // Derive path information
   const pathSegments = currentPath.split('/').filter(Boolean);
-  
-  // Remove language segments (no base path needed with custom domain)
+
+  // Remove base path and language segments
+  const basePath = 'cnative-cert-hub';
   const relevantSegments = pathSegments.filter(segment =>
-    segment !== lang
+    segment !== basePath && segment !== lang
   );
 
   const isHomePage = relevantSegments.length === 0;

@@ -4,6 +4,7 @@
 
 User-agent: *
 Allow: /
+Allow: /cnative-cert-hub/
 Allow: /es/
 Allow: /pt/
 
@@ -33,7 +34,7 @@ Allow: /.well-known/security.txt
 Allow: /security.txt
 
 # Sitemap location
-Sitemap: https://cnativecerthub.xyz/sitemap-index.xml
+Sitemap: https://jeanlopezxyz.github.io/cnative-cert-hub/sitemap-index.xml
 
 # Crawl delay for respectful crawling
 Crawl-delay: 1

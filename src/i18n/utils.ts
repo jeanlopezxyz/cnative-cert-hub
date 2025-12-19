@@ -2,6 +2,10 @@ import { ui, defaultLang } from './ui';
 
 export function getLangFromUrl(url: URL) {
   const segments = url.pathname.split('/').filter(Boolean);
+  // Remove base path if exists
+  if (segments[0] === 'cnative-cert-hub') {
+    segments.shift();
+  }
   // Check if first segment is a language
   if (segments[0] && segments[0] in ui) {
     return segments[0] as keyof typeof ui;
