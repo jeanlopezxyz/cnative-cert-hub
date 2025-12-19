@@ -24,10 +24,6 @@ export default function LanguageSelector({ currentLang }: LanguageSelectorProps)
   }, []);
 
   const handleLanguageChange = useCallback(async (lang: string) => {
-    // Preserve current theme before navigation
-    const currentTheme = localStorage.getItem('theme') ||
-      (document.documentElement.classList.contains('dark') ? 'dark' : 'light');
-
     const path = window.location.pathname;
     const segments = path.split('/').filter(Boolean);
 
@@ -55,15 +51,11 @@ export default function LanguageSelector({ currentLang }: LanguageSelectorProps)
       newPath += '/';
     }
 
-    // Ensure theme is saved before navigation (astro:before-swap will read this)
-    localStorage.setItem('theme', currentTheme);
-
-    // Use Astro's navigate for View Transitions support
-    // Theme is applied via astro:before-swap event in Layout.astro
+    // Use Astro's navigate for View Transitions
+    // Theme is preserved via astro:before-swap in Layout.astro
     try {
       await navigate(newPath);
     } catch {
-      // Fallback to regular navigation if View Transitions not available
       window.location.href = newPath;
     }
   }, []);
