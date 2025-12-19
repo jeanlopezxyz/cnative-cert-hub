@@ -98,6 +98,13 @@ export default function Sidebar({ lang }: SidebarProps) {
     }
   };
 
+  // Collapse all sections and go to home
+  const handleLogoClick = () => {
+    setOpenSections([]);
+    setOpenCategories([]);
+    closeMobileSidebar();
+  };
+
   const toggleSection = (section: string) => {
     setOpenSections(prev =>
       prev.includes(section) ? prev.filter(s => s !== section) : [...prev, section]
@@ -135,7 +142,7 @@ export default function Sidebar({ lang }: SidebarProps) {
       >
         {/* Logo Section */}
         <div className="h-16 px-5 flex items-center justify-between">
-          <a href={`${APP_CONFIG.basePath}/${lang === 'en' ? '' : lang}`} className="flex items-center gap-3">
+          <a href={`${APP_CONFIG.basePath}/${lang === 'en' ? '' : lang}`} onClick={handleLogoClick} className="flex items-center gap-3">
             {/* Logo Icon - Certificate Badge */}
             <div className="w-10 h-10 rounded-xl bg-primary-600 flex items-center justify-center">
               <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
