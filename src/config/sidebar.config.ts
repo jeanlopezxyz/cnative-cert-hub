@@ -78,9 +78,9 @@ export const ACHIEVEMENTS_ITEMS = [
 
 export const QUICK_LINKS_ITEMS = [
   {
-    id: 'curriculum',
-    translationKey: 'sidebar.curriculum',
-    href: EXTERNAL_URLS.githubCNCF,
+    id: 'discounts',
+    translationKey: 'sidebar.discounts',
+    href: EXTERNAL_URLS.discounts.linuxFoundationCoupons,
   },
   {
     id: 'practice',
@@ -88,14 +88,14 @@ export const QUICK_LINKS_ITEMS = [
     href: EXTERNAL_URLS.learning.killerSh,
   },
   {
+    id: 'curriculum',
+    translationKey: 'sidebar.curriculum',
+    href: EXTERNAL_URLS.githubCNCF,
+  },
+  {
     id: 'docs',
     translationKey: 'sidebar.docs',
     href: EXTERNAL_URLS.kubernetes.docs,
-  },
-  {
-    id: 'discounts',
-    translationKey: 'sidebar.discounts',
-    href: EXTERNAL_URLS.discounts.linuxFoundationCoupons,
   },
 ];
 
