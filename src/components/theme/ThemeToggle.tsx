@@ -1,60 +1,56 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useSyncExternalStore } from 'react';
 
-// Get initial theme synchronously to prevent flash
-function getInitialTheme(): boolean {
-  if (typeof window === 'undefined') return false;
-  try {
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    return savedTheme === 'dark' || (!savedTheme && prefersDark);
-  } catch {
-    return false;
-  }
+// Read theme directly from DOM - this is the source of truth
+function getThemeFromDOM(): boolean {
+  if (typeof document === 'undefined') return false;
+  return document.documentElement.classList.contains('dark');
+}
+
+// Subscribe to theme changes
+function subscribeToTheme(callback: () => void): () => void {
+  // Create observer to watch for class changes on <html>
+  const observer = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      if (mutation.attributeName === 'class') {
+        callback();
+      }
+    }
+  });
+
+  observer.observe(document.documentElement, { attributes: true });
+
+  // Also listen for Astro transitions and storage
+  document.addEventListener('astro:page-load', callback);
+  document.addEventListener('astro:after-swap', callback);
+  window.addEventListener('storage', callback);
+
+  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+  mediaQuery.addEventListener('change', callback);
+
+  return () => {
+    observer.disconnect();
+    document.removeEventListener('astro:page-load', callback);
+    document.removeEventListener('astro:after-swap', callback);
+    window.removeEventListener('storage', callback);
+    mediaQuery.removeEventListener('change', callback);
+  };
 }
 
 export default function ThemeToggle() {
-  // Initialize with correct theme immediately
-  const [isDark, setIsDark] = useState(getInitialTheme);
-
-  const syncTheme = useCallback(() => {
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const shouldBeDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
-    setIsDark(shouldBeDark);
-  }, []);
-
-  // Sync theme state with DOM and listen for changes
-  useEffect(() => {
-    // Sync on mount (in case SSR/hydration mismatch)
-    syncTheme();
-
-    // Sync on Astro page transitions
-    document.addEventListener('astro:page-load', syncTheme);
-    document.addEventListener('astro:after-swap', syncTheme);
-
-    // Listen for theme changes from other tabs/windows
-    window.addEventListener('storage', syncTheme);
-
-    // Listen for system preference changes
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    mediaQuery.addEventListener('change', syncTheme);
-
-    return () => {
-      document.removeEventListener('astro:page-load', syncTheme);
-      document.removeEventListener('astro:after-swap', syncTheme);
-      window.removeEventListener('storage', syncTheme);
-      mediaQuery.removeEventListener('change', syncTheme);
-    };
-  }, [syncTheme]);
+  // Use useSyncExternalStore to read theme from DOM - always in sync
+  const isDark = useSyncExternalStore(
+    subscribeToTheme,
+    getThemeFromDOM,
+    () => false // Server snapshot
+  );
 
   const handleClick = () => {
     const newTheme = !isDark;
-    setIsDark(newTheme);
 
     // Save preference
     localStorage.setItem('theme', newTheme ? 'dark' : 'light');
 
-    // Apply classes with smooth transition
+    // Apply classes with smooth transition - MutationObserver will trigger re-render
     const html = document.documentElement;
     html.classList.add('theme-transition');
     html.classList.remove('light', 'dark');
