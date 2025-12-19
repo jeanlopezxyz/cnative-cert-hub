@@ -90,6 +90,11 @@ export const pt = {
   'achievements.golden.how': 'Caminho para Golden Kubestronaut',
   'achievements.golden.upcomingTitle': 'Aviso de Atualização do Programa',
   'achievements.golden.upcomingDesc': 'A partir de 1º de março de 2026, CNPE (Certified Cloud Native Platform Engineer) será adicionada como requisito para o status Golden Kubestronaut, elevando o total para 16 certificações. Os Golden Kubestronauts atuais mantêm seu status vitalício.',
+  'achievements.golden.upcomingCertsTitle': 'Próximas Certificações',
+  'achievements.golden.upcomingCertsDesc': 'Novas certificações serão adicionadas aos requisitos do Golden Kubestronaut conforme forem disponibilizadas.',
+  'achievements.golden.upcomingCert1': 'CKNE (Certified Kubernetes Network Engineer)',
+  'achievements.golden.upcomingCert1Desc': 'Certificação de nível intermediário para redes em Kubernetes e plataformas cloud native. Lançamento previsto: 2026.',
+  'achievements.golden.upcomingNote': 'Novas certificações são adicionadas aos requisitos 90+ dias após atingir Disponibilidade Geral (GA).',
   'achievements.golden.req1':
     'Completar todas as 14 certificações CNCF: CKA, CKAD, CKS, KCNA, KCSA, PCA, ICA, CCA, CAPA, CGOA, CBA, OTCA, KCA e CNPA',
   'achievements.golden.req2': 'Obter a certificação Linux Foundation Certified System Administrator (LFCS)',

@@ -90,6 +90,11 @@ export const en = {
   'achievements.golden.how': 'Path to Golden Kubestronaut',
   'achievements.golden.upcomingTitle': 'Program Update Notice',
   'achievements.golden.upcomingDesc': 'Effective March 1, 2026, CNPE (Certified Cloud Native Platform Engineer) will be added as a requirement for Golden Kubestronaut status, increasing the total to 16 certifications. Current Golden Kubestronauts retain their lifetime status.',
+  'achievements.golden.upcomingCertsTitle': 'Upcoming Certifications',
+  'achievements.golden.upcomingCertsDesc': 'New certifications will be added to the Golden Kubestronaut requirements as they become available.',
+  'achievements.golden.upcomingCert1': 'CKNE (Certified Kubernetes Network Engineer)',
+  'achievements.golden.upcomingCert1Desc': 'Intermediate-level certification for Kubernetes and cloud native platform networking. Expected release: 2026.',
+  'achievements.golden.upcomingNote': 'New certifications are added to requirements 90+ days after reaching General Availability (GA).',
   'achievements.golden.intro': '',
   'achievements.golden.definition': '',
   'achievements.golden.req1':
