@@ -20,7 +20,7 @@ export const pt = {
   'hero.subtitle': 'Seu centro completo de preparação para certificações CNCF',
   'hero.badge': 'Alinhado com o Currículo Oficial CNCF',
   'hero.description':
-    'Guias de estudo completos, laboratórios práticos e recursos selecionados por especialistas para ajudá-lo a obter certificações CNCF. Dos fundamentos de Kubernetes às arquiteturas cloud native avançadas.',
+    'Guias de estudo completos, laboratórios práticos e recursos da comunidade para ajudá-lo a obter certificações CNCF. Dos fundamentos de Kubernetes às arquiteturas cloud native avançadas.',
   'hero.cta.programs': 'Rotas de Certificação',
   'hero.cta.certifications': 'Explorar Certificações',
   'hero.cta.start': 'Começar a Aprender',

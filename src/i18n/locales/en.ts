@@ -20,7 +20,7 @@ export const en = {
   'hero.subtitle': 'Your comprehensive preparation hub for CNCF certifications',
   'hero.badge': 'Official CNCF Curriculum Aligned',
   'hero.description':
-    'Comprehensive study guides, hands-on labs, and expert-curated resources to help you achieve CNCF certifications. From Kubernetes fundamentals to advanced cloud native architectures.',
+    'Comprehensive study guides, hands-on labs, and community resources to help you achieve CNCF certifications. From Kubernetes fundamentals to advanced cloud native architectures.',
   'hero.cta.programs': 'Certification Paths',
   'hero.cta.certifications': 'Browse Certifications',
   'hero.cta.start': 'Start Learning',
