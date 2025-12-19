@@ -1,18 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+
+// Get initial theme synchronously to prevent flash
+function getInitialTheme(): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return savedTheme === 'dark' || (!savedTheme && prefersDark);
+  } catch {
+    return false;
+  }
+}
 
 export default function ThemeToggle() {
-  const [isDark, setIsDark] = useState(false);
+  // Initialize with correct theme immediately
+  const [isDark, setIsDark] = useState(getInitialTheme);
 
-  // Initialize and sync theme state
+  const syncTheme = useCallback(() => {
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const shouldBeDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
+    setIsDark(shouldBeDark);
+  }, []);
+
+  // Sync theme state with DOM and listen for changes
   useEffect(() => {
-    const syncTheme = () => {
-      const savedTheme = localStorage.getItem('theme');
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const shouldBeDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
-      setIsDark(shouldBeDark);
-    };
-
-    // Sync on mount
+    // Sync on mount (in case SSR/hydration mismatch)
     syncTheme();
 
     // Sync on Astro page transitions
@@ -22,12 +35,17 @@ export default function ThemeToggle() {
     // Listen for theme changes from other tabs/windows
     window.addEventListener('storage', syncTheme);
 
+    // Listen for system preference changes
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    mediaQuery.addEventListener('change', syncTheme);
+
     return () => {
       document.removeEventListener('astro:page-load', syncTheme);
       document.removeEventListener('astro:after-swap', syncTheme);
       window.removeEventListener('storage', syncTheme);
+      mediaQuery.removeEventListener('change', syncTheme);
     };
-  }, []);
+  }, [syncTheme]);
 
   const handleClick = () => {
     const newTheme = !isDark;

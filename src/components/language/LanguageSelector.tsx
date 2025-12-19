@@ -1,6 +1,7 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { languages } from '../../i18n/ui';
 import { useTranslations } from '../../i18n/utils';
+import { navigate } from 'astro:transitions/client';
 
 interface LanguageSelectorProps {
   currentLang: string;
@@ -22,7 +23,7 @@ export default function LanguageSelector({ currentLang }: LanguageSelectorProps)
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleLanguageChange = (lang: string) => {
+  const handleLanguageChange = useCallback(async (lang: string) => {
     const path = window.location.pathname;
     const segments = path.split('/').filter(Boolean);
 
@@ -50,8 +51,14 @@ export default function LanguageSelector({ currentLang }: LanguageSelectorProps)
       newPath += '/';
     }
 
-    window.location.href = newPath;
-  };
+    // Use Astro's navigate for View Transitions support (preserves theme)
+    try {
+      await navigate(newPath);
+    } catch {
+      // Fallback to regular navigation if View Transitions not available
+      window.location.href = newPath;
+    }
+  }, []);
 
   const langCodes: Record<string, string> = {
     en: 'EN',
