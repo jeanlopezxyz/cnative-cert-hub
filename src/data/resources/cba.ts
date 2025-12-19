@@ -13,8 +13,7 @@ export const cbaResources: CertificationResources = {
     'https://github.com/backstage/community',
   ],
   practice: [
-    'https://demo.backstage.io/',
-    'https://backstage.io/docs/getting-started/',
+    // Note: Practice resources are documented in tools array with full metadata
   ],
 
   books: [

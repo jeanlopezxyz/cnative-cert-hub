@@ -13,8 +13,7 @@ export const kcaResources: CertificationResources = {
     'https://github.com/cncf/curriculum',
   ],
   practice: [
-    'https://kyverno.io/playground/',
-    'https://killercoda.com/playgrounds/scenario/kubernetes',
+    // Note: Practice resources are documented in tools array with full metadata
   ],
 
   books: [

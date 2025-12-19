@@ -14,9 +14,7 @@ export const ckaResources: CertificationResources = {
     'https://github.com/David-VTUK/CKA-StudyGuide',
   ],
   practice: [
-    'https://killer.sh',
-    'https://kodekloud.com/courses/certified-kubernetes-administrator-cka/',
-    'https://killercoda.com/killer-shell-cka',
+    // Note: Practice simulators are documented in the tools array with full metadata
   ],
 
   books: [

@@ -14,8 +14,7 @@ export const pcaResources: CertificationResources = {
     'https://github.com/moabukar/Prometheus-Certified-Associate-PCA',
   ],
   practice: [
-    'https://kodekloud.com/courses/prometheus-certified-associate-pca/',
-    'https://killercoda.com/playgrounds/scenario/prometheus',
+    // Note: Practice resources are documented in tools and courses arrays with full metadata
   ],
 
   books: [

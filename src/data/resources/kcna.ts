@@ -14,8 +14,7 @@ export const kcnaResources: CertificationResources = {
     'https://github.com/James-Quigley/KCNA-Study-Guide',
   ],
   practice: [
-    'https://kodekloud.com/courses/kubernetes-and-cloud-native-associate-kcna/',
-    'https://killercoda.com/playgrounds/scenario/kubernetes',
+    // Note: Practice resources are documented in tools and courses with full metadata
   ],
 
   books: [

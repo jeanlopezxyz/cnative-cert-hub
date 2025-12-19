@@ -15,8 +15,7 @@ export const capaResources: CertificationResources = {
     'https://github.com/cncf/curriculum',
   ],
   practice: [
-    'https://killercoda.com/argoproj/courses',
-    'https://kodekloud.com/courses/certified-argo-project-associate-capa/',
+    // Note: Practice resources are documented in tools and courses arrays with full metadata
   ],
 
   books: [

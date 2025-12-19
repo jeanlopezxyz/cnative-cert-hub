@@ -13,8 +13,7 @@ export const kcsaResources: CertificationResources = {
     'https://github.com/ahmetb/kubernetes-network-policy-recipes',
   ],
   practice: [
-    'https://kodekloud.com/courses/kubernetes-and-cloud-security-associate-kcsa/',
-    'https://killercoda.com/playgrounds/scenario/kubernetes',
+    // Note: Practice resources are documented in tools and courses arrays with full metadata
   ],
 
   books: [

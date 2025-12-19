@@ -17,8 +17,7 @@ export const cnpeResources: CertificationResources = {
     'https://github.com/crossplane/crossplane',
   ],
   practice: [
-    'https://killer.sh',
-    'https://killercoda.com/playgrounds/scenario/kubernetes',
+    // Note: Practice resources are documented in tools array with full metadata
   ],
 
   books: [

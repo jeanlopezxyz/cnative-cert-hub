@@ -12,8 +12,7 @@ export const lfcsResources: CertificationResources = {
     'https://github.com/Bes0n/LFCS',
   ],
   practice: [
-    'https://killer.sh',
-    'https://kodekloud.com/courses/linux-foundation-certified-system-administrator-lfcs/',
+    // Note: Practice resources are documented in tools and courses arrays with full metadata
   ],
 
   books: [

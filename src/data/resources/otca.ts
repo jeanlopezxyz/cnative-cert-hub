@@ -14,8 +14,7 @@ export const otcaResources: CertificationResources = {
     'https://github.com/cncf/curriculum',
   ],
   practice: [
-    'https://killercoda.com/opentelemetry',
-    'https://opentelemetry.io/docs/demo/',
+    // Note: Practice resources are documented in tools array with full metadata
   ],
 
   books: [

@@ -14,9 +14,7 @@ export const ccaResources: CertificationResources = {
     'https://github.com/cilium/hubble',
   ],
   practice: [
-    'https://kodekloud.com/courses/cilium-certified-associate-cca/',
-    'https://killercoda.com/playgrounds/scenario/kubernetes',
-    'https://isovalent.com/labs/',
+    // Note: Practice resources are documented in tools and courses arrays with full metadata
   ],
 
   books: [

@@ -12,7 +12,7 @@ export const cnpaResources: CertificationResources = {
     'https://github.com/cncf/tag-app-delivery',
   ],
   practice: [
-    'https://killercoda.com/playgrounds/scenario/kubernetes',
+    // Note: Practice resources are documented in tools array with full metadata
   ],
 
   books: [

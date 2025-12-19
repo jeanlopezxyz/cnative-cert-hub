@@ -14,8 +14,7 @@ export const cgoaResources: CertificationResources = {
     'https://github.com/open-gitops/documents',
   ],
   practice: [
-    'https://kodekloud.com/courses/certified-gitops-associate-cgoa/',
-    'https://killercoda.com/argoproj/courses',
+    // Note: Practice resources are documented in tools and courses arrays with full metadata
   ],
 
   books: [

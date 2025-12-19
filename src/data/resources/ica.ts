@@ -14,8 +14,7 @@ export const icaResources: CertificationResources = {
     'https://github.com/tetratelabs/istio-weekly',
   ],
   practice: [
-    'https://kodekloud.com/courses/istio-certified-associate-ica/',
-    'https://killercoda.com/playgrounds/scenario/kubernetes',
+    // Note: Practice resources are documented in tools and courses arrays with full metadata
   ],
 
   books: [

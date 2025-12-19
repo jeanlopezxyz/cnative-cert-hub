@@ -14,9 +14,8 @@ export const cksResources: CertificationResources = {
     'https://github.com/ahmetb/kubernetes-network-policy-recipes',
   ],
   practice: [
-    'https://killer.sh',
-    'https://kodekloud.com/courses/certified-kubernetes-security-specialist-cks/',
-    'https://killercoda.com/killer-shell-cks',
+    // Note: Practice simulators are now in the tools array with full metadata
+    // killer.sh, killercoda, and kodekloud are documented there
   ],
 
   books: [

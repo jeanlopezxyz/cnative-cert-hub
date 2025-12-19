@@ -15,9 +15,7 @@ export const ckadResources: CertificationResources = {
     'https://github.com/lucassha/CKAD-resources',
   ],
   practice: [
-    'https://killer.sh',
-    'https://kodekloud.com/courses/certified-kubernetes-application-developer-ckad/',
-    'https://killercoda.com/killer-shell-ckad',
+    // Note: Practice simulators are documented in the tools array with full metadata
   ],
 
   books: [
