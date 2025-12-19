@@ -166,47 +166,67 @@ const hreflangUrls = {
     <!-- Theme initialization - runs immediately and BEFORE view transition swap -->
     <script is:inline>
       (function() {
-        function getTheme() {
+        // Get theme from localStorage or system preference
+        function getStoredTheme() {
           try {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark' || savedTheme === 'light') {
-              return savedTheme;
-            }
+            const saved = localStorage.getItem('theme');
+            if (saved === 'dark' || saved === 'light') return saved;
             return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
           } catch {
             return 'dark';
           }
         }
 
-        function applyTheme(theme) {
-          const targetTheme = theme || getTheme();
-          document.documentElement.classList.remove('light', 'dark');
-          document.documentElement.classList.add(targetTheme);
+        // Get current visual theme from document
+        function getCurrentTheme() {
+          return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+        }
+
+        // Apply theme to a document element
+        function applyThemeToElement(el, theme) {
+          el.classList.remove('light', 'dark');
+          el.classList.add(theme);
+        }
+
+        // Save and apply theme
+        function setTheme(theme) {
+          const targetTheme = theme || getStoredTheme();
+          try {
+            localStorage.setItem('theme', targetTheme);
+          } catch {}
+          applyThemeToElement(document.documentElement, targetTheme);
         }
 
         // Apply immediately on script load
-        applyTheme();
+        setTheme();
 
         // CRITICAL: Apply BEFORE swap to prevent flash during View Transitions
         document.addEventListener('astro:before-swap', (e) => {
-          const theme = getTheme();
-          e.newDocument.documentElement.classList.remove('light', 'dark');
-          e.newDocument.documentElement.classList.add(theme);
+          // Use current visual theme, not stored (in case user changed it)
+          const theme = getCurrentTheme();
+          // Save it to ensure consistency
+          try { localStorage.setItem('theme', theme); } catch {}
+          // Apply to new document
+          applyThemeToElement(e.newDocument.documentElement, theme);
         });
 
         // Apply after swap as backup
-        document.addEventListener('astro:after-swap', () => applyTheme());
+        document.addEventListener('astro:after-swap', () => setTheme(getStoredTheme()));
 
-        // Apply on page load (for language changes and navigation)
-        document.addEventListener('astro:page-load', () => applyTheme());
+        // Apply on page load
+        document.addEventListener('astro:page-load', () => setTheme(getStoredTheme()));
 
         // Listen for system preference changes
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => applyTheme());
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+          if (!localStorage.getItem('theme')) {
+            setTheme(e.matches ? 'dark' : 'light');
+          }
+        });
 
         // Listen for storage changes (cross-tab sync)
         window.addEventListener('storage', (e) => {
-          if (e.key === 'theme') {
-            applyTheme(e.newValue);
+          if (e.key === 'theme' && e.newValue) {
+            setTheme(e.newValue);
           }
         });
       })();
