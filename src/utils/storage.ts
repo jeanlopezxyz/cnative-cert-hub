@@ -2,6 +2,8 @@
  * Optimized localStorage utilities with batching and error handling
  */
 
+import { logger } from './logger';
+
 interface StorageUpdate {
   key: string;
   value: string;
@@ -21,12 +23,12 @@ class OptimizedStorage {
     try {
       // Validate and sanitize input
       if (typeof key !== 'string' || typeof value !== 'string') {
-        console.warn('Invalid storage key or value type');
+        logger.warn('Invalid storage key or value type');
         return;
       }
 
       if (key.length > 100 || value.length > 5000) {
-        console.warn('Storage key or value too large');
+        logger.warn('Storage key or value too large');
         return;
       }
 
@@ -46,7 +48,7 @@ class OptimizedStorage {
       // Otherwise, schedule delayed flush
       this.scheduleBatchFlush();
     } catch (error) {
-      console.error('Failed to schedule storage update:', error);
+      logger.error('Failed to schedule storage update:', error);
     }
   }
 
@@ -62,7 +64,7 @@ class OptimizedStorage {
       const item = localStorage.getItem(key);
       return item ? this.sanitizeValue(item) : null;
     } catch (error) {
-      console.warn('Failed to read from localStorage:', error);
+      logger.warn('Failed to read from localStorage:', error);
       return null;
     }
   }
@@ -79,7 +81,7 @@ class OptimizedStorage {
       localStorage.setItem(key, this.sanitizeValue(value));
       return true;
     } catch (error) {
-      console.warn('Failed to write to localStorage:', error);
+      logger.warn('Failed to write to localStorage:', error);
       return false;
     }
   }
@@ -92,7 +94,7 @@ class OptimizedStorage {
       localStorage.removeItem(key);
       return true;
     } catch (error) {
-      console.warn('Failed to remove from localStorage:', error);
+      logger.warn('Failed to remove from localStorage:', error);
       return false;
     }
   }
@@ -160,9 +162,9 @@ class OptimizedStorage {
         localStorage.setItem(key, value);
       });
 
-      console.debug(`Flushed ${updates.length} storage updates`);
+      logger.debug(`Flushed ${updates.length} storage updates`);
     } catch (error) {
-      console.error('Failed to flush storage batch:', error);
+      logger.error('Failed to flush storage batch:', error);
     } finally {
       // Clear batch regardless of success/failure
       this.batchedUpdates.clear();

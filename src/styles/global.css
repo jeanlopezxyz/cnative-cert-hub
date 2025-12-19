@@ -3,53 +3,49 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Critical CSS for anti-flash */
+/**
+ * Global Styles - Application-specific styles
+ *
+ * Note: Font definitions, typography tokens, and design tokens
+ * are defined in design-tokens.css to avoid duplication.
+ */
+
 @layer base {
   :root {
-    color-scheme: dark;
+    color-scheme: light dark;
   }
 
   html {
-    transition: none !important;
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+  }
+
+  /* Light mode (default) - Gray background for main content to differentiate from sidebar */
+  html.light,
+  html.light body {
+    @apply bg-neutral-200 text-neutral-900;
+  }
+
+  /* Dark mode - Slightly lighter main content area for contrast with sidebar/header */
+  html.dark,
+  html.dark body {
+    @apply bg-neutral-800 text-neutral-100;
   }
 
   body {
     @apply antialiased;
-    font-family:
-      'Plus Jakarta Sans',
-      system-ui,
-      -apple-system,
-      sans-serif;
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
-}
-
-@layer base {
-  :root {
-    color-scheme: dark;
+    min-height: 100vh;
   }
 
-  body {
-    @apply antialiased;
-    font-family:
-      'Plus Jakarta Sans',
-      system-ui,
-      -apple-system,
-      sans-serif;
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-family:
-      'Space Grotesk',
-      system-ui,
-      -apple-system,
-      sans-serif;
-    @apply font-bold tracking-tight;
+  /* Headings use display font - already defined in design-tokens.css */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold tracking-tight font-display;
   }
 
   /* Minimalist custom scrollbar - Blue theme */
@@ -91,21 +87,44 @@
     scrollbar-color: rgba(37, 99, 235, 0.3) transparent;
   }
 
+  /* Sidebar scrollbar - WowDash style */
+  .sidebar-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  }
+
+  .sidebar-scroll::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .sidebar-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .sidebar-scroll::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 4px;
+  }
+
+  .sidebar-scroll:hover::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+  }
+
+  .dark .sidebar-scroll:hover::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
   /* Selection color */
   ::selection {
-    @apply bg-blue-500/30 text-white;
+    @apply bg-primary-500/30;
   }
 
-  /* Smooth scroll by default */
-  html {
-    scroll-behavior: smooth;
-    scroll-padding-top: 6rem;
+  html.light ::selection {
+    @apply text-neutral-900;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    html {
-      scroll-behavior: auto;
-    }
+  html.dark ::selection {
+    @apply text-white;
   }
 
   /* Performance optimizations for animations */
@@ -146,6 +165,29 @@
   .scroll-section {
     scroll-margin-top: 5rem;
     contain: layout;
+  }
+}
+
+@layer components {
+  /* WowDash-style Card Component */
+  .card {
+    @apply bg-white dark:bg-neutral-700 shadow-sm;
+  }
+
+  .card:hover {
+    @apply shadow-md;
+  }
+
+  .card-body {
+    @apply flex flex-col;
+  }
+
+  .card-title {
+    @apply text-neutral-900 dark:text-neutral-100;
+  }
+
+  .card-text {
+    @apply text-neutral-600 dark:text-neutral-400;
   }
 }
 
@@ -246,24 +288,29 @@
     @apply bg-blue-400/60;
   }
 
-  /* View Transitions API for smooth navigation - Optimized */
+  /* View Transitions API - Ultra fast for snappy navigation */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.08s;
+    animation-timing-function: ease-out;
+  }
+
   ::view-transition-old(root) {
-    animation: fade-out 0.1s ease-out;
+    animation-name: fade-out-fast;
   }
 
   ::view-transition-new(root) {
-    animation: fade-in 0.1s ease-in;
+    animation-name: fade-in-fast;
   }
 
-  @keyframes fade-out {
-    from {
-      opacity: 1;
-      transform: scale(1);
-    }
-    to {
-      opacity: 0;
-      transform: scale(0.98);
-    }
+  @keyframes fade-out-fast {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  @keyframes fade-in-fast {
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
 
   /* Fade in up animation - Optimized */
@@ -374,45 +421,7 @@
     animation: reveal-up 0.6s ease-out forwards;
   }
 
-  /* Floating animation for badges and elements */
-  @keyframes float {
-    0%, 100% {
-      transform: translateY(0px);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
-  }
-
-  .animate-float {
-    animation: float 3s ease-in-out infinite;
-  }
-
-  /* Shimmer effect for buttons */
-  @keyframes shimmer {
-    0% {
-      transform: translateX(-100%);
-    }
-    100% {
-      transform: translateX(100%);
-    }
-  }
-
-  .shimmer-effect {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .shimmer-effect::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    animation: shimmer 2s infinite;
-  }
+  /* Note: float and shimmer animations are defined in design-tokens.css to avoid duplication */
 
   /* Subtle parallax effect */
   .parallax-slow {
@@ -429,23 +438,12 @@
     transform: translateY(-8px) scale(1.02);
   }
 
-  /* Smooth color transitions */
-  * {
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 0.15s;
-  }
-
-  /* Preserve specific transitions */
-  .animate-gradient,
-  .animate-blob,
-  .animate-pulse,
-  .animate-bounce,
-  .animate-fade-in,
-  .animate-fade-in-up,
-  .animate-scale-in,
-  .animate-slide-in-left {
-    transition: none !important;
+  /* Theme color transitions - only on theme toggle, not navigation */
+  html.theme-transition,
+  html.theme-transition *,
+  html.theme-transition *::before,
+  html.theme-transition *::after {
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease !important;
   }
 
   /* Smooth backdrop filter transitions */

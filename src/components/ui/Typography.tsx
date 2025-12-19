@@ -1,3 +1,17 @@
+/**
+ * Typography Components
+ *
+ * Modern, accessible typography system using:
+ * - Variable fonts (Plus Jakarta Sans, Space Grotesk) for optimal performance
+ * - Fluid typography with CSS clamp() for smooth scaling across devices
+ * - Semantic component names for clear content hierarchy
+ * - Word-spacing fix for Plus Jakarta Sans narrow spacing
+ * - OpenType features for improved legibility
+ *
+ * @see https://fonts.google.com/specimen/Plus+Jakarta+Sans
+ * @see https://fonts.google.com/specimen/Space+Grotesk
+ */
+
 import React from 'react';
 import { TYPOGRAPHY } from '../../config/app.config';
 

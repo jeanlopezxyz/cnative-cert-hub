@@ -22,6 +22,7 @@ export const kcna: Certification = {
     {
       name: 'Kubernetes Fundamentals',
       weight: 46,
+      documentationUrl: 'https://kubernetes.io/docs/concepts/',
       topics: [
         {
           name: 'Kubernetes Resources',
@@ -48,6 +49,7 @@ export const kcna: Certification = {
     {
       name: 'Container Orchestration',
       weight: 22,
+      documentationUrl: 'https://kubernetes.io/docs/concepts/workloads/',
       topics: [
         {
           name: 'Container Orchestration Fundamentals',
@@ -78,6 +80,7 @@ export const kcna: Certification = {
     {
       name: 'Cloud Native Architecture',
       weight: 16,
+      documentationUrl: 'https://glossary.cncf.io/cloud-native-tech/',
       topics: [
         {
           name: 'Autoscaling',
@@ -104,6 +107,7 @@ export const kcna: Certification = {
     {
       name: 'Cloud Native Observability',
       weight: 8,
+      documentationUrl: 'https://opentelemetry.io/docs/',
       topics: [
         {
           name: 'Telemetry & Observability',
@@ -122,6 +126,7 @@ export const kcna: Certification = {
     {
       name: 'Cloud Native Application Delivery',
       weight: 8,
+      documentationUrl: 'https://kubernetes.io/docs/concepts/workloads/controllers/deployment/',
       topics: [
         {
           name: 'Application Delivery Fundamentals',

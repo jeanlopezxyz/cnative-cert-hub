@@ -3,8 +3,8 @@
  * Tracks Core Web Vitals without affecting UI/functionality
  */
 
-import { onCLS, onFCP, onINP, onLCP, onTTFB } from 'web-vitals';
-import type { Metric } from 'web-vitals';
+import { onCLS, onFCP, onINP, onLCP, onTTFB, type Metric } from 'web-vitals';
+import { logger } from './logger';
 
 // Declare gtag type for Google Analytics
 declare global {
@@ -41,9 +41,7 @@ class WebVitalsMonitor {
     // In a real app, you would send to your analytics service
     // Examples: Google Analytics, DataDog, New Relic, etc.
     
-    if (import.meta.env.DEV) {
-      console.log('📊 Web Vital:', metric);
-    }
+    logger.log('📊 Web Vital:', metric);
 
     // Store locally for debugging
     this.data.push(metric);
@@ -68,7 +66,7 @@ class WebVitalsMonitor {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(metric),
-      }).catch(err => console.warn('Failed to send vitals:', err));
+      }).catch(err => logger.warn('Failed to send vitals:', err));
     }
   }
 
@@ -99,9 +97,9 @@ class WebVitalsMonitor {
       onLCP(this.handleMetric);
       onTTFB(this.handleMetric);
 
-      console.log('🚀 Web Vitals monitoring initialized');
+      logger.log('🚀 Web Vitals monitoring initialized');
     } catch (error) {
-      console.warn('Failed to initialize Web Vitals:', error);
+      logger.warn('Failed to initialize Web Vitals:', error);
     }
   }
 

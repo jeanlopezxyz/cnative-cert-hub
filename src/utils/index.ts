@@ -6,6 +6,9 @@
 import { APP_CONFIG } from '../constants';
 import type { Certification, CertificationLevel, Language } from '../types';
 
+// Re-export colors utility
+export { getLevelColors, LEVEL_COLORS, type LevelColors } from './colors';
+
 /**
  * Filter certifications by level
  * Used in: CertificationGrid

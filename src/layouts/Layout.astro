@@ -14,9 +14,10 @@ export interface Props {
   description?: string;
   showSidebar?: boolean;
   lang?: string;
+  compactFooter?: boolean;
 }
 
-const { title, description, showSidebar = false, lang: propLang } = Astro.props;
+const { title, description, showSidebar = false, lang: propLang, compactFooter = false } = Astro.props;
 const lang = propLang || getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const finalDescription = description || t('site.description');
@@ -40,132 +41,91 @@ const baseUrl = (import.meta.env.BASE_URL || '/').endsWith('/')
     <!-- View Transitions for smooth navigation -->
     <ViewTransitions />
     
-    <!-- Preconnect and preload hints for performance -->
+    <!-- Optimized font loading: preconnect + preload + display=swap for best performance -->
+    <!-- Preconnect establishes early connections to font servers -->
     <link rel="preconnect" href={EXTERNAL_URLS.fonts.googleapis} />
     <link rel="preconnect" href={EXTERNAL_URLS.fonts.gstatic} crossorigin />
-    <link rel="preload" href={EXTERNAL_URLS.fonts.googleFontsCss} as="style" />
+
+    <!-- Load Google Fonts CSS with display=swap for faster rendering -->
+    <!-- Using variable fonts reduces HTTP requests and provides smooth weight transitions -->
     <link href={EXTERNAL_URLS.fonts.googleFontsCss} rel="stylesheet" />
     
     <!-- Preload critical JS -->
     <link rel="modulepreload" href="/src/components/theme/ThemeToggle.tsx" />
 
-    <!-- Smooth page transitions with View Transitions API -->
-    <script>
-      // Prevent flash on navigation by maintaining background color
-      if (typeof window !== 'undefined') {
-        const root = document.documentElement;
-        const savedTheme = localStorage.getItem('theme') || '';
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
-
-        root.style.backgroundColor = isDark ? '#0a0b1e' : '#fff';
-        root.classList.add(isDark ? 'dark' : 'light');
-      }
-    </script>
-
-    <!-- Critical anti-flash CSS - Optimized -->
+    <!-- Critical anti-flash CSS - Minimal inline styles for instant render -->
     <style>
+      /* Theme colors - Blue-tinted neutral palette */
       :root {
-        color-scheme: dark;
-        --bg-primary: #fff;
-        --bg-secondary: #f8fafc;
-        --bg-tertiary: #f1f5f9;
-        --text-primary: #111827;
-        --text-secondary: #374151;
-        --border: #e5e7eb;
+        color-scheme: light dark;
+        --bg-primary: #E2E8F0; /* neutral-200 - light gray for body */
+        --text-primary: #0F172A;
       }
 
       .dark {
-        --bg-primary: #0a0b1e;
-        --bg-secondary: #141328;
-        --bg-tertiary: #1e1b3a;
-        --text-primary: #f8fafc;
-        --text-secondary: #e2e8f0;
-        --border: #334155;
+        --bg-primary: #1E293B; /* neutral-800 - main content area */
+        --text-primary: #F1F5F9;
       }
 
-      html {
+      /* Prevent white flash - set background immediately */
+      html, body {
         background-color: var(--bg-primary);
-        transition: background-color 0s !important;
+        color: var(--text-primary);
       }
 
-      body {
-        background-color: var(--bg-primary) !important;
-        color: var(--text-primary) !important;
-        font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-      }
-
-      /* Smooth View Transitions */
-      @view-transition {
-        navigation: auto;
-      }
-
+      /* View Transitions - no animation to prevent flash */
       ::view-transition-old(root),
       ::view-transition-new(root) {
-        animation-duration: 0.2s;
-        animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        animation: none;
+        mix-blend-mode: normal;
       }
 
-      ::view-transition-old(root) {
-        animation-name: fadeOut;
-      }
-
-      ::view-transition-new(root) {
-        animation-name: fadeIn;
-      }
-
-      @keyframes fadeOut {
-        from { opacity: 1; }
-        to { opacity: 0.8; }
-      }
-
-      @keyframes fadeIn {
-        from { opacity: 0.8; }
-        to { opacity: 1; }
+      /* Ensure view transition doesn't show white background */
+      ::view-transition-group(root) {
+        background-color: var(--bg-primary);
       }
     </style>
 
-  <!-- Load global.css synchronously for instant styling -->
-    <link rel="stylesheet" href="/src/styles/global.css" />
-
-    <!-- Simple theme initialization without flash -->
+    <!-- Theme initialization - runs immediately and BEFORE view transition swap -->
     <script is:inline>
       (function() {
         function applyTheme() {
           try {
-            const savedTheme = localStorage.getItem('theme') || '';
+            const savedTheme = localStorage.getItem('theme');
             const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
 
             document.documentElement.classList.remove('light', 'dark');
             document.documentElement.classList.add(isDark ? 'dark' : 'light');
-
-            const root = document.documentElement;
-            const colors = {
-              '--bg-primary': isDark ? '#0a0b1e' : '#fff',
-              '--text-primary': isDark ? '#f8fafc' : '#111827',
-              '--bg-secondary': isDark ? '#141328' : '#f8fafc',
-              '--bg-tertiary': isDark ? '#1e1b3a' : '#f1f5f9',
-              '--border': isDark ? '#334155' : '#e5e7eb'
-            };
-
-            Object.entries(colors).forEach(([prop, value]) => {
-              root.style.setProperty(prop, value);
-            });
           } catch (error) {
-            console.error('Theme error:', error);
+            document.documentElement.classList.add('dark');
           }
         }
 
+        // Apply immediately on script load
         applyTheme();
 
-        // Listen for theme changes
+        // CRITICAL: Apply BEFORE swap to prevent flash
+        document.addEventListener('astro:before-swap', (e) => {
+          const savedTheme = localStorage.getItem('theme');
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
+          e.newDocument.documentElement.classList.remove('light', 'dark');
+          e.newDocument.documentElement.classList.add(isDark ? 'dark' : 'light');
+        });
+
+        // Also apply after swap as backup
+        document.addEventListener('astro:after-swap', applyTheme);
+
+        // Listen for system preference changes
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
-        window.addEventListener('storage', applyTheme);
       })();
     </script>
+
+    <!-- Load global.css synchronously for instant styling -->
+    <link rel="stylesheet" href="/src/styles/global.css" />
   </head>
-  <body class="min-h-screen transition-none" style="background-color: var(--bg-primary); color: var(--text-primary);">
+  <body class="min-h-screen">
     <a 
       href="#main-content" 
       class="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 bg-blue-600 text-white p-2 z-50 rounded-br-md focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium"
@@ -174,48 +134,74 @@ const baseUrl = (import.meta.env.BASE_URL || '/').endsWith('/')
       {t('accessibility.skipToMain')}
     </a>
     
-    <nav
-      class="fixed top-0 z-50 bg-gradient-to-r from-blue-600 to-blue-500 dark:from-dark-bg-tertiary dark:to-dark-bg-secondary shadow-lg transition-all duration-300 border-b border-blue-500/20 dark:border-dark-border-primary"
-      style={showSidebar ? 'left: 16rem; right: 0;' : 'left: 0; right: 0;'}
+    <!-- WowDash-style Header -->
+    <header
+      class={`fixed top-0 z-50 bg-neutral-100 dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800 transition-all duration-300 left-0 right-0 ${showSidebar ? 'lg:left-[280px]' : ''}`}
     >
-      <div class="w-full px-4 max-w-[1920px] mx-auto">
-        <div class="flex items-center h-16 px-6">
-          <!-- Left spacer -->
-          <div class="w-32"></div>
-          
-          <!-- Centered search bar -->
-          <div class="flex-1 flex justify-center">
-            <div class="max-w-lg w-full">
+      <div class="h-16 px-4 flex items-center">
+        <div class="flex items-center w-full">
+          {/* Mobile Menu Button - WowDash style */}
+          {showSidebar && (
+            <button
+              id="mobile-menu-btn"
+              class="lg:hidden inline-flex items-center justify-center w-10 h-10 text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-all duration-200"
+              aria-label="Toggle menu"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+              </svg>
+            </button>
+          )}
+
+          {/* Search Bar - WowDash style - Left aligned */}
+          <div class="relative hidden lg:block ml-2 w-full max-w-md">
+            <SearchBar client:idle lang={lang} />
+          </div>
+
+          {/* Right: Actions - WowDash style */}
+          <div class="flex items-center gap-1 sm:gap-2 ms-auto">
+            {/* Mobile Search - Uses SearchBar component */}
+            <div class="lg:hidden">
               <SearchBar client:idle lang={lang} />
             </div>
-          </div>
-          
-          <!-- Right actions - properly aligned -->
-          <div class="w-32 flex items-center justify-end gap-2">
+
+            <!-- Theme Toggle - WowDash style -->
             <ThemeToggle client:only="react" />
+
+            <!-- Language Selector - WowDash style -->
             <LanguageSelector client:idle currentLang={lang} />
+
+            <!-- GitHub Link - WowDash style -->
             <a
               href={EXTERNAL_URLS.github}
               target="_blank"
-              class="flex items-center justify-center w-10 h-10 bg-white/10 dark:bg-gray-700 border border-white/20 dark:border-gray-600 rounded-lg hover:bg-white/20 dark:hover:bg-gray-600 hover:text-white transition-all duration-300 text-blue-100 dark:text-gray-200"
+              rel="noopener noreferrer"
+              class="hidden sm:inline-flex items-center justify-center w-10 h-10 text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-all duration-200"
               aria-label="GitHub Repository"
             >
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.30.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"></path>
               </svg>
             </a>
           </div>
         </div>
       </div>
-    </nav>
+    </header>
+
+    <!-- Mobile Menu Toggle Script -->
+    <script is:inline>
+      document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
+        window.dispatchEvent(new CustomEvent('toggle-mobile-sidebar'));
+      });
+    </script>
     
-    <div class="pt-16 flex min-h-screen">
+    <div class="min-h-screen">
       {showSidebar && (
-        <Sidebar client:visible lang={lang} transition:persist transition:name="sidebar" />
+        <Sidebar client:load lang={lang} transition:persist transition:name="sidebar" />
       )}
-      
+
       <div
-        class={`flex-1 flex flex-col min-h-screen relative ${showSidebar ? 'lg:ml-64' : ''}`}
+        class={`flex flex-col min-h-screen pt-16 transition-all duration-300 ${showSidebar ? 'lg:ml-[280px]' : ''}`}
         id="main-wrapper"
         data-sidebar={showSidebar}
       >
@@ -223,64 +209,46 @@ const baseUrl = (import.meta.env.BASE_URL || '/').endsWith('/')
           <slot />
         </main>
         
-        <footer class="relative bg-gradient-to-br from-gray-100 via-blue-50 to-indigo-100 dark:from-dark-bg-secondary dark:via-dark-bg-tertiary dark:to-dark-bg-secondary border-t border-gray-200 dark:border-dark-border-primary mt-20 overflow-hidden" id="footer" style="background: var(--bg-tertiary); border-color: var(--border);">
-          <div class="relative w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-20 3xl:px-32 py-8 sm:py-12">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-12 xl:gap-16 items-start justify-items-center sm:justify-items-start">
-              <div class="sm:col-span-2 lg:col-span-2 min-w-0 text-center sm:text-left">
-                <div class="mb-6">
-                  <h3 class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-sky-500 bg-clip-text text-transparent">
-                    {t('footer.title')}
-                  </h3>
-                  <p class="text-blue-700 dark:text-gray-300 mb-4 max-w-md">
-                    {t('footer.built')}
-                  </p>
-                  <p class="text-blue-600 dark:text-gray-400 text-sm max-w-lg">
-                    {t('footer.disclaimer')}
-                  </p>
-                </div>
-              </div>
-              
-              <div class="min-w-0">
-                <h4 class="font-semibold mb-4 text-blue-800 dark:text-gray-200 flex items-center gap-2 justify-center sm:justify-start">
-                  <svg class="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"></path>
-                  </svg>
-                  {t('footer.studyResources')}
-                </h4>
-              </div>
-              
-              <div class="min-w-0">
-                <h4 class="font-semibold mb-4 text-blue-800 dark:text-gray-200 flex items-center gap-2 justify-center sm:justify-start">
-                  <svg class="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path>
-                  </svg>
-                  {t('footer.community')}
-                </h4>
-              </div>
-            </div>
-            
-            <div class="mt-10 pt-6 border-t border-gray-300 dark:border-gray-600">
-              <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div class="text-center sm:text-left">
-                  <p class="text-blue-700 dark:text-gray-300 text-sm">
-                    {t('footer.journey')}
-                  </p>
-                </div>
-                
+        <footer class={`relative bg-neutral-100 dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 ${compactFooter ? 'mt-0' : 'mt-20'}`} id="footer">
+          <div class="w-full px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+              {/* Logo and Description */}
+              <div class="flex flex-col sm:flex-row items-center gap-4">
                 <div class="flex items-center gap-3">
-                  <a
-                    href={EXTERNAL_URLS.github}
-                    target="_blank"
-                    class="p-2 rounded-lg bg-blue-200 dark:bg-gray-700 hover:bg-blue-300 dark:hover:bg-gray-600 border border-blue-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-gray-500 transition-all"
-                    aria-label={t('accessibility.githubRepository')}
-                  >
-                    <svg class="w-5 h-5 text-blue-700 dark:text-gray-300" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.30.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"></path>
+                  <div class="w-10 h-10 rounded-xl bg-primary-600 flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
                     </svg>
-                  </a>
+                  </div>
+                  <div>
+                    <span class="text-lg font-bold text-neutral-900 dark:text-white">CNCF</span>
+                    <span class="text-lg font-bold text-primary-600">Cert</span>
+                    <span class="text-lg font-bold text-neutral-900 dark:text-white">Hub</span>
+                  </div>
                 </div>
+                <div class="hidden sm:block w-px h-8 bg-neutral-300 dark:bg-neutral-600"></div>
+                <p class="text-neutral-500 dark:text-neutral-400 text-sm text-center sm:text-left max-w-md">
+                  {t('footer.disclaimer')}
+                </p>
+              </div>
+
+              {/* Links */}
+              <div class="flex items-center gap-4">
+                <a
+                  href={EXTERNAL_URLS.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="flex items-center gap-2 px-4 py-2 rounded-lg bg-neutral-100 dark:bg-neutral-700 hover:bg-primary-50 dark:hover:bg-primary-600/20 border border-neutral-200 dark:border-neutral-600 hover:border-primary-300 dark:hover:border-primary-500 transition-all text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:text-primary-600 dark:hover:text-primary-400"
+                  aria-label={t('accessibility.githubRepository')}
+                >
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"></path>
+                  </svg>
+                  GitHub
+                </a>
               </div>
             </div>
+
           </div>
         </footer>
       </div>

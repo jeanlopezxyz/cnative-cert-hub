@@ -1,11 +1,13 @@
+import React, { useState } from 'react';
 import { useTranslations, translateCertificationValue } from '../../i18n/utils';
 import type { Certification } from '../../types';
-import { useState } from 'react';
 import SimpleQuestionSimulator from '../quiz/SimpleQuestionSimulator';
+
+import type { ui } from '../../i18n/ui';
 
 interface CertificationStudyGuideProps {
   certification: Certification;
-  lang: keyof typeof import('../../i18n/ui').ui;
+  lang: keyof typeof ui;
 }
 
 // Helper functions for safe property access
@@ -42,7 +44,6 @@ export default function CertificationStudyGuide({
   const [activeResourceTab, setActiveResourceTab] = useState<
     'fundamentals' | 'courses' | 'practice' | 'additional'
   >('fundamentals');
-  const [expandedStudyPhases, setExpandedStudyPhases] = useState<string[]>([]);
   const [expandedSections, setExpandedSections] = useState<string[]>([]);
 
   const toggleExpandDomain = (domainName: string) => {
@@ -57,12 +58,6 @@ export default function CertificationStudyGuide({
     );
   };
 
-  const toggleStudyPhase = (phaseId: string) => {
-    setExpandedStudyPhases(prev =>
-      prev.includes(phaseId) ? prev.filter(p => p !== phaseId) : [...prev, phaseId]
-    );
-  };
-
   const toggleSection = (sectionId: string) => {
     setExpandedSections(prev =>
       prev.includes(sectionId) ? prev.filter(s => s !== sectionId) : [...prev, sectionId]
@@ -74,7 +69,7 @@ export default function CertificationStudyGuide({
     // FUNDAMENTALS TAB
     {
       id: 'linux-foundation',
-      title: 'Linux Foundation',
+      title: t('certification.sections.linuxFoundation'),
       type: 'courses' as const,
       tab: 'fundamentals',
       resources: (certification.resources.courses || []).filter(course => 
@@ -210,66 +205,18 @@ export default function CertificationStudyGuide({
     },
   ].filter(section => section.resources.length > 0); // Only show sections with resources
 
-  // Study path recommendations
-  const studyPath = [
-    {
-      week: t('certification.studyPath.week1.title'),
-      title: t('certification.studyPath.week1.subtitle'),
-      tasks: [
-        t('certification.studyPath.week1.task1'),
-        t('certification.studyPath.week1.task2'),
-        t('certification.studyPath.week1.task3'),
-        t('certification.studyPath.week1.task4'),
-      ],
-    },
-    {
-      week: t('certification.studyPath.week2.title'),
-      title: t('certification.studyPath.week2.subtitle'),
-      tasks: [
-        t('certification.studyPath.week2.task1'),
-        t('certification.studyPath.week2.task2'),
-        t('certification.studyPath.week2.task3'),
-        t('certification.studyPath.week2.task4'),
-      ],
-    },
-    {
-      week: t('certification.studyPath.week3.title'),
-      title: t('certification.studyPath.week3.subtitle'),
-      tasks: [
-        t('certification.studyPath.week3.task1'),
-        t('certification.studyPath.week3.task2'),
-        t('certification.studyPath.week3.task3'),
-        t('certification.studyPath.week3.task4'),
-      ],
-    },
-  ];
-
   return (
     <div>
-      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-20 3xl:px-32 py-6 sm:py-8">
-        {/* Header Section */}
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-8 2xl:px-12 3xl:px-16 py-6 sm:py-8">
+        {/* Header Section - WowDash Style */}
         <div className="mb-6 sm:mb-8">
-          {/* Certification Header */}
-          <div
-            className={`relative bg-gradient-to-br ${certification.color} rounded-3xl p-2 text-white shadow-2xl overflow-hidden`}
-          >
-            {/* Background pattern */}
-            <div className="absolute inset-0 opacity-10">
-              <div
-                className="absolute inset-0"
-                style={{
-                  backgroundImage:
-                    "url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill=%22none%22 fill-rule=%22evenodd%22%3E%3Cg fill=%22%23ffffff%22 fill-opacity=%220.4%22%3E%3Cpath d=%22M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')",
-                }}
-              ></div>
-            </div>
-
-            <div className="relative bg-gradient-to-r from-blue-950/95 to-blue-900/95 backdrop-blur-sm rounded-2xl p-6 sm:p-8">
-              <div className="text-left">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent mb-2">
+          <div className="card rounded-xl overflow-hidden border-0 bg-primary-50 dark:bg-primary-600/20">
+            <div className="card-body p-5 sm:p-6 lg:p-8">
+              <div className="text-center sm:text-left">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-primary-600 dark:text-primary-400 mb-1">
                   {certification.acronym}
                 </h1>
-                <h2 className="text-lg sm:text-xl font-semibold text-white">
+                <h2 className="text-base sm:text-lg text-neutral-600 dark:text-neutral-300">
                   {certification.name}
                 </h2>
               </div>
@@ -277,27 +224,46 @@ export default function CertificationStudyGuide({
           </div>
         </div>
 
-        {/* Navigation Tabs */}
-        <div className="mb-6 sm:mb-8 border-b border-gray-800">
-          <nav className="flex flex-wrap gap-2 sm:gap-4 lg:gap-8">
+        {/* Navigation Tabs - WowDash Style */}
+        <div className="mb-6 sm:mb-8">
+          <nav className="flex flex-wrap gap-2 p-1 bg-neutral-100 dark:bg-neutral-800 rounded-xl">
             {[
-              { id: 'overview', label: t('certification.overview') },
-              { id: 'domains', label: t('certification.domains') },
-              { id: 'resources', label: t('certification.studyResources') },
-              { id: 'path', label: 'Practice Questions' },
+              {
+                id: 'overview',
+                label: t('certification.overview'),
+                icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              },
+              {
+                id: 'domains',
+                label: t('certification.domains'),
+                icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+              },
+              {
+                id: 'resources',
+                label: t('certification.studyResources'),
+                icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              },
+              {
+                id: 'path',
+                label: t('certification.practiceQuestions'),
+                icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              },
             ].map(tab => (
               <button
                 key={tab.id}
                 onClick={() =>
                   setActiveTab(tab.id as 'overview' | 'domains' | 'resources' | 'path')
                 }
-                className={`pb-3 sm:pb-4 px-1 sm:px-2 border-b-2 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all whitespace-nowrap ${
                   activeTab === tab.id
-                    ? 'border-blue-500 text-blue-400'
-                    : 'border-transparent text-gray-400 hover:text-white hover:border-gray-600'
+                    ? 'bg-white dark:bg-neutral-900 text-primary-600 dark:text-primary-400 shadow-sm'
+                    : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
                 }`}
               >
-                {tab.label}
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  {tab.icon}
+                </svg>
+                <span className="hidden sm:inline">{tab.label}</span>
               </button>
             ))}
           </nav>
@@ -310,184 +276,160 @@ export default function CertificationStudyGuide({
             <div className="grid lg:grid-cols-3 gap-4 sm:gap-6">
               {/* Left Column - Main Info */}
               <div className="lg:col-span-2 space-y-4 sm:space-y-6">
-                {/* Basic Exam Information */}
-                <div className="bg-gradient-to-br from-blue-900/40 to-blue-950/50 rounded-xl p-4 sm:p-6 border border-blue-700/50">
-                  <h3 className="text-xl font-bold mb-6 text-white flex items-center gap-2">
-                    <svg
-                      className="w-6 h-6 text-blue-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
-                      />
-                    </svg>
-                    {t('certification.examOverview')}
-                  </h3>
-                  <div className="grid md:grid-cols-2 gap-6">
-                    {/* Left sub-column */}
-                    <div className="space-y-4">
-                      <div>
-                        <div className="text-sm text-blue-300 font-medium mb-1">
-                          {t('certification.examType')}
-                        </div>
-                        <div className="font-semibold text-white bg-blue-900/30 rounded-lg px-3 py-2 border border-blue-700/30">
-                          {certification.type === 'performance'
-                            ? t('certification.performance')
-                            : t('certification.multipleChoice')}
-                        </div>
+                {/* Basic Exam Information - WowDash Style */}
+                <div className="card rounded-xl overflow-hidden border-0 bg-sky-50 dark:bg-sky-600/20">
+                  <div className="card-body p-5 sm:p-6">
+                    <div className="flex items-center gap-3 mb-5">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 inline-flex items-center justify-center bg-sky-600 text-white rounded-xl">
+                        <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                        </svg>
                       </div>
-                      <div>
-                        <div className="text-sm text-blue-300 font-medium mb-1">
-                          {t('certification.duration')}
-                        </div>
-                        <div className="font-semibold text-white bg-blue-900/30 rounded-lg px-3 py-2 border border-blue-700/30">
-                          {certification.duration} {t('certification.minutes')}
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-sm text-blue-300 font-medium mb-1">
-                          {t('certification.level')}
-                        </div>
-                        <div className="font-semibold text-white bg-blue-900/30 rounded-lg px-3 py-2 border border-blue-700/30 capitalize">
-                          {certification.level === 'entry'
-                            ? t('certification.beginner')
-                            : certification.level === 'intermediate'
-                              ? t('certification.intermediate')
-                              : t('certification.advanced')}
-                        </div>
-                      </div>
-                      {certification.kubernetesVersion && (
-                        <div>
-                          <div className="text-sm text-blue-300 font-medium mb-1">
-                            {t('certification.kubernetesVersion')}
-                          </div>
-                          <div className="font-semibold text-white bg-blue-900/30 rounded-lg px-3 py-2 border border-blue-700/30">
-                            {translateCertificationValue(certification.kubernetesVersion, lang)}
-                          </div>
-                        </div>
-                      )}
+                      <h3 className="text-lg sm:text-xl font-bold text-sky-600 dark:text-sky-400">
+                        {t('certification.examOverview')}
+                      </h3>
                     </div>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {/* Left sub-column */}
+                      <div className="space-y-3">
+                        <div className="p-3 bg-white/60 dark:bg-neutral-900/40 rounded-lg">
+                          <div className="text-xs text-sky-600 dark:text-sky-400 font-medium mb-1">
+                            {t('certification.examType')}
+                          </div>
+                          <div className="font-semibold text-neutral-800 dark:text-neutral-100">
+                            {certification.type === 'performance'
+                              ? t('certification.performance')
+                              : t('certification.multipleChoice')}
+                          </div>
+                        </div>
+                        <div className="p-3 bg-white/60 dark:bg-neutral-900/40 rounded-lg">
+                          <div className="text-xs text-sky-600 dark:text-sky-400 font-medium mb-1">
+                            {t('certification.duration')}
+                          </div>
+                          <div className="font-semibold text-neutral-800 dark:text-neutral-100">
+                            {certification.duration} {t('certification.minutes')}
+                          </div>
+                        </div>
+                        <div className="p-3 bg-white/60 dark:bg-neutral-900/40 rounded-lg">
+                          <div className="text-xs text-sky-600 dark:text-sky-400 font-medium mb-1">
+                            {t('certification.level')}
+                          </div>
+                          <div className="font-semibold text-neutral-800 dark:text-neutral-100 capitalize">
+                            {certification.level === 'entry'
+                              ? t('certification.beginner')
+                              : certification.level === 'intermediate'
+                                ? t('certification.intermediate')
+                                : t('certification.advanced')}
+                          </div>
+                        </div>
+                        {certification.kubernetesVersion && (
+                          <div className="p-3 bg-white/60 dark:bg-neutral-900/40 rounded-lg">
+                            <div className="text-xs text-sky-600 dark:text-sky-400 font-medium mb-1">
+                              {t('certification.kubernetesVersion')}
+                            </div>
+                            <div className="font-semibold text-neutral-800 dark:text-neutral-100">
+                              {translateCertificationValue(certification.kubernetesVersion, lang)}
+                            </div>
+                          </div>
+                        )}
+                      </div>
 
-                    {/* Right sub-column */}
-                    <div className="space-y-4">
-                      {certification.prerequisites && (
-                        <div>
-                          <div className="text-sm text-blue-300 font-medium mb-1">
-                            {t('certification.prerequisites')}
+                      {/* Right sub-column */}
+                      <div className="space-y-3">
+                        {certification.prerequisites && (
+                          <div className="p-3 bg-amber-100/60 dark:bg-amber-900/30 rounded-lg">
+                            <div className="text-xs text-amber-600 dark:text-amber-400 font-medium mb-1">
+                              {t('certification.prerequisites')}
+                            </div>
+                            <div className="font-semibold text-neutral-800 dark:text-neutral-100">
+                              {translateCertificationValue(certification.prerequisites, lang)}
+                            </div>
                           </div>
-                          <div className="font-semibold text-white bg-amber-900/30 rounded-lg px-3 py-2 border border-amber-700/30">
-                            {translateCertificationValue(certification.prerequisites, lang)}
+                        )}
+                        {certification.examAttempts && (
+                          <div className="p-3 bg-emerald-100/60 dark:bg-emerald-900/30 rounded-lg">
+                            <div className="text-xs text-emerald-600 dark:text-emerald-400 font-medium mb-1">
+                              {t('certification.examAttempts')}
+                            </div>
+                            <div className="font-semibold text-neutral-800 dark:text-neutral-100">
+                              {certification.examAttempts} {t('certification.attemptsIncluded')}
+                            </div>
                           </div>
-                        </div>
-                      )}
-                      {certification.examAttempts && (
-                        <div>
-                          <div className="text-sm text-blue-300 font-medium mb-1">
-                            {t('certification.examAttempts')}
+                        )}
+                        {certification.requiredFor && (
+                          <div className="p-3 bg-purple-100/60 dark:bg-purple-900/30 rounded-lg">
+                            <div className="text-xs text-purple-600 dark:text-purple-400 font-medium mb-1">
+                              {t('certification.requiredFor')}
+                            </div>
+                            <div className="font-semibold text-neutral-800 dark:text-neutral-100">
+                              {certification.requiredFor
+                                .map(item => translateCertificationValue(item, lang))
+                                .join(', ')}
+                            </div>
                           </div>
-                          <div className="font-semibold text-white bg-green-900/30 rounded-lg px-3 py-2 border border-green-700/30">
-                            {certification.examAttempts} {t('certification.attemptsIncluded')}
-                          </div>
-                        </div>
-                      )}
-                      {certification.requiredFor && (
-                        <div>
-                          <div className="text-sm text-blue-300 font-medium mb-1">
-                            {t('certification.requiredFor')}
-                          </div>
-                          <div className="font-semibold text-white bg-purple-900/30 rounded-lg px-3 py-2 border border-purple-700/30">
-                            {certification.requiredFor
-                              .map(item => translateCertificationValue(item, lang))
-                              .join(', ')}
-                          </div>
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Practice Simulator Section - Only for performance-based exams */}
+                {/* Practice Simulator Section - WowDash Style */}
                 {certification.type === 'performance' && certification.simulatorProvider && (
-                  <div className="bg-gradient-to-br from-green-900/40 to-emerald-950/50 rounded-xl p-4 sm:p-6 border border-green-700/50">
-                    <h3 className="text-xl font-bold mb-4 text-white flex items-center gap-2">
-                      <svg
-                        className="w-5 h-5 text-green-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                        />
-                      </svg>
-                      {t('certification.practiceSimulatorIncluded')}
-                    </h3>
-                    <div className="bg-green-900/30 rounded-lg p-4 border border-green-700/30">
-                      <div className="font-semibold text-green-300 text-lg mb-2">
-                        {certification.simulatorProvider}
-                      </div>
-                      <div className="text-green-100">
-                        {t('certification.practiceEnvironmentIncluded')}
-                      </div>
-                      {certification.simulatorAccess && (
-                        <div className="text-sm text-green-200 mt-2 bg-green-800/30 rounded px-3 py-2">
-                          <span className="font-medium">{t('certification.access')}:</span>{' '}
-                          {translateCertificationValue(certification.simulatorAccess, lang)}
+                  <div className="card rounded-xl overflow-hidden border-0 bg-emerald-50 dark:bg-emerald-600/20">
+                    <div className="card-body p-5 sm:p-6">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 inline-flex items-center justify-center bg-emerald-600 text-white rounded-xl">
+                          <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                          </svg>
                         </div>
-                      )}
+                        <h3 className="text-lg sm:text-xl font-bold text-emerald-600 dark:text-emerald-400">
+                          {t('certification.practiceSimulatorIncluded')}
+                        </h3>
+                      </div>
+                      <div className="p-4 bg-white/60 dark:bg-neutral-900/40 rounded-lg">
+                        <div className="font-semibold text-emerald-600 dark:text-emerald-400 text-lg mb-1">
+                          {certification.simulatorProvider}
+                        </div>
+                        <div className="text-neutral-600 dark:text-neutral-300 text-sm">
+                          {t('certification.practiceEnvironmentIncluded')}
+                        </div>
+                        {certification.simulatorAccess && (
+                          <div className="text-sm text-neutral-500 dark:text-neutral-400 mt-2 pt-2 border-t border-neutral-200 dark:border-neutral-700">
+                            <span className="font-medium">{t('certification.access')}:</span>{' '}
+                            {translateCertificationValue(certification.simulatorAccess, lang)}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 )}
               </div>
 
-              {/* Right Sidebar */}
+              {/* Right Sidebar - WowDash Style */}
               <div className="space-y-4 sm:space-y-6">
                 {/* Exam Registration */}
-                <div className="bg-gradient-to-br from-blue-900/30 to-slate-900 rounded-xl p-4 sm:p-6 border border-blue-800/50 shadow-lg shadow-blue-900/20">
-                  <h3 className="text-lg sm:text-xl font-bold mb-4 text-white flex items-center gap-2">
-                    <svg
-                      className="w-5 h-5 text-blue-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
-                      />
-                    </svg>
-                    {t('certification.registerForExam')}
-                  </h3>
-                  <div className="space-y-3">
+                <div className="card rounded-xl overflow-hidden border-0 bg-primary-50 dark:bg-primary-600/20">
+                  <div className="card-body p-5 sm:p-6">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 inline-flex items-center justify-center bg-primary-600 text-white rounded-xl">
+                        <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                        </svg>
+                      </div>
+                      <h3 className="text-lg font-bold text-primary-600 dark:text-primary-400">
+                        {t('certification.registerForExam')}
+                      </h3>
+                    </div>
                     <a
                       href={certification.resources.official}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-between p-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors text-white"
+                      className="group flex items-center justify-between p-3 bg-primary-600 hover:bg-primary-700 rounded-xl transition-all text-white"
                     >
                       <span className="font-medium">{t('certification.officialRegistration')}</span>
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                        />
+                      <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                       </svg>
                     </a>
                   </div>
@@ -501,168 +443,158 @@ export default function CertificationStudyGuide({
             <div className="space-y-4">
               {/* Domain Cards Grid */}
               <div className="grid gap-4">
-                {certification.domains.map((domain, index) => (
-                  <div
-                    key={domain.name}
-                    className="group relative bg-gradient-to-br from-blue-900/30 via-blue-900/40 to-blue-950/50 rounded-xl border border-blue-700/50 overflow-hidden hover:border-blue-500/50 transition-all duration-300"
-                  >
-                    {/* Background decoration */}
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-600/10 to-transparent rounded-full blur-3xl"></div>
+                {certification.domains.map((domain, index) => {
+                  // Professional 3-color rotation: primary, teal, violet
+                  const domainColors = [
+                    { bg: 'bg-primary-50 dark:bg-primary-600/20', icon: 'bg-primary-600', text: 'text-primary-600 dark:text-primary-400', badge: 'bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300', progress: 'text-primary-500' },
+                    { bg: 'bg-teal-50 dark:bg-teal-600/20', icon: 'bg-teal-600', text: 'text-teal-600 dark:text-teal-400', badge: 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300', progress: 'text-teal-500' },
+                    { bg: 'bg-violet-50 dark:bg-violet-600/20', icon: 'bg-violet-600', text: 'text-violet-600 dark:text-violet-400', badge: 'bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300', progress: 'text-violet-500' },
+                  ];
+                  const colors = domainColors[index % domainColors.length];
 
-                    <button
-                      className="relative w-full p-5 text-left transition-all duration-300 hover:bg-blue-900/10"
-                      onClick={() => toggleExpandDomain(domain.name)}
+                  return (
+                    <div
+                      key={domain.name}
+                      className={`card rounded-xl overflow-hidden border-0 ${colors.bg} transition-all duration-300`}
                     >
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex-1">
-                          <div className="flex items-start gap-3">
-                            {/* Domain Number */}
-                            <div
-                              className={`w-10 h-10 rounded-lg bg-gradient-to-br ${
-                                index === 0
-                                  ? 'from-blue-500 to-blue-600'
-                                  : index === 1
-                                    ? 'from-purple-500 to-purple-600'
-                                    : index === 2
-                                      ? 'from-green-500 to-green-600'
-                                      : index === 3
-                                        ? 'from-orange-500 to-orange-600'
-                                        : 'from-pink-500 to-pink-600'
-                              } flex items-center justify-center text-white font-bold shadow-lg`}
-                            >
-                              {index + 1}
-                            </div>
-
-                            <div className="flex-1">
-                              <h4 className="text-lg font-semibold text-white group-hover:text-blue-300 transition-colors">
-                                {domain.name}
-                              </h4>
-
-                              {/* Info Pills */}
-                              <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
-                                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-900/30 text-blue-300 text-xs font-semibold rounded-md">
-                                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
-                                  </svg>
-                                  {t('certification.weight')}: {domain.weight}%
-                                </span>
-                                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-purple-900/30 text-purple-300 text-xs font-semibold rounded-md">
-                                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
-                                  </svg>
-                                  {domain.topics.length} {t('certification.topics')}
-                                </span>
+                      <button
+                        className="w-full p-5 text-left transition-all duration-300"
+                        onClick={() => toggleExpandDomain(domain.name)}
+                      >
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex-1">
+                            <div className="flex items-start gap-3">
+                              {/* Domain Number */}
+                              <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${colors.icon} flex items-center justify-center text-white font-bold shadow-lg flex-shrink-0`}>
+                                {index + 1}
                               </div>
-                            </div>
-                          </div>
-                        </div>
 
-                        {/* Right Side - Weight & Arrow */}
-                        <div className="flex items-center gap-3">
-                          {/* Circular Progress */}
-                          <div className="relative w-14 h-14">
-                            <svg className="w-14 h-14 -rotate-90">
-                              <circle
-                                cx="28"
-                                cy="28"
-                                r="24"
-                                stroke="currentColor"
-                                strokeWidth="4"
-                                fill="none"
-                                className="text-slate-700"
-                              />
-                              <circle
-                                cx="28"
-                                cy="28"
-                                r="24"
-                                stroke="currentColor"
-                                strokeWidth="4"
-                                fill="none"
-                                strokeDasharray={`${domain.weight * 1.5} 150`}
-                                className="text-blue-500"
-                              />
-                            </svg>
-                            <div className="absolute inset-0 flex items-center justify-center">
-                              <span className="text-sm font-bold text-white">{domain.weight}%</span>
-                            </div>
-                          </div>
+                              <div className="flex-1">
+                                <h4 className={`text-lg font-semibold ${colors.text} transition-colors`}>
+                                  {domain.name}
+                                </h4>
 
-                          {/* Expand Arrow */}
-                          <div
-                            className={`p-1 rounded-lg bg-slate-800/50 group-hover:bg-slate-700/50 transition-colors ${
-                              expandedDomains.includes(domain.name) ? 'bg-blue-900/30' : ''
-                            }`}
-                          >
-                            <svg
-                              className={`w-4 h-4 text-gray-400 transition-transform duration-300 ${
-                                expandedDomains.includes(domain.name)
-                                  ? 'rotate-180 text-blue-400'
-                                  : ''
-                              }`}
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M19 9l-7 7-7-7"
-                              />
-                            </svg>
-                          </div>
-                        </div>
-                      </div>
-                    </button>
-
-                    {/* Expanded Content */}
-                    {expandedDomains.includes(domain.name) && (
-                      <div className="border-t border-blue-700/50 bg-blue-900/30 px-5 py-4">
-                        <div className="grid gap-2.5">
-                          {domain.topics.map((topic, topicIndex) => {
-                            const topicName = typeof topic === 'string' ? topic : topic.name;
-                            const topicUrl = typeof topic === 'object' ? topic.url : undefined;
-                            
-                            return (
-                              <div
-                                key={topicIndex}
-                                className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-slate-800/30 transition-colors"
-                              >
-                                <div className="w-6 h-6 rounded-full bg-blue-900/30 border border-blue-700/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                  <span className="text-xs text-blue-400">{topicIndex + 1}</span>
+                                {/* Info Pills */}
+                                <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                                  <span className={`inline-flex items-center px-2 py-0.5 ${colors.badge} text-xs font-semibold rounded-md`}>
+                                    {t('certification.weight')}: {domain.weight}%
+                                  </span>
+                                  <span className="inline-flex items-center px-2 py-0.5 bg-white/60 dark:bg-neutral-900/40 text-neutral-600 dark:text-neutral-300 text-xs font-semibold rounded-md">
+                                    {domain.topics.length} {t('certification.topics')}
+                                  </span>
                                 </div>
-                                {topicUrl ? (
-                                  <a
-                                    href={topicUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-sm text-gray-300 hover:text-blue-300 leading-relaxed transition-colors underline-offset-2 hover:underline"
-                                  >
-                                    {topicName}
-                                  </a>
-                                ) : (
-                                  <span className="text-sm text-gray-300 leading-relaxed">{topicName}</span>
-                                )}
                               </div>
-                            );
-                          })}
+                            </div>
+                          </div>
+
+                          {/* Right Side - Weight & Arrow */}
+                          <div className="flex items-center gap-3">
+                            {/* Circular Progress */}
+                            <div className="relative w-14 h-14 hidden sm:block">
+                              <svg className="w-14 h-14 -rotate-90">
+                                <circle
+                                  cx="28"
+                                  cy="28"
+                                  r="24"
+                                  stroke="currentColor"
+                                  strokeWidth="4"
+                                  fill="none"
+                                  className="text-neutral-200 dark:text-neutral-700"
+                                />
+                                <circle
+                                  cx="28"
+                                  cy="28"
+                                  r="24"
+                                  stroke="currentColor"
+                                  strokeWidth="4"
+                                  fill="none"
+                                  strokeDasharray={`${domain.weight * 1.5} 150`}
+                                  className={colors.progress}
+                                />
+                              </svg>
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <span className="text-sm font-bold text-neutral-800 dark:text-neutral-100">{domain.weight}%</span>
+                              </div>
+                            </div>
+
+                            {/* Expand Arrow */}
+                            <div className="p-2 rounded-lg bg-white/60 dark:bg-neutral-900/40 transition-colors">
+                              <svg
+                                className={`w-4 h-4 text-neutral-500 dark:text-neutral-400 transition-transform duration-300 ${
+                                  expandedDomains.includes(domain.name) ? 'rotate-180' : ''
+                                }`}
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M19 9l-7 7-7-7"
+                                />
+                              </svg>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    )}
-                  </div>
-                ))}
+                      </button>
+
+                      {/* Expanded Content */}
+                      {expandedDomains.includes(domain.name) && (
+                        <div className="border-t border-neutral-200 dark:border-neutral-700 bg-white/60 dark:bg-neutral-900/30 px-5 py-4">
+                          <div className="grid gap-2.5">
+                            {domain.topics.map((topic, topicIndex) => {
+                              const topicName = typeof topic === 'string' ? topic : topic.name;
+                              const topicUrl = typeof topic === 'object' ? topic.url : undefined;
+
+                              return (
+                                <div
+                                  key={topicIndex}
+                                  className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-white dark:hover:bg-neutral-800/50 transition-colors"
+                                >
+                                  <div className={`w-6 h-6 rounded-full ${colors.icon} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                                    <span className="text-xs text-white font-medium">{topicIndex + 1}</span>
+                                  </div>
+                                  {topicUrl ? (
+                                    <a
+                                      href={topicUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className={`text-sm ${colors.text} leading-relaxed transition-colors underline-offset-2 hover:underline`}
+                                    >
+                                      {topicName}
+                                    </a>
+                                  ) : (
+                                    <span className="text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed">{topicName}</span>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
 
-              {/* Summary Card */}
-              <div className="mt-6 bg-gradient-to-r from-blue-900/30 to-sky-900/30 rounded-xl p-4 border border-blue-700/40">
+              {/* Summary Card - WowDash Style */}
+              <div className="mt-6 card rounded-xl overflow-hidden border-0 bg-primary-50 dark:bg-primary-600/20 p-5">
                 <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-400">{t('certification.totalDomains')}</p>
-                    <p className="text-2xl font-bold text-white">{certification.domains.length}</p>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 inline-flex items-center justify-center bg-primary-600 text-white rounded-xl">
+                      <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-sm text-neutral-500 dark:text-neutral-400">{t('certification.totalDomains')}</p>
+                      <p className="text-2xl font-bold text-primary-600 dark:text-primary-400">{certification.domains.length}</p>
+                    </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm text-gray-400">{t('certification.totalTopics')}</p>
-                    <p className="text-2xl font-bold text-white">
+                    <p className="text-sm text-neutral-500 dark:text-neutral-400">{t('certification.totalTopics')}</p>
+                    <p className="text-2xl font-bold text-primary-600 dark:text-primary-400">
                       {certification.domains.reduce((acc, d) => acc + d.topics.length, 0)}
                     </p>
                   </div>
@@ -674,44 +606,44 @@ export default function CertificationStudyGuide({
           {/* Resources Tab */}
           {activeTab === 'resources' && (
             <div>
-              {/* New 4-Category Resource Tabs */}
-              <div className="flex flex-wrap gap-2 mb-6 bg-slate-900/50 rounded-lg p-2">
+              {/* Resource Tabs - WowDash Style */}
+              <div className="flex flex-wrap gap-2 mb-6 p-1 bg-neutral-100 dark:bg-neutral-800 rounded-xl">
                 <button
                   onClick={() => setActiveResourceTab('fundamentals')}
-                  className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                     activeResourceTab === 'fundamentals'
-                      ? 'bg-blue-600 text-white'
-                      : 'text-gray-400 hover:text-white hover:bg-slate-800'
+                      ? 'bg-white dark:bg-neutral-900 text-primary-600 dark:text-primary-400 shadow-sm'
+                      : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
                   }`}
                 >
                   {t('certification.fundamentals')}
                 </button>
                 <button
                   onClick={() => setActiveResourceTab('courses')}
-                  className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                     activeResourceTab === 'courses'
-                      ? 'bg-blue-600 text-white'
-                      : 'text-gray-400 hover:text-white hover:bg-slate-800'
+                      ? 'bg-white dark:bg-neutral-900 text-primary-600 dark:text-primary-400 shadow-sm'
+                      : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
                   }`}
                 >
                   {t('certification.courses')}
                 </button>
                 <button
                   onClick={() => setActiveResourceTab('practice')}
-                  className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                     activeResourceTab === 'practice'
-                      ? 'bg-blue-600 text-white'
-                      : 'text-gray-400 hover:text-white hover:bg-slate-800'
+                      ? 'bg-white dark:bg-neutral-900 text-primary-600 dark:text-primary-400 shadow-sm'
+                      : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
                   }`}
                 >
                   {t('certification.practice')}
                 </button>
                 <button
                   onClick={() => setActiveResourceTab('additional')}
-                  className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                     activeResourceTab === 'additional'
-                      ? 'bg-blue-600 text-white'
-                      : 'text-gray-400 hover:text-white hover:bg-slate-800'
+                      ? 'bg-white dark:bg-neutral-900 text-primary-600 dark:text-primary-400 shadow-sm'
+                      : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
                   }`}
                 >
                   {t('certification.additional')}
@@ -720,423 +652,172 @@ export default function CertificationStudyGuide({
 
               {/* Resource Content by Tab */}
               <div className="space-y-4">
-                {/* Fundamentals Tab */}
-                {activeResourceTab === 'fundamentals' && (
-                  <>
-                    {studySections
-                      .filter(s => s.tab === 'fundamentals')
-                      .map(section => (
-                        <div
-                          key={section.id}
-                          className={`${
-                            section.id === 'linux-foundation' 
-                              ? 'bg-gradient-to-br from-green-900/40 to-emerald-950/50 border-green-700/50' 
-                              : 'bg-gradient-to-br from-blue-900/40 to-blue-950/50 border-blue-700/50'
-                          } rounded-xl border overflow-hidden`}
-                        >
-                          <button
-                            onClick={() => toggleResourceCategory(section.id)}
-                            className="w-full p-4 flex items-center justify-between hover:bg-slate-800/50 transition-colors"
-                          >
-                            <h4 className="text-lg font-semibold text-white flex items-center gap-3">
-                              {section.title}
-                              <span className="text-base text-gray-400 font-normal">
-                                ({section.resources.length})
-                              </span>
-                            </h4>
-                            <svg
-                              className={`w-5 h-5 text-gray-400 transition-transform ${
-                                expandedResourceCategories.includes(section.id) ? 'rotate-180' : ''
-                              }`}
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M19 9l-7 7-7-7"
-                              />
-                            </svg>
-                          </button>
+                {/* All Resource Tabs - Professional Style with Tab Colors */}
+                {['fundamentals', 'courses', 'practice', 'additional'].map(tabName => {
+                  // Color per tab type
+                  const tabColors: Record<string, { bg: string; icon: string; text: string }> = {
+                    fundamentals: { bg: 'bg-primary-50 dark:bg-primary-600/20', icon: 'bg-primary-600', text: 'text-primary-600 dark:text-primary-400' },
+                    courses: { bg: 'bg-violet-50 dark:bg-violet-600/20', icon: 'bg-violet-600', text: 'text-violet-600 dark:text-violet-400' },
+                    practice: { bg: 'bg-teal-50 dark:bg-teal-600/20', icon: 'bg-teal-600', text: 'text-teal-600 dark:text-teal-400' },
+                    additional: { bg: 'bg-slate-100 dark:bg-slate-600/20', icon: 'bg-slate-600', text: 'text-slate-600 dark:text-slate-400' },
+                  };
+                  const colors = tabColors[tabName];
 
-                          {expandedResourceCategories.includes(section.id) && (
-                            <div className="border-t border-blue-700/50 p-4">
-                              <div className="grid gap-3">
-                                {(expandedSections.includes(section.id) 
-                                  ? section.resources 
-                                  : section.resources.slice(0, 3)
-                                ).map((resource, index) => (
-                                  <a
-                                    key={index}
-                                    href={resource.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="group flex items-start gap-3 p-3 bg-slate-800/50 hover:bg-slate-700/50 rounded-lg transition-all"
-                                  >
-                                    <div className="flex-1">
-                                      <div className="text-base font-medium text-white group-hover:text-blue-400 transition-colors">
-                                        {resource.title}
-                                      </div>
-                                      {getStringProperty(resource, 'author') && (
-                                        <div className="text-sm text-gray-500 mt-0.5">
-                                          {t('certification.by')}{' '}
-                                          {getStringProperty(resource, 'author')}
-                                        </div>
-                                      )}
-                                      <div className="flex flex-wrap items-center gap-2 mt-2">
-                                        {getBooleanProperty(resource, 'isPaid') && (
-                                          <span className="px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-md">
-                                            {t('certification.paid')}
-                                          </span>
-                                        )}
-                                        {getStringProperty(resource, 'difficulty') && (
-                                          <span
-                                            className={`px-2 py-1 text-xs font-semibold rounded-md ${
-                                              getStringProperty(resource, 'difficulty') ===
-                                              'beginner'
-                                                ? 'bg-green-500/20 text-green-400'
-                                                : getStringProperty(resource, 'difficulty') ===
-                                                    'intermediate'
-                                                  ? 'bg-blue-500/20 text-blue-400'
-                                                  : 'bg-red-500/20 text-red-400'
-                                            }`}
-                                          >
-                                            {getStringProperty(resource, 'difficulty') ===
-                                            'beginner'
-                                              ? t('certification.beginner')
-                                              : getStringProperty(resource, 'difficulty') ===
-                                                  'intermediate'
-                                                ? t('certification.intermediate')
-                                                : t('certification.advanced')}
-                                          </span>
-                                        )}
-                                        {getStringProperty(resource, 'duration') && (
-                                          <span className="text-sm text-gray-400">
-                                            {getStringProperty(resource, 'duration')}
-                                          </span>
-                                        )}
-                                      </div>
-                                      {resource.description && (
-                                        <p className="text-sm text-gray-400 mt-2 line-clamp-2">
-                                          {resource.description}
-                                        </p>
-                                      )}
-                                    </div>
-                                    <svg
-                                      className="w-4 h-4 text-gray-400 group-hover:text-blue-400 flex-shrink-0 mt-1 transition-colors"
-                                      fill="none"
-                                      stroke="currentColor"
-                                      viewBox="0 0 24 24"
-                                    >
-                                      <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                                      />
+                  return activeResourceTab === tabName && (
+                    <React.Fragment key={tabName}>
+                      {studySections
+                        .filter(s => s.tab === tabName)
+                        .map(section => {
+                          // Icons for each section type
+                          const getIcon = (id: string) => {
+                            switch (id) {
+                              case 'linux-foundation':
+                              case 'official':
+                              case 'books':
+                                return <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />;
+                              case 'paid-courses':
+                              case 'videos':
+                                return <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />;
+                              case 'simulators':
+                              case 'github':
+                                return <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />;
+                              case 'blogs':
+                                return <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />;
+                              case 'communities':
+                                return <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />;
+                              case 'tools':
+                                return <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />;
+                              default:
+                                return <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />;
+                            }
+                          };
+
+                          return (
+                            <div
+                              key={section.id}
+                              className={`card rounded-xl overflow-hidden border-0 ${colors.bg}`}
+                            >
+                              <button
+                                onClick={() => toggleResourceCategory(section.id)}
+                                className="w-full p-4 flex items-center justify-between transition-colors"
+                              >
+                                <div className="flex items-center gap-3">
+                                  <div className={`w-10 h-10 sm:w-12 sm:h-12 inline-flex items-center justify-center ${colors.icon} text-white rounded-xl`}>
+                                    <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      {getIcon(section.id)}
                                     </svg>
-                                  </a>
-                                ))}
-                                {section.resources.length > 3 && !expandedSections.includes(section.id) && (
-                                  <div className="text-center pt-2">
-                                    <button 
-                                      onClick={() => toggleSection(section.id)}
-                                      className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
-                                    >
-                                      {t('certification.showMore')} {section.resources.length - 3}
-                                      ...
-                                    </button>
                                   </div>
-                                )}
-                                {expandedSections.includes(section.id) && section.resources.length > 3 && (
-                                  <div className="text-center pt-2">
-                                    <button 
-                                      onClick={() => toggleSection(section.id)}
-                                      className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
-                                    >
-                                      {t('certification.showLess')}
-                                    </button>
+                                  <h4 className={`text-lg font-semibold ${colors.text} flex items-center gap-2`}>
+                                    {section.title}
+                                    <span className="text-sm text-neutral-500 dark:text-neutral-400 font-normal">
+                                      ({section.resources.length})
+                                    </span>
+                                  </h4>
+                                </div>
+                                <div className="p-2 rounded-lg bg-white/60 dark:bg-neutral-900/40">
+                                  <svg
+                                    className={`w-4 h-4 text-neutral-500 dark:text-neutral-400 transition-transform ${
+                                      expandedResourceCategories.includes(section.id) ? 'rotate-180' : ''
+                                    }`}
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                  </svg>
+                                </div>
+                              </button>
+
+                              {expandedResourceCategories.includes(section.id) && (
+                                <div className="border-t border-neutral-200 dark:border-neutral-700 bg-white/60 dark:bg-neutral-900/30 p-4">
+                                  <div className="grid gap-3">
+                                    {(expandedSections.includes(section.id)
+                                      ? section.resources
+                                      : section.resources.slice(0, 3)
+                                    ).map((resource, index) => (
+                                      <a
+                                        key={index}
+                                        href={resource.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="group flex items-start gap-3 p-3 bg-white/80 dark:bg-neutral-800/50 hover:bg-white dark:hover:bg-neutral-800 rounded-lg transition-all"
+                                      >
+                                        <div className="flex-1">
+                                          <div className={`text-base font-medium text-neutral-800 dark:text-neutral-100 group-hover:${colors.text} transition-colors`}>
+                                            {resource.title}
+                                          </div>
+                                          {getStringProperty(resource, 'author') && (
+                                            <div className="text-sm text-neutral-500 dark:text-neutral-400 mt-0.5">
+                                              {t('certification.by')}{' '}
+                                              {getStringProperty(resource, 'author')}
+                                            </div>
+                                          )}
+                                          <div className="flex flex-wrap items-center gap-2 mt-2">
+                                            {getBooleanProperty(resource, 'isPaid') && (
+                                              <span className="px-2 py-1 bg-neutral-200 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300 text-xs font-semibold rounded-md">
+                                                {t('certification.paid')}
+                                              </span>
+                                            )}
+                                            {getStringProperty(resource, 'difficulty') && (
+                                              <span className="px-2 py-1 bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 text-xs font-semibold rounded-md">
+                                                {getStringProperty(resource, 'difficulty') === 'beginner'
+                                                  ? t('certification.beginner')
+                                                  : getStringProperty(resource, 'difficulty') === 'intermediate'
+                                                    ? t('certification.intermediate')
+                                                    : t('certification.advanced')}
+                                              </span>
+                                            )}
+                                            {getStringProperty(resource, 'duration') && (
+                                              <span className="text-sm text-neutral-500 dark:text-neutral-400">
+                                                {getStringProperty(resource, 'duration')}
+                                              </span>
+                                            )}
+                                          </div>
+                                          {resource.description && (
+                                            <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-2 line-clamp-2">
+                                              {resource.description}
+                                            </p>
+                                          )}
+                                        </div>
+                                        <svg
+                                          className="w-4 h-4 text-neutral-400 group-hover:text-primary-500 flex-shrink-0 mt-1 transition-colors"
+                                          fill="none"
+                                          stroke="currentColor"
+                                          viewBox="0 0 24 24"
+                                        >
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                        </svg>
+                                      </a>
+                                    ))}
+                                    {section.resources.length > 3 && !expandedSections.includes(section.id) && (
+                                      <div className="text-center pt-2">
+                                        <button
+                                          onClick={() => toggleSection(section.id)}
+                                          className={`text-sm ${colors.text} hover:opacity-80 transition-colors`}
+                                        >
+                                          {t('certification.showMore')} {section.resources.length - 3}...
+                                        </button>
+                                      </div>
+                                    )}
+                                    {expandedSections.includes(section.id) && section.resources.length > 3 && (
+                                      <div className="text-center pt-2">
+                                        <button
+                                          onClick={() => toggleSection(section.id)}
+                                          className={`text-sm ${colors.text} hover:opacity-80 transition-colors`}
+                                        >
+                                          {t('certification.showLess')}
+                                        </button>
+                                      </div>
+                                    )}
                                   </div>
-                                )}
-                              </div>
+                                </div>
+                              )}
                             </div>
-                          )}
-                        </div>
-                      ))}
-                  </>
-                )}
-
-                {/* Courses Tab */}
-                {activeResourceTab === 'courses' && (
-                  <>
-                    {studySections
-                      .filter(s => s.tab === 'courses')
-                      .map(section => (
-                        <div
-                          key={section.id}
-                          className="bg-gradient-to-br from-blue-900/40 to-blue-950/50 rounded-xl border border-blue-700/50 overflow-hidden"
-                        >
-                          <button
-                            onClick={() => toggleResourceCategory(section.id)}
-                            className="w-full p-4 flex items-center justify-between hover:bg-slate-800/50 transition-colors"
-                          >
-                            <h4 className="text-lg font-semibold text-white flex items-center gap-3">
-                              {section.title}
-                              <span className="text-base text-gray-400 font-normal">
-                                ({section.resources.length})
-                              </span>
-                            </h4>
-                            <svg
-                              className={`w-5 h-5 text-gray-400 transition-transform ${
-                                expandedResourceCategories.includes(section.id) ? 'rotate-180' : ''
-                              }`}
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M19 9l-7 7-7-7"
-                              />
-                            </svg>
-                          </button>
-
-                          {expandedResourceCategories.includes(section.id) && (
-                            <div className="border-t border-blue-700/50 p-4">
-                              <div className="grid gap-3">
-                                {section.resources.map((resource, index) => (
-                                  <a
-                                    key={index}
-                                    href={resource.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="group flex items-start gap-3 p-3 bg-slate-800/50 hover:bg-slate-700/50 rounded-lg transition-all"
-                                  >
-                                    <div className="flex-1">
-                                      <div className="text-base font-medium text-white group-hover:text-blue-400 transition-colors">
-                                        {resource.title}
-                                      </div>
-                                      {getStringProperty(resource, 'author') && (
-                                        <div className="text-sm text-gray-500 mt-0.5">
-                                          {t('certification.by')}{' '}
-                                          {getStringProperty(resource, 'author')}
-                                        </div>
-                                      )}
-                                      {getBooleanProperty(resource, 'isPaid') && (
-                                        <span className="inline-block mt-1 px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-md">
-                                          {t('certification.paid')}
-                                        </span>
-                                      )}
-                                      {resource.description && (
-                                        <p className="text-sm text-gray-400 mt-2">
-                                          {resource.description}
-                                        </p>
-                                      )}
-                                    </div>
-                                    <svg
-                                      className="w-4 h-4 text-gray-400 group-hover:text-blue-400 flex-shrink-0 mt-1 transition-colors"
-                                      fill="none"
-                                      stroke="currentColor"
-                                      viewBox="0 0 24 24"
-                                    >
-                                      <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                                      />
-                                    </svg>
-                                  </a>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                  </>
-                )}
-
-                {/* Practice Tab */}
-                {activeResourceTab === 'practice' && (
-                  <>
-                    {studySections
-                      .filter(s => s.tab === 'practice')
-                      .map(section => (
-                        <div
-                          key={section.id}
-                          className="bg-gradient-to-br from-blue-900/40 to-blue-950/50 rounded-xl border border-blue-700/50 overflow-hidden"
-                        >
-                          <button
-                            onClick={() => toggleResourceCategory(section.id)}
-                            className="w-full p-4 flex items-center justify-between hover:bg-slate-800/50 transition-colors"
-                          >
-                            <h4 className="text-lg font-semibold text-white flex items-center gap-3">
-                              {section.title}
-                              <span className="text-base text-gray-400 font-normal">
-                                ({section.resources.length})
-                              </span>
-                            </h4>
-                            <svg
-                              className={`w-5 h-5 text-gray-400 transition-transform ${
-                                expandedResourceCategories.includes(section.id) ? 'rotate-180' : ''
-                              }`}
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M19 9l-7 7-7-7"
-                              />
-                            </svg>
-                          </button>
-
-                          {expandedResourceCategories.includes(section.id) && (
-                            <div className="border-t border-blue-700/50 p-4">
-                              <div className="grid gap-3">
-                                {section.resources.map((resource, index) => (
-                                  <a
-                                    key={index}
-                                    href={resource.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="group flex items-start gap-3 p-3 bg-slate-800/50 hover:bg-slate-700/50 rounded-lg transition-all"
-                                  >
-                                    <div className="flex-1">
-                                      <div className="text-base font-medium text-white group-hover:text-blue-400 transition-colors">
-                                        {resource.title}
-                                      </div>
-                                      {getBooleanProperty(resource, 'isPaid') && (
-                                        <span className="inline-block mt-1 px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-md">
-                                          {t('certification.paid')}
-                                        </span>
-                                      )}
-                                      {resource.description && (
-                                        <p className="text-sm text-gray-400 mt-2">
-                                          {resource.description}
-                                        </p>
-                                      )}
-                                    </div>
-                                    <svg
-                                      className="w-4 h-4 text-gray-400 group-hover:text-blue-400 flex-shrink-0 mt-1 transition-colors"
-                                      fill="none"
-                                      stroke="currentColor"
-                                      viewBox="0 0 24 24"
-                                    >
-                                      <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                                      />
-                                    </svg>
-                                  </a>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                  </>
-                )}
-
-                {/* Additional Resources Tab */}
-                {activeResourceTab === 'additional' && (
-                  <>
-                    {studySections
-                      .filter(s => s.tab === 'additional')
-                      .map(section => (
-                        <div
-                          key={section.id}
-                          className="bg-gradient-to-br from-blue-900/40 to-blue-950/50 rounded-xl border border-blue-700/50 overflow-hidden"
-                        >
-                          <button
-                            onClick={() => toggleResourceCategory(section.id)}
-                            className="w-full p-4 flex items-center justify-between hover:bg-slate-800/50 transition-colors"
-                          >
-                            <h4 className="text-lg font-semibold text-white flex items-center gap-3">
-                              {section.title}
-                              <span className="text-base text-gray-400 font-normal">
-                                ({section.resources.length})
-                              </span>
-                            </h4>
-                            <svg
-                              className={`w-5 h-5 text-gray-400 transition-transform ${
-                                expandedResourceCategories.includes(section.id) ? 'rotate-180' : ''
-                              }`}
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M19 9l-7 7-7-7"
-                              />
-                            </svg>
-                          </button>
-
-                          {expandedResourceCategories.includes(section.id) && (
-                            <div className="border-t border-blue-700/50 p-4">
-                              <div className="grid gap-3">
-                                {section.resources.map((resource, index) => (
-                                  <a
-                                    key={index}
-                                    href={resource.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="group flex items-start gap-3 p-3 bg-slate-800/50 hover:bg-slate-700/50 rounded-lg transition-all"
-                                  >
-                                    <div className="flex-1">
-                                      <div className="text-base font-medium text-white group-hover:text-blue-400 transition-colors">
-                                        {resource.title}
-                                      </div>
-                                      {getStringProperty(resource, 'author') && (
-                                        <div className="text-sm text-gray-500 mt-0.5">
-                                          {t('certification.by')}{' '}
-                                          {getStringProperty(resource, 'author')}
-                                        </div>
-                                      )}
-                                      {getStringProperty(resource, 'duration') && (
-                                        <span className="text-sm text-gray-400">
-                                          {getStringProperty(resource, 'duration')}
-                                        </span>
-                                      )}
-                                      {resource.description && (
-                                        <p className="text-sm text-gray-400 mt-2">
-                                          {resource.description}
-                                        </p>
-                                      )}
-                                    </div>
-                                    <svg
-                                      className="w-4 h-4 text-gray-400 group-hover:text-blue-400 flex-shrink-0 mt-1 transition-colors"
-                                      fill="none"
-                                      stroke="currentColor"
-                                      viewBox="0 0 24 24"
-                                    >
-                                      <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                                      />
-                                    </svg>
-                                  </a>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                  </>
-                )}
+                          );
+                        })}
+                    </React.Fragment>
+                  );
+                })}
               </div>
             </div>
           )}

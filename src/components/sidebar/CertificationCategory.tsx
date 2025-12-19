@@ -1,8 +1,6 @@
 import type { Certification } from '../../types';
 import { APP_CONFIG } from '../../constants';
-import { ChevronDownIcon } from '../icons';
 import { useTranslations } from '../../i18n/utils';
-import { useRef, useEffect, useState } from 'react';
 
 interface CertificationCategoryProps {
   categoryKey: string;
@@ -13,11 +11,10 @@ interface CertificationCategoryProps {
   lang: string;
   currentPath: string;
   onLinkClick?: () => void;
-  categoryIcon?: string;
 }
 
 /**
- * Component for displaying a category of certifications in the sidebar
+ * WowDash-style certification category dropdown
  */
 export default function CertificationCategory({
   categoryKey: _categoryKey,
@@ -28,92 +25,98 @@ export default function CertificationCategory({
   lang,
   currentPath,
   onLinkClick,
-  categoryIcon = '📚',
 }: CertificationCategoryProps) {
   const hasCerts = !!(certifications && certifications.length > 0);
-
   const t = useTranslations(lang as 'en' | 'es' | 'pt');
   const basePath = `${APP_CONFIG.basePath}${lang === 'en' ? '' : '/' + lang}`;
-  
-  const contentRef = useRef<HTMLDivElement>(null);
-  const [height, setHeight] = useState<number>(0);
-
-  useEffect(() => {
-    if (contentRef.current) {
-      setHeight(contentRef.current.scrollHeight);
-    }
-  }, [certifications, isOpen]);
-
-  // Recalculate height when component mounts or updates
-  useEffect(() => {
-    const updateHeight = () => {
-      if (contentRef.current) {
-        setHeight(contentRef.current.scrollHeight);
-      }
-    };
-    
-    // Update height immediately
-    updateHeight();
-    
-    // Also update on next frame to ensure all content is rendered
-    requestAnimationFrame(updateHeight);
-  }, [certifications, isOpen]);
 
   if (!hasCerts) return null;
 
+  // Check if any certification in this category is active
+  const hasActiveChild = certifications.some(cert => {
+    const certHref = `${basePath}/certifications/${cert.id}`;
+    return currentPath === certHref;
+  });
+
   return (
-    <div className="mb-1">
+    <div className="mb-0.5">
+      {/* Category Header */}
       <button
         onClick={onToggle}
-        className="w-full flex items-center gap-2 text-sm font-medium text-blue-200 hover:text-white py-2.5 px-3 rounded-lg hover:bg-white/10 transition-all duration-200 group"
+        className={`
+          w-full flex items-center justify-between px-3 py-2 rounded-lg
+          text-sm font-medium transition-all duration-200 group
+          ${isOpen || hasActiveChild
+            ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400'
+            : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-primary-600'
+          }
+        `}
         aria-expanded={isOpen}
         aria-label={`Toggle ${categoryName} category`}
       >
-        {/* Category indicator */}
-        <span className="w-1 h-1 bg-blue-300 rounded-full opacity-60"></span>
-        
-        <span className={`flex-1 text-left font-medium transition-colors duration-200 ${
-          isOpen ? 'text-white' : 'text-blue-200 group-hover:text-white'
-        }`}>{t(categoryName) || categoryName}</span>
-        <div className="flex items-center">
-          <span className={`text-xs px-2 py-0.5 rounded-full transition-all duration-200 ${
-            isOpen 
-              ? 'bg-white/20 text-white' 
-              : 'bg-white/10 text-blue-200'
-          }`}>{certifications.length}</span>
+        <div className="flex items-center gap-2">
+          <span className={`w-1.5 h-1.5 rounded-full ${isOpen || hasActiveChild ? 'bg-primary-500' : 'bg-neutral-400'}`} />
+          <span>{t(categoryName) || categoryName}</span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          {/* Count Badge */}
+          <span className={`
+            text-xs px-1.5 py-0.5 rounded-md
+            ${isOpen || hasActiveChild
+              ? 'bg-primary-100 dark:bg-primary-900/40 text-primary-600 dark:text-primary-400'
+              : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-500'
+            }
+          `}>
+            {certifications.length}
+          </span>
+
+          {/* Chevron */}
+          <svg
+            className={`w-3.5 h-3.5 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
         </div>
       </button>
 
+      {/* Certifications List - Using grid for smooth animation */}
       <div
-        ref={contentRef}
-        style={{
-          maxHeight: isOpen ? 'none' : '0px',
-          transition: 'max-height 400ms cubic-bezier(0.4, 0, 0.2, 1), opacity 300ms ease-out',
-        }}
-        className={`space-y-1 overflow-hidden ${
-          isOpen ? 'opacity-100' : 'opacity-0'
-        }`}
+        className={`
+          grid transition-all duration-300 ease-in-out
+          ${isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}
+        `}
       >
-        {certifications.map((cert, index) => {
-          const certHref = `${basePath}/certifications/${cert.id}`;
-          // More precise matching - only exact match
-          const isActive = currentPath === certHref;
-          
-          return (
-            <a
-              key={cert.id}
-              href={certHref}
-              onClick={onLinkClick}
-              className={`block py-2.5 px-6 text-sm font-medium transition-all duration-200 ${
-                isActive 
-                  ? 'text-white bg-white/15' 
-                  : 'text-blue-200 hover:text-white hover:bg-white/10'
-              }`}
-            >
-              {cert.acronym}
-            </a>
-          );
-        })}
+        <div className="overflow-hidden">
+          <div className="pt-1 pl-4 space-y-0.5">
+            {certifications.map((cert) => {
+              const certHref = `${basePath}/certifications/${cert.id}`;
+              const isActive = currentPath === certHref;
+
+              return (
+                <a
+                  key={cert.id}
+                  href={certHref}
+                  onClick={onLinkClick}
+                  className={`
+                    flex items-center gap-2 px-3 py-2 rounded-lg text-sm
+                    transition-all duration-200
+                    ${isActive
+                      ? 'bg-primary-600 text-white font-medium shadow-sm shadow-primary-600/30'
+                      : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-primary-600 dark:hover:text-primary-400'
+                    }
+                  `}
+                >
+                  <span className={`w-1 h-1 rounded-full ${isActive ? 'bg-white' : 'bg-neutral-400'}`} />
+                  <span>{cert.acronym}</span>
+                </a>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -27,8 +27,10 @@ export const EXTERNAL_URLS = {
   fonts: {
     googleapis: 'https://fonts.googleapis.com',
     gstatic: 'https://fonts.gstatic.com',
+    // Optimized: Using variable fonts with font-display swap for better performance
+    // Variable fonts reduce HTTP requests and provide smoother weight transitions
     googleFontsCss:
-      'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap',
+      'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Space+Grotesk:wght@300..700&display=swap',
   },
 } as const;
 
@@ -151,12 +153,18 @@ export const SPACING = {
   },
 } as const;
 
-// Typography
+/**
+ * Typography Configuration
+ *
+ * Semantic typography utilities for the application.
+ * Font definitions and design tokens are centralized in design-tokens.css
+ * to follow the Single Source of Truth principle.
+ *
+ * @see src/styles/design-tokens.css - Font definitions and fluid typography
+ * @see tailwind.config.mjs - Tailwind font configuration
+ */
 export const TYPOGRAPHY = {
-  fonts: {
-    sans: 'Plus Jakarta Sans',
-    display: 'Space Grotesk',
-  },
+  // Font weights - Tailwind utility classes
   weights: {
     light: 'font-light',
     normal: 'font-normal',
@@ -166,40 +174,32 @@ export const TYPOGRAPHY = {
     extrabold: 'font-extrabold',
     black: 'font-black',
   },
+
+  // Semantic component sizes - combines size + font family
   sizes: {
-    // Base sizes
-    xs: 'text-xs',
-    sm: 'text-sm',
-    base: 'text-base',
-    lg: 'text-lg',
-    xl: 'text-xl',
-    '2xl': 'text-2xl',
-    '3xl': 'text-3xl',
-    '4xl': 'text-4xl',
-    '5xl': 'text-5xl',
-    '6xl': 'text-6xl',
-    
-    // Semantic responsive sizes
-    hero: 'text-4xl md:text-6xl',
-    title: 'text-4xl md:text-5xl',
-    subtitle: 'text-xl md:text-2xl',
-    heading: 'text-2xl md:text-3xl',
-    subheading: 'text-lg md:text-xl',
-    body: 'text-base',
-    bodySmall: 'text-sm',
-    caption: 'text-xs',
-    micro: 'text-[10px]',
-    
-    // Component-specific responsive sizes
-    cardTitle: 'text-2xl md:text-3xl',
-    cardSubtitle: 'text-sm md:text-base',
+    // Hero & Page-level typography
+    hero: 'text-fluid-6xl font-display',
+    title: 'text-fluid-5xl font-display',
+    subtitle: 'text-fluid-2xl font-display',
+    heading: 'text-fluid-3xl font-display',
+    subheading: 'text-fluid-xl',
+
+    // Body text
+    body: 'text-fluid-base',
+    bodySmall: 'text-fluid-sm',
+    caption: 'text-fluid-xs',
+
+    // Component-specific
+    cardTitle: 'text-fluid-3xl font-display',
+    cardSubtitle: 'text-fluid-base',
     badge: 'text-xs md:text-sm',
-    badgeSmall: 'text-[10px] md:text-xs',
-    button: 'text-sm md:text-base',
+    button: 'text-fluid-sm',
     nav: 'text-sm',
-    footerTitle: 'text-lg md:text-xl',
-    footerText: 'text-sm',
+    footerTitle: 'text-fluid-xl font-display',
+    footerText: 'text-fluid-sm',
   },
+
+  // Line heights - Tailwind utility classes
   lineHeights: {
     none: 'leading-none',
     tight: 'leading-tight',
@@ -208,6 +208,8 @@ export const TYPOGRAPHY = {
     relaxed: 'leading-relaxed',
     loose: 'leading-loose',
   },
+
+  // Letter spacing - Tailwind utility classes
   tracking: {
     tighter: 'tracking-tighter',
     tight: 'tracking-tight',

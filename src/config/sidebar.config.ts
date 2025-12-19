@@ -55,37 +55,6 @@ export const CERTIFICATION_CATEGORIES: SidebarCategory[] = [
   },
 ];
 
-export const STUDY_TIPS_ITEMS = [
-  {
-    id: 'exam-preparation',
-    translationKey: 'sidebar.tips.exam',
-    descriptionKey: 'sidebar.tips.examDesc',
-    icon: '📝',
-    color: 'blue',
-  },
-  {
-    id: 'study-path',
-    translationKey: 'sidebar.tips.path',
-    descriptionKey: 'sidebar.tips.pathDesc',
-    icon: '🗺️',
-    color: 'sky',
-  },
-  {
-    id: 'practice-labs',
-    translationKey: 'sidebar.tips.practiceLabs',
-    descriptionKey: 'sidebar.tips.practiceLabsDesc',
-    icon: '🧪',
-    color: 'purple',
-  },
-  {
-    id: 'time-management',
-    translationKey: 'sidebar.tips.timeManagement',
-    descriptionKey: 'sidebar.tips.timeManagementDesc',
-    icon: '⏰',
-    color: 'emerald',
-  },
-];
-
 export const ACHIEVEMENTS_ITEMS = [
   {
     id: 'kubestronaut',
@@ -104,17 +73,6 @@ export const ACHIEVEMENTS_ITEMS = [
     icon: '🏆',
     color: 'amber',
     requiredCerts: 16,
-  },
-];
-
-export const INTERNAL_PAGES_ITEMS = [
-  {
-    id: 'architecture',
-    translationKey: 'sidebar.architecture',
-    descriptionKey: 'sidebar.architectureDesc',
-    href: 'cncf-architecture',
-    icon: '🏗️',
-    color: 'blue',
   },
 ];
 

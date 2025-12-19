@@ -21,33 +21,37 @@ export function useTranslations(lang: keyof typeof ui) {
   };
 }
 
-// Helper to translate certification values
+// Value map for certification translation keys
+const certificationValueMap: Record<string, string> = {
+  CKA: 'certification.values.cka',
+  Kubestronaut: 'certification.values.kubestronaut',
+  'Golden Kubestronaut': 'certification.values.goldenKubestronaut',
+  'No prerequisites required': 'certification.values.noPrerequisites',
+  'No prerequisites': 'certification.values.noPrerequisites',
+  'CKA certification required': 'certification.values.ckaRequired',
+  'Not applicable for multiple-choice exam': 'certification.values.notApplicableMultiple',
+  'Not applicable - No hands-on simulator provided':
+    'certification.values.notApplicableSimulator',
+  'Not applicable': 'certification.values.notApplicable',
+  'No simulator - Multiple choice exam': 'certification.values.noSimulatorMultiple',
+  'Online proctored, multiple-choice test with 60 questions':
+    'certification.values.onlineProctoredMultiple60',
+  'Online proctored, performance-based test requiring solving multiple command-line tasks':
+    'certification.values.onlineProctoredPerformanceTasks',
+  'One free retake included with registration cost':
+    'certification.values.oneFreeRetakeIncluded',
+  '2 attempts (36 hours each)': 'certification.values.twoAttempts36h',
+};
+
+// Helper to translate certification values (non-hook function)
 export function translateCertificationValue(value: string, lang: keyof typeof ui): string {
-  const t = useTranslations(lang);
+  const langTranslations = ui[lang] as Record<string, string>;
+  const defaultTranslations = ui[defaultLang] as Record<string, string>;
 
-  // Map common certification values to translation keys
-  const valueMap: Record<string, string> = {
-    CKA: 'certification.values.cka',
-    Kubestronaut: 'certification.values.kubestronaut',
-    'Golden Kubestronaut': 'certification.values.goldenKubestronaut',
-    'No prerequisites required': 'certification.values.noPrerequisites',
-    'No prerequisites': 'certification.values.noPrerequisites',
-    'CKA certification required': 'certification.values.ckaRequired',
-    'Not applicable for multiple-choice exam': 'certification.values.notApplicableMultiple',
-    'Not applicable - No hands-on simulator provided':
-      'certification.values.notApplicableSimulator',
-    'Not applicable': 'certification.values.notApplicable',
-    'No simulator - Multiple choice exam': 'certification.values.noSimulatorMultiple',
-    'Online proctored, multiple-choice test with 60 questions':
-      'certification.values.onlineProctoredMultiple60',
-    'Online proctored, performance-based test requiring solving multiple command-line tasks':
-      'certification.values.onlineProctoredPerformanceTasks',
-    'One free retake included with registration cost':
-      'certification.values.oneFreeRetakeIncluded',
-    '2 attempts (36 hours each)': 'certification.values.twoAttempts36h',
-  };
+  const key = certificationValueMap[value];
+  if (!key) return value;
 
-  return valueMap[value] ? t(valueMap[value]) : value;
+  return langTranslations[key] || defaultTranslations[key] || value;
 }
 
 export function getRouteFromUrl(url: URL): string | undefined {

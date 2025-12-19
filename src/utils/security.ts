@@ -2,6 +2,9 @@
  * Security utilities for input validation and sanitization
  */
 
+import { logger } from './logger';
+import type { Certification } from '../types';
+
 // Maximum lengths for different input types
 const INPUT_LIMITS = {
   SEARCH_QUERY: 100,
@@ -137,7 +140,7 @@ export const secureStorage = {
       }
       return item;
     } catch (error) {
-      console.warn('Failed to read from localStorage:', error);
+      logger.warn('Failed to read from localStorage:', error);
       return null;
     }
   },
@@ -148,7 +151,7 @@ export const secureStorage = {
       localStorage.setItem(key, sanitizedValue);
       return true;
     } catch (error) {
-      console.warn('Failed to write to localStorage:', error);
+      logger.warn('Failed to write to localStorage:', error);
       return false;
     }
   },
@@ -158,7 +161,7 @@ export const secureStorage = {
       localStorage.removeItem(key);
       return true;
     } catch (error) {
-      console.warn('Failed to remove from localStorage:', error);
+      logger.warn('Failed to remove from localStorage:', error);
       return false;
     }
   }
@@ -167,7 +170,7 @@ export const secureStorage = {
 /**
  * Validates certification data integrity
  */
-export function validateCertificationData(cert: any): boolean {
+export function validateCertificationData(cert: Partial<Certification> | null | undefined): boolean {
   if (!cert || typeof cert !== 'object') {
     return false;
   }

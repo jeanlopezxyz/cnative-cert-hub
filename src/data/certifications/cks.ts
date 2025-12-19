@@ -8,7 +8,7 @@ export const cks: Certification = {
   level: 'advanced',
   type: 'performance',
   duration: 120,
-  price: 435, // Increased to $435 USD from January 2025
+  price: 445, // Updated to $445 USD (December 2025)
   prerequisite: 'CKA',
   requiredFor: ['Kubestronaut', 'Golden Kubestronaut'],
   color: 'from-blue-600 to-blue-800',
@@ -26,7 +26,8 @@ export const cks: Certification = {
   domains: [
     {
       name: 'Cluster Setup',
-      weight: 15,
+      weight: 10,
+      documentationUrl: 'https://kubernetes.io/docs/tasks/administer-cluster/securing-a-cluster/',
       topics: [
         { name: 'Use Network security policies to restrict cluster level access', url: 'https://kubernetes.io/docs/concepts/services-networking/network-policies/' },
         { name: 'Use CIS benchmark to review the security configuration of Kubernetes components (etcd, kubelet, kubedns, kubeapi)', url: 'https://www.cisecurity.org/benchmark/kubernetes' },
@@ -38,6 +39,7 @@ export const cks: Certification = {
     {
       name: 'Cluster Hardening',
       weight: 15,
+      documentationUrl: 'https://kubernetes.io/docs/reference/access-authn-authz/',
       topics: [
         { name: 'Use Role Based Access Controls to minimize exposure', url: 'https://kubernetes.io/docs/reference/access-authn-authz/rbac/' },
         { name: 'Exercise caution in using service accounts e.g. disable defaults, minimize permissions on newly created ones', url: 'https://kubernetes.io/docs/concepts/security/service-accounts/' },
@@ -47,7 +49,8 @@ export const cks: Certification = {
     },
     {
       name: 'System Hardening',
-      weight: 10,
+      weight: 15,
+      documentationUrl: 'https://kubernetes.io/docs/concepts/security/',
       topics: [
         { name: 'Minimize host OS footprint (reduce attack surface)', url: 'https://kubernetes.io/docs/tasks/administer-cluster/securing-a-cluster/' },
         { name: 'Using least-privilege identity and access management', url: 'https://kubernetes.io/docs/reference/access-authn-authz/rbac/' },
@@ -58,6 +61,7 @@ export const cks: Certification = {
     {
       name: 'Minimize Microservice Vulnerabilities',
       weight: 20,
+      documentationUrl: 'https://kubernetes.io/docs/concepts/security/pod-security-standards/',
       topics: [
         { name: 'Use appropriate pod security standards', url: 'https://kubernetes.io/docs/concepts/security/pod-security-standards/' },
         { name: 'Manage Kubernetes secrets', url: 'https://kubernetes.io/docs/concepts/configuration/secret/' },
@@ -68,6 +72,7 @@ export const cks: Certification = {
     {
       name: 'Supply Chain Security',
       weight: 20,
+      documentationUrl: 'https://kubernetes.io/docs/concepts/security/supply-chain-security/',
       topics: [
         { name: 'Minimize base image footprint', url: 'https://kubernetes.io/docs/concepts/containers/images/' },
         { name: 'Understand your supply chain (e.g. SBOM, CI/CD, artifact repositories)', url: 'https://slsa.dev' },
@@ -76,8 +81,9 @@ export const cks: Certification = {
       ],
     },
     {
-      name: 'Monitoring, Logging and Runtime Security',
+      name: 'Monitoring, Logging, and Runtime Security',
       weight: 20,
+      documentationUrl: 'https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/',
       topics: [
         { name: 'Perform behavioral analytics to detect malicious activities', url: 'https://falco.org/docs/' },
         { name: 'Detect threats within physical infrastructure, apps, networks, data, users and workloads', url: 'https://falco.org/docs/rules/' },

@@ -22,6 +22,7 @@ export const kcsa: Certification = {
     {
       name: 'Overview of Cloud Native Security',
       weight: 14,
+      documentationUrl: 'https://kubernetes.io/docs/concepts/security/overview/',
       topics: [
         {
           name: 'The 4Cs of Cloud Native Security',
@@ -52,6 +53,7 @@ export const kcsa: Certification = {
     {
       name: 'Kubernetes Cluster Component Security',
       weight: 22,
+      documentationUrl: 'https://kubernetes.io/docs/concepts/overview/components/',
       topics: [
         {
           name: 'API Server',
@@ -102,6 +104,7 @@ export const kcsa: Certification = {
     {
       name: 'Kubernetes Security Fundamentals',
       weight: 22,
+      documentationUrl: 'https://kubernetes.io/docs/concepts/security/',
       topics: [
         {
           name: 'Pod Security Standards',
@@ -140,6 +143,7 @@ export const kcsa: Certification = {
     {
       name: 'Kubernetes Threat Model',
       weight: 16,
+      documentationUrl: 'https://kubernetes.io/docs/concepts/security/security-checklist/',
       topics: [
         {
           name: 'Kubernetes Trust Boundaries and Data Flow',
@@ -174,6 +178,7 @@ export const kcsa: Certification = {
     {
       name: 'Platform Security',
       weight: 16,
+      documentationUrl: 'https://kubernetes.io/docs/tasks/administer-cluster/securing-a-cluster/',
       topics: [
         {
           name: 'Supply Chain Security',
@@ -208,6 +213,7 @@ export const kcsa: Certification = {
     {
       name: 'Compliance and Security Frameworks',
       weight: 10,
+      documentationUrl: 'https://www.cisecurity.org/benchmark/kubernetes',
       topics: [
         {
           name: 'Compliance Frameworks',

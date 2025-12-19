@@ -1,4 +1,11 @@
+/**
+ * Badge - shadcn/ui Badge with custom CNCF variants
+ * Migrated to use shadcn/ui Badge component while preserving existing API
+ */
+
 import React from 'react';
+import { Badge as ShadcnBadge } from '@/components/shadcn/ui/badge';
+import { cn } from '@/lib/utils';
 
 // Unified badge types
 type BadgeVariant = 'level' | 'prerequisite' | 'status' | 'count';
@@ -13,32 +20,33 @@ interface BadgeProps {
   className?: string;
 }
 
-const Badge: React.FC<BadgeProps> = ({ 
-  variant, 
-  level, 
-  size = 'normal', 
-  children, 
-  className = '' 
+const Badge: React.FC<BadgeProps> = ({
+  variant,
+  level,
+  size = 'normal',
+  children,
+  className = ''
 }) => {
+  const levelColors: Record<BadgeLevel, string> = {
+    entry: 'bg-emerald-600/30 text-emerald-300 border-emerald-500/40',
+    intermediate: 'bg-amber-600/30 text-amber-300 border-amber-500/40',
+    advanced: 'bg-red-600/30 text-red-300 border-red-500/40',
+  };
+
   const getVariantClasses = () => {
     switch (variant) {
       case 'level':
-        const levelColors = {
-          entry: 'bg-emerald-600/30 text-emerald-300 border-emerald-500/40',
-          intermediate: 'bg-amber-600/30 text-amber-300 border-amber-500/40',
-          advanced: 'bg-red-600/30 text-red-300 border-red-500/40',
-        };
         return levelColors[level || 'entry'];
-      
+
       case 'prerequisite':
         return 'bg-orange-600/30 text-orange-100 border-orange-500/40';
-      
+
       case 'status':
         return 'bg-blue-600/30 text-blue-100 border-blue-500/40';
-      
+
       case 'count':
         return 'bg-purple-600/30 text-purple-300 border-purple-500/40';
-      
+
       default:
         return 'bg-gray-600/30 text-gray-300 border-gray-500/40';
     }
@@ -56,16 +64,16 @@ const Badge: React.FC<BadgeProps> = ({
   };
 
   return (
-    <span
-      className={`
-        inline-block font-semibold border transition-all duration-200
-        ${getVariantClasses()}
-        ${getSizeClasses()}
-        ${className}
-      `.trim().replace(/\s+/g, ' ')}
+    <ShadcnBadge
+      className={cn(
+        'inline-block font-semibold border transition-all duration-200',
+        getVariantClasses(),
+        getSizeClasses(),
+        className
+      )}
     >
       {children}
-    </span>
+    </ShadcnBadge>
   );
 };
 

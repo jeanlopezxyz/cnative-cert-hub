@@ -1,10 +1,11 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { certifications } from '../../data/certifications';
-import { CERTIFICATION_CATEGORIES, STUDY_TIPS_ITEMS, ACHIEVEMENTS_ITEMS } from '../../config/sidebar.config';
+import { CERTIFICATION_CATEGORIES } from '../../config/sidebar.config';
 import { useTranslations } from '../../i18n/utils';
 import type { Certification } from '../../types';
 import { APP_CONFIG } from '../../constants';
 import { sanitizeSearchQuery, searchRateLimiter } from '../../utils/security';
+import { logger } from '../../utils/logger';
 
 interface SearchBarProps {
   lang: 'en' | 'es' | 'pt';
@@ -61,7 +62,7 @@ export default function SearchBar({ lang }: SearchBarProps) {
   }, []);
 
   // Advanced fuzzy search and scoring algorithm
-  const calculateFuzzyScore = (text: string, query: string): number => {
+  const calculateFuzzyScore = useCallback((text: string, query: string): number => {
     const textLower = text.toLowerCase();
     const queryLower = query.toLowerCase();
     
@@ -92,10 +93,10 @@ export default function SearchBar({ lang }: SearchBarProps) {
     if (acronym.includes(queryLower)) score += 20;
     
     return Math.min(score, 95); // Cap at 95 to keep exact matches highest
-  };
+  }, []);
 
   // Semantic keyword mapping for better search
-  const getSemanticKeywords = (query: string): string[] => {
+  const getSemanticKeywords = useCallback((query: string): string[] => {
     const semanticMap: Record<string, string[]> = {
       // Kubernetes terms
       'k8s': ['kubernetes', 'container', 'orchestration', 'cka', 'ckad', 'cks'],
@@ -130,10 +131,10 @@ export default function SearchBar({ lang }: SearchBarProps) {
     });
     
     return [...new Set(keywords)];
-  };
+  }, []);
 
   // Real-time search suggestions generator with progressive matching
-  const generateSuggestions = (searchQuery: string): SearchSuggestion[] => {
+  const generateSuggestions = useCallback((searchQuery: string): SearchSuggestion[] => {
     if (!searchQuery || searchQuery.length < 1) return [];
     
     // Progressive threshold based on query length
@@ -241,7 +242,7 @@ export default function SearchBar({ lang }: SearchBarProps) {
         return 0;
       })
       .slice(0, 5); // Limit to 5 results
-  };
+  }, [lang, t, calculateFuzzyScore, getSemanticKeywords]);
 
   // Real-time search with debouncing for better performance
   useEffect(() => {
@@ -256,14 +257,14 @@ export default function SearchBar({ lang }: SearchBarProps) {
     }, 150); // Small debounce for real-time feel
 
     return () => clearTimeout(timeoutId);
-  }, [query]);
+  }, [query, generateSuggestions]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value;
     
     // Apply security validation but maintain original functionality
     if (!searchRateLimiter.isAllowed('search-input')) {
-      console.warn('Search rate limit exceeded');
+      logger.warn('Search rate limit exceeded');
       return;
     }
     
@@ -315,14 +316,14 @@ export default function SearchBar({ lang }: SearchBarProps) {
   // Highlight matching text in suggestions
   const highlightMatch = (text: string, query: string) => {
     if (!query.trim() || query.length < 2) return text;
-    
+
     try {
       const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
       const parts = text.split(regex);
-      
-      return parts.map((part, i) => 
+
+      return parts.map((part, i) =>
         regex.test(part) ? (
-          <mark key={i} className="bg-blue-600/30 text-blue-200 px-0.5 rounded">
+          <mark key={i} className="bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 px-0.5 rounded">
             {part}
           </mark>
         ) : part
@@ -332,38 +333,19 @@ export default function SearchBar({ lang }: SearchBarProps) {
     }
   };
 
-  // Certification icon only
-  const getCertificationIcon = () => {
-    return (
-      <svg className="w-4 h-4 transition-transform duration-200" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z" />
-        <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" strokeWidth="2"/>
-      </svg>
-    );
-  };
-
-  // Certification color only
-  const getCertificationColor = (matchType?: string, score?: number) => {
-    // Color intensity based on match quality
-    if (matchType === 'exact') return 'text-blue-300';
-    if (matchType === 'partial') return 'text-blue-400';
-    if (score && score > 70) return 'text-blue-400';
-    return 'text-blue-500';
-  };
-
   return (
     <>
-      {/* Mobile Search Button - Only visible on mobile */}
+      {/* Mobile Search Button - WowDash Style */}
       <button
         onClick={() => {
           setIsExpanded(true);
           setTimeout(() => inputRef.current?.focus(), 100);
         }}
-        className="sm:hidden flex items-center justify-center w-12 h-12 bg-blue-200 dark:bg-[#242145] border border-blue-300 dark:border-purple-700 rounded-lg hover:bg-blue-300 dark:hover:bg-[#2D1F4F] transition-all duration-300"
+        className="sm:hidden inline-flex items-center justify-center w-[37.5px] h-[37.5px] text-neutral-600 dark:text-neutral-400 bg-transparent rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-primary-600 dark:hover:text-primary-400 transition-all duration-200"
         aria-label={t('aria.search')}
       >
-        <svg className="w-5 h-5 text-blue-700 dark:text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
         </svg>
       </button>
 
@@ -372,28 +354,28 @@ export default function SearchBar({ lang }: SearchBarProps) {
         className={`${isExpanded ? 'fixed inset-0 bg-black/50 z-50 sm:relative sm:inset-auto sm:bg-transparent' : 'hidden sm:block'} sm:relative sm:w-full sm:max-w-md sm:mx-auto`}
         ref={containerRef}
       >
-        {/* Mobile Search Header - matches main header height */}
+        {/* Mobile Search Header - WowDash Style */}
         {isExpanded && (
-          <div className="sm:hidden fixed top-0 left-0 right-0 h-20 bg-slate-900/95 backdrop-blur-xl border-b border-blue-900/30 shadow-lg shadow-black/10">
-            <div className="h-full flex items-center px-2">
+          <div className="sm:hidden fixed top-0 left-0 right-0 h-16 bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-700 shadow-sm">
+            <div className="h-full flex items-center px-3 gap-2">
               <button
                 onClick={() => {
                   setIsExpanded(false);
                   setQuery('');
                   setSuggestions([]);
                 }}
-                className="flex items-center justify-center w-10 h-10 text-gray-400 hover:text-white rounded-lg hover:bg-slate-700/50 transition-all duration-200"
+                className="inline-flex items-center justify-center w-10 h-10 text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all duration-200"
                 aria-label={t('aria.closeSearch')}
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
                 </svg>
               </button>
-              <div className="flex-1 px-2 relative">
+              <div className="flex-1 relative">
                 {/* Search Icon */}
-                <div className="absolute left-5 top-1/2 transform -translate-y-1/2 text-blue-400 z-10">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400 dark:text-neutral-500 z-10">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                   </svg>
                 </div>
 
@@ -405,17 +387,17 @@ export default function SearchBar({ lang }: SearchBarProps) {
                       setSuggestions([]);
                       inputRef.current?.focus();
                     }}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white active:text-blue-400 z-10 p-1.5"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 z-10"
                     type="button"
                     aria-label={t('aria.clearSearch')}
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
                 )}
 
-                {/* Mobile Search Input - matches desktop search bar height */}
+                {/* Mobile Search Input - WowDash Style */}
                 <input
                   ref={inputRef}
                   type="text"
@@ -425,7 +407,7 @@ export default function SearchBar({ lang }: SearchBarProps) {
                   onFocus={() => setIsFocused(true)}
                   onBlur={() => setTimeout(() => setIsFocused(false), 100)}
                   placeholder={t('search.placeholder')}
-                  className="w-full h-12 pl-11 pr-10 rounded-xl text-sm border-2 outline-none transition-all duration-300 bg-blue-100 dark:bg-[#242145] border-blue-300 dark:border-purple-600 text-blue-900 dark:text-white placeholder-blue-600 dark:placeholder-purple-300 shadow-lg focus:border-blue-500 dark:focus:border-purple-400 focus:shadow-xl"
+                  className="w-full h-10 pl-9 pr-9 rounded-lg text-sm border outline-none transition-all duration-200 bg-neutral-50 dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-100 placeholder-neutral-400 dark:placeholder-neutral-500 focus:border-primary-500 dark:focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20"
                   autoComplete="off"
                   spellCheck={false}
                   suppressHydrationWarning
@@ -435,12 +417,12 @@ export default function SearchBar({ lang }: SearchBarProps) {
           </div>
         )}
 
-        {/* Desktop Search */}
-        <div className={`${isExpanded ? 'hidden' : 'hidden sm:block'} relative`}>
+        {/* Desktop Search - WowDash Style */}
+        <div className={`${isExpanded ? 'hidden' : 'hidden sm:block'} relative w-full`}>
           {/* Search Icon */}
-          <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-blue-400 z-10">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-neutral-400 dark:text-neutral-500">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
             </svg>
           </div>
 
@@ -450,19 +432,19 @@ export default function SearchBar({ lang }: SearchBarProps) {
               onClick={() => {
                 setQuery('');
                 setSuggestions([]);
-                inputRef.current?.focus();
+                desktopInputRef.current?.focus();
               }}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white z-10 p-1"
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 z-10 transition-colors"
               type="button"
               aria-label={t('aria.clearSearch')}
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           )}
 
-          {/* Desktop Search Input */}
+          {/* Desktop Search Input - WowDash Style - Bigger */}
           <input
             ref={desktopInputRef}
             type="text"
@@ -472,104 +454,82 @@ export default function SearchBar({ lang }: SearchBarProps) {
             onFocus={() => setIsFocused(true)}
             onBlur={() => setTimeout(() => setIsFocused(false), 100)}
             placeholder={t('search.placeholder')}
-            className="w-full h-12 pl-12 pr-4 rounded-xl text-sm border-2 outline-none transition-all duration-300 bg-blue-100 dark:bg-[#242145] border-blue-300 dark:border-purple-600 text-blue-900 dark:text-white placeholder-blue-600 dark:placeholder-purple-300 shadow-lg focus:border-blue-500 dark:focus:border-purple-400 focus:shadow-xl"
+            className="w-full h-11 pl-12 pr-12 text-sm text-neutral-700 dark:text-neutral-100 bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:outline-none focus:border-primary-500 dark:focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all duration-200"
             aria-label={t('aria.search')}
             autoComplete="off"
             spellCheck={false}
             suppressHydrationWarning
           />
-
-          {/* Glow Effect on Focus */}
-          {isFocused && (
-            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-600/20 via-sky-500/10 to-blue-600/20 -z-10 blur-lg animate-pulse" />
-          )}
         </div>
 
-        {/* Search Suggestions */}
+        {/* Search Suggestions - WowDash Style */}
         {(isFocused || suggestions.length > 0) && suggestions.length > 0 && (
-          <div className={`${isExpanded ? 'fixed top-20 left-2 right-2 mt-2 bg-slate-900' : 'absolute left-0 right-0 top-full mt-2 sm:mt-3 bg-slate-800'} backdrop-blur-xl rounded-xl sm:rounded-2xl border border-blue-800/40 shadow-2xl shadow-black/20 overflow-hidden z-50 animate-in slide-in-from-top-2 duration-200`}>
-          {/* Header gradient */}
-          <div className="h-0.5 sm:h-1 bg-gradient-to-r from-blue-500 via-sky-400 to-blue-500" />
-          
-          <div className="p-1 sm:p-2 max-h-60 sm:max-h-80 overflow-y-auto">
+          <div className={`${isExpanded ? 'fixed top-16 left-2 right-2 mt-2' : 'absolute left-0 right-0 top-full mt-2'} bg-white dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-neutral-700 shadow-lg overflow-hidden z-50`}>
+          <div className="p-2 max-h-80 overflow-y-auto" style={{ listStyle: 'none' }}>
             {suggestions.map((suggestion, index) => (
-              <button
+              <div
                 key={`${suggestion.type}-${suggestion.id}`}
                 onClick={() => handleSuggestionClick(suggestion)}
-                className={`w-full text-left px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl transition-all duration-200 group relative overflow-hidden ${
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleSuggestionClick(suggestion); }}
+                role="button"
+                tabIndex={0}
+                className={`w-full text-left px-3 py-2.5 rounded-lg transition-all duration-200 group cursor-pointer ${
                   index === focusedIndex
-                    ? 'bg-gradient-to-r from-blue-600/80 to-blue-700/80 text-white shadow-lg shadow-blue-600/30'
-                    : 'hover:bg-slate-700/50 text-gray-300 hover:text-white'
+                    ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400'
+                    : 'hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-700 dark:text-neutral-300'
                 }`}
               >
-                {/* Active item glow effect - hidden on mobile */}
-                {index === focusedIndex && (
-                  <div className="hidden sm:block absolute inset-0 bg-gradient-to-r from-blue-600/20 via-blue-500/30 to-blue-600/20 animate-pulse" />
-                )}
-                
-                <div className="flex items-start gap-2 sm:gap-3 relative z-10">
-                  {/* Certification Icon - smaller on mobile */}
-                  <div className={`mt-0.5 ${getCertificationColor(suggestion.matchType, suggestion.score)} transition-all duration-200 ${
-                    index === focusedIndex ? '' : 'group-hover:scale-110'
-                  } flex-shrink-0`}>
-                    <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z" />
-                      <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" strokeWidth="2"/>
+                <div className="flex items-start gap-3">
+                  {/* Certification Icon */}
+                  <div className={`mt-0.5 flex-shrink-0 ${
+                    index === focusedIndex
+                      ? 'text-primary-600 dark:text-primary-400'
+                      : 'text-neutral-400 dark:text-neutral-500 group-hover:text-primary-500'
+                  }`}>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
                     </svg>
                   </div>
-                  
+
                   <div className="flex-1 min-w-0">
                     {/* Title */}
-                    <div className={`text-sm sm:text-sm font-semibold transition-all duration-200 ${
-                      index === focusedIndex ? 'text-white' : 'text-gray-300 group-hover:text-white'
+                    <div className={`text-sm font-medium ${
+                      index === focusedIndex
+                        ? 'text-primary-600 dark:text-primary-400'
+                        : 'text-neutral-900 dark:text-neutral-100 group-hover:text-primary-600 dark:group-hover:text-primary-400'
                     }`}>
                       {highlightMatch(suggestion.title, query)}
                     </div>
-                    
+
                     {/* Tags/Meta info */}
                     {(suggestion.level || suggestion.category) && (
-                      <div className="flex items-center gap-1 mt-1.5 flex-wrap">
+                      <div className="flex items-center gap-1.5 mt-1 flex-wrap">
                         {suggestion.level && (
-                          <span className="px-1.5 py-0.5 text-xs font-semibold bg-slate-700/50 text-gray-400 rounded-md">
+                          <span className="px-2 py-0.5 text-xs font-medium bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 rounded">
                             {t(`certifications.level.${suggestion.level}`)}
                           </span>
                         )}
                         {suggestion.category && (
-                          <span className="px-1.5 py-0.5 text-xs font-semibold bg-slate-700/50 text-gray-400 rounded-md">
+                          <span className="px-2 py-0.5 text-xs font-medium bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 rounded">
                             {suggestion.category}
                           </span>
                         )}
                       </div>
                     )}
                   </div>
-                  
-                  {/* Arrow icon with relevance indicator - hidden on mobile */}
-                  <div className="hidden sm:flex flex-col items-center mt-1">
-                    <div className="opacity-0 group-hover:opacity-50 transition-opacity duration-200">
-                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    
-                    {/* Relevance dots */}
-                    <div className="flex gap-0.5 mt-1">
-                      {[...Array(3)].map((_, i) => (
-                        <div
-                          key={i}
-                          className={`w-1 h-1 rounded-full transition-colors duration-200 ${
-                            i < Math.ceil((suggestion.score / 100) * 3) 
-                              ? 'bg-blue-400'
-                              : 'bg-gray-600'
-                          }`}
-                        />
-                      ))}
-                    </div>
+
+                  {/* Arrow icon */}
+                  <div className={`mt-0.5 ${
+                    index === focusedIndex
+                      ? 'text-primary-500 opacity-100'
+                      : 'text-neutral-400 opacity-0 group-hover:opacity-100'
+                  } transition-opacity duration-200`}>
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                    </svg>
                   </div>
                 </div>
-                
-                {/* Hover shimmer effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-              </button>
+              </div>
             ))}
           </div>
         </div>

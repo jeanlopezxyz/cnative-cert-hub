@@ -5,23 +5,17 @@ import { useOptimizedStorage } from '../../utils/storage';
 import { APP_CONFIG } from '../../constants';
 import {
   CERTIFICATION_CATEGORIES,
-  STUDY_TIPS_ITEMS,
   ACHIEVEMENTS_ITEMS,
-  INTERNAL_PAGES_ITEMS,
   QUICK_LINKS_ITEMS,
   groupCertificationsByCategory,
 } from '../../config/sidebar.config';
-import {
-  CertificationIcon,
-  AchievementIcon,
-  StudyTipsIcon,
-  QuickLinksIcon,
-} from '../icons';
 import SidebarSection from './SidebarSection';
 import CertificationCategory from './CertificationCategory';
 
+import type { ui } from '../../i18n/ui';
+
 interface SidebarProps {
-  lang: keyof typeof import('../../i18n/ui').ui;
+  lang: keyof typeof ui;
 }
 
 export default function Sidebar({ lang }: SidebarProps) {
@@ -31,9 +25,7 @@ export default function Sidebar({ lang }: SidebarProps) {
   const [currentPath, setCurrentPath] = useState('');
   const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
-  const [showMobileButton, setShowMobileButton] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
-  const [openSections, setOpenSections] = useState<string[]>([]);
+  const [openSections, setOpenSections] = useState<string[]>(['achievements']);
   const [openCategories, setOpenCategories] = useState<string[]>([]);
 
   // Restore state after hydration
@@ -43,64 +35,63 @@ export default function Sidebar({ lang }: SidebarProps) {
     if (savedCollapsed === 'true') {
       setIsDesktopCollapsed(true);
     }
-    
-    // Restore open categories
+
     const savedCategories = storage.getItem('sidebarOpenCategories');
     if (savedCategories) {
       try {
-        const categories = JSON.parse(savedCategories);
-        setOpenCategories(categories);
+        setOpenCategories(JSON.parse(savedCategories));
       } catch {
-        // If parsing fails, keep default empty state
+        // Keep default empty state
       }
     }
   }, [storage]);
 
-  // Save collapsed state
+  // Save states
   useEffect(() => {
     if (isHydrated) {
       storage.setBatched('sidebarCollapsed', isDesktopCollapsed.toString());
     }
   }, [isDesktopCollapsed, isHydrated, storage]);
 
-  // Save open categories
   useEffect(() => {
     if (isHydrated) {
       storage.setBatched('sidebarOpenCategories', JSON.stringify(openCategories));
     }
   }, [openCategories, isHydrated, storage]);
 
-  // Check current path
+  // Update current path on initial load and after Astro page transitions
   useEffect(() => {
-    const path = window.location.pathname;
-    setCurrentPath(path);
-  }, [lang]);
-
-  // Handle scroll
-  useEffect(() => {
-    const handleScroll = () => {
-      if (typeof window === 'undefined') return;
-      const currentScrollY = window.scrollY;
-      
-      if (currentScrollY < 100) {
-        setShowMobileButton(true);
-      } else if (currentScrollY > lastScrollY + 10) {
-        setShowMobileButton(false);
-      } else if (currentScrollY < lastScrollY - 10) {
-        setShowMobileButton(true);
-      }
-      
-      setLastScrollY(currentScrollY);
+    const updatePath = () => {
+      setCurrentPath(window.location.pathname);
     };
 
-    if (typeof window !== 'undefined') {
-      window.addEventListener('scroll', handleScroll, { passive: true });
-      return () => window.removeEventListener('scroll', handleScroll);
-    }
-    
-    return () => {}; // No-op cleanup function for SSR
-  }, [lastScrollY]);
+    // Set initial path
+    updatePath();
 
+    // Listen for Astro View Transitions
+    document.addEventListener('astro:page-load', updatePath);
+    document.addEventListener('astro:after-swap', updatePath);
+
+    // Also listen for popstate (browser back/forward)
+    window.addEventListener('popstate', updatePath);
+
+    return () => {
+      document.removeEventListener('astro:page-load', updatePath);
+      document.removeEventListener('astro:after-swap', updatePath);
+      window.removeEventListener('popstate', updatePath);
+    };
+  }, [lang]);
+
+  // Listen for mobile sidebar toggle from header
+  useEffect(() => {
+    const handleToggle = () => {
+      setIsMobileOpen(prev => !prev);
+    };
+    window.addEventListener('toggle-mobile-sidebar', handleToggle);
+    return () => window.removeEventListener('toggle-mobile-sidebar', handleToggle);
+  }, []);
+
+  // Close mobile sidebar on link click
   const closeMobileSidebar = () => {
     if (isHydrated && window.innerWidth < 1024) {
       setIsMobileOpen(false);
@@ -108,16 +99,14 @@ export default function Sidebar({ lang }: SidebarProps) {
   };
 
   const toggleSection = (section: string) => {
-    setOpenSections(prev => 
+    setOpenSections(prev =>
       prev.includes(section) ? prev.filter(s => s !== section) : [...prev, section]
     );
   };
 
   const toggleCategory = (category: string) => {
-    setOpenCategories(prev => 
-      prev.includes(category) 
-        ? prev.filter(cat => cat !== category)
-        : [...prev, category]
+    setOpenCategories(prev =>
+      prev.includes(category) ? prev.filter(cat => cat !== category) : [...prev, category]
     );
   };
 
@@ -125,128 +114,115 @@ export default function Sidebar({ lang }: SidebarProps) {
 
   return (
     <>
-      {/* Mobile Toggle Button */}
-      <div className={`fixed bottom-4 right-4 z-50 lg:hidden transition-all duration-300 ${
-        showMobileButton ? 'translate-y-0 opacity-100' : 'translate-y-16 opacity-0'
-      }`}>
-        {!isMobileOpen && showMobileButton && (
-          <div className="absolute inset-0 rounded-full bg-blue-600 opacity-20 animate-ping" />
-        )}
-
-        <button
-          onClick={() => setIsMobileOpen(!isMobileOpen)}
-          className={`relative ${
-            isMobileOpen 
-              ? 'bg-slate-800/90 hover:bg-slate-700/90' 
-              : 'bg-[#1E50D9] dark:bg-[#242145] hover:bg-[#1D4ED8] dark:hover:bg-[#2D1F4F]'
-          } text-white p-3 rounded-full shadow-lg backdrop-blur-sm transition-all duration-300 transform hover:scale-105 active:scale-95 border border-white/20`}
-          aria-label={t('aria.toggleMobileSidebar')}
-        >
-          <div className="relative w-5 h-5">
-            {isMobileOpen ? (
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            ) : (
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
-              </svg>
-            )}
-          </div>
-        </button>
-      </div>
-
       {/* Mobile Backdrop */}
       {isMobileOpen && (
         <div
-          role="button"
-          tabIndex={0}
-          aria-label={t('aria.toggleMobileSidebar')}
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 lg:hidden"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 lg:hidden transition-opacity duration-300"
           onClick={() => setIsMobileOpen(false)}
-          onKeyDown={e => {
-            if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
-              setIsMobileOpen(false);
-            }
-          }}
         />
       )}
 
-      {/* Fixed Sidebar Header - Outside Sidebar Container */}
-      <div className="fixed top-0 left-0 w-64 bg-[#1E50D9] dark:bg-[#242145] px-4 py-4 z-50 lg:block hidden">
-        <h2 className="text-white font-bold text-xl">CNCF HUB</h2>
-      </div>
-
       {/* Sidebar */}
       <aside
-        suppressHydrationWarning
         className={`
-          min-h-screen max-h-none z-40 relative
-          bg-[#1E50D9] dark:bg-[#242145]
-          overflow-y-visible overflow-x-hidden shadow-2xl shadow-black/50
-          w-64
-          ${isMobileOpen ? 'fixed left-0 top-0 w-64 translate-x-0 z-60' : 'fixed left-0 top-0 -translate-x-full lg:fixed lg:translate-x-0'}
+          fixed top-0 h-screen z-40
+          w-[280px]
+          bg-neutral-100 dark:bg-neutral-900
           transition-all duration-300 ease-in-out
+          ${isMobileOpen ? 'left-0' : '-left-full lg:left-0'}
+          ${isDesktopCollapsed ? 'lg:w-[80px] lg:hover:w-[280px]' : ''}
         `}
-        style={{ paddingTop: '5rem' }}
       >
-        {/* Mobile Header - Only on Mobile */}
-        {isMobileOpen && (
-          <div className="lg:hidden bg-[#1E50D9] dark:bg-[#242145] px-4 py-4 fixed top-0 left-0 w-64 z-60">
-            <h2 className="text-white font-bold text-xl">CNCF HUB</h2>
-          </div>
-        )}
+        {/* Logo Section */}
+        <div className="h-16 px-5 flex items-center justify-between">
+          <a href={`${APP_CONFIG.basePath}/${lang === 'en' ? '' : lang}`} className="flex items-center gap-3">
+            {/* Logo Icon - Certificate Badge */}
+            <div className="w-10 h-10 rounded-xl bg-primary-600 flex items-center justify-center">
+              <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+              </svg>
+            </div>
+            {/* Logo Text - Hidden when collapsed */}
+            <div className={`transition-opacity duration-200 ${isDesktopCollapsed ? 'lg:opacity-0 lg:group-hover:opacity-100' : ''}`}>
+              <span className="text-lg font-bold text-neutral-900 dark:text-white">CNCF</span>
+              <span className="text-lg font-bold text-primary-600">Cert</span>
+              <span className="text-lg font-bold text-neutral-900 dark:text-white">Hub</span>
+            </div>
+          </a>
 
-        {/* Navigation Content - IA Studio Format */}
-        <div className="px-3 py-6">
-          
-          {/* ACHIEVEMENT PATHS Section - Collapsible */}
-          <SidebarSection
-            title={t('sidebar.sections.achievementPaths')}
-            icon={<AchievementIcon />}
-            isOpen={openSections.includes('achievements')}
-            onToggle={() => toggleSection('achievements')}
+          {/* Mobile Close Button */}
+          <button
+            onClick={() => setIsMobileOpen(false)}
+            className="lg:hidden p-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-700/50 transition-colors"
           >
-            {ACHIEVEMENTS_ITEMS.map((item, index) => {
-              const basePath = APP_CONFIG.basePath || '';
-              const langPath = lang === 'en' ? '' : `/${lang}`;
-              const href = `${basePath}${langPath}/${item.href}`;
-              const isActive = currentPath === href;
+            <svg className="w-5 h-5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
 
-              // Different icons for each achievement
-              const achievementIcons = ['🚀', '🏆'];
-              
-              return (
-                <a
-                  key={item.id}
-                  href={href}
-                  onClick={closeMobileSidebar}
-                  className={`flex items-center gap-2 py-2.5 px-3 text-sm font-medium transition-all duration-200 ${
-                    isActive 
-                      ? 'text-white bg-white/15' 
-                      : 'text-blue-200 hover:text-white hover:bg-white/10'
-                  }`}
-                >
-                  <span className="w-1 h-1 bg-blue-300 rounded-full opacity-60"></span>
-                  <span>{t(item.translationKey)}</span>
-                </a>
-              );
-            })}
-          </SidebarSection>
+        {/* Scrollable Menu Area */}
+        <div className="h-[calc(100vh-64px)] overflow-y-auto overflow-x-hidden px-4 py-6 sidebar-scroll">
+          <nav className="space-y-2">
 
-          {/* CERTIFICATIONS Section - Collapsible */}
-          <SidebarSection
-            title={t('sidebar.certifications')}
-            icon={<CertificationIcon />}
-            isOpen={openSections.includes('certifications')}
-            onToggle={() => toggleSection('certifications')}
-          >
-            <div className="space-y-1">
-              {CERTIFICATION_CATEGORIES.map((category, index) => {
-                // Different icons for each category
-                const categoryIcons = ['🔵', '🔄', '🌐', '👀', '🏗️', '🔒', '🐧'];
-                
+            {/* Achievement Programs */}
+            <SidebarSection
+              title={t('sidebar.sections.achievementPaths')}
+              icon={
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 01-.982-3.172M9.497 14.25a7.454 7.454 0 00.981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 007.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 002.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 012.916.52 6.003 6.003 0 01-5.395 4.972m0 0a6.726 6.726 0 01-2.749 1.35m0 0a6.772 6.772 0 01-3.044 0" />
+                </svg>
+              }
+              isOpen={openSections.includes('achievements')}
+              onToggle={() => toggleSection('achievements')}
+              isCollapsed={isDesktopCollapsed}
+            >
+              {ACHIEVEMENTS_ITEMS.map((item) => {
+                const basePath = APP_CONFIG.basePath || '';
+                const langPath = lang === 'en' ? '' : `/${lang}`;
+                const href = `${basePath}${langPath}/${item.href}`;
+                const isActive = currentPath === href;
+
                 return (
+                  <a
+                    key={item.id}
+                    href={href}
+                    onClick={closeMobileSidebar}
+                    className={`
+                      flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
+                      transition-all duration-200
+                      ${isActive
+                        ? 'bg-primary-600 text-white shadow-md shadow-primary-600/30'
+                        : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-700/50 hover:text-primary-600 dark:hover:text-primary-400'
+                      }
+                    `}
+                  >
+                    <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-white' : 'bg-primary-500'}`} />
+                    <span>{t(item.translationKey)}</span>
+                  </a>
+                );
+              })}
+            </SidebarSection>
+
+            {/* Separator */}
+            <div className="my-4 mx-3">
+              <div className="h-px bg-gradient-to-r from-transparent via-neutral-200 dark:via-neutral-600/50 to-transparent" />
+            </div>
+
+            {/* Certifications */}
+            <SidebarSection
+              title={t('sidebar.certifications')}
+              icon={
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" />
+                </svg>
+              }
+              isOpen={openSections.includes('certifications')}
+              onToggle={() => toggleSection('certifications')}
+              isCollapsed={isDesktopCollapsed}
+            >
+              <div className="space-y-1">
+                {CERTIFICATION_CATEGORIES.map((category) => (
                   <CertificationCategory
                     key={category.key}
                     categoryKey={category.key}
@@ -257,100 +233,53 @@ export default function Sidebar({ lang }: SidebarProps) {
                     lang={lang}
                     currentPath={currentPath}
                     onLinkClick={closeMobileSidebar}
-                    categoryIcon={categoryIcons[index]}
                   />
-                );
-              })}
+                ))}
+              </div>
+            </SidebarSection>
+
+            {/* Separator */}
+            <div className="my-4 mx-3">
+              <div className="h-px bg-gradient-to-r from-transparent via-neutral-200 dark:via-neutral-600/50 to-transparent" />
             </div>
-          </SidebarSection>
 
-          {/* STUDY RESOURCES Section - Collapsible */}
-          <SidebarSection
-            title={t('sidebar.sections.studyResources')}
-            icon={<StudyTipsIcon />}
-            isOpen={openSections.includes('tips')}
-            onToggle={() => toggleSection('tips')}
-          >
-            {STUDY_TIPS_ITEMS.map((item, index) => {
-              const basePath = APP_CONFIG.basePath || '';
-              const langPath = lang === 'en' ? '' : `/${lang}`;
-              const fullHref = `${basePath}${langPath}/tips/${item.id}`;
-              const isActive = currentPath === fullHref;
-
-              // Different icons for each study tip
-              const studyIcons = ['📝', '🗺️', '🧪', '⏰'];
-
-              return (
-                <a
-                  key={item.id}
-                  href={fullHref}
-                  onClick={closeMobileSidebar}
-                  className={`flex items-center gap-2 py-2.5 px-3 text-sm font-medium transition-all duration-200 ${
-                    isActive 
-                      ? 'text-white bg-white/15' 
-                      : 'text-blue-200 hover:text-white hover:bg-white/10'
-                  }`}
-                >
-                  <span className="w-1 h-1 bg-blue-300 rounded-full opacity-60"></span>
-                  <span>{t(item.translationKey)}</span>
-                </a>
-              );
-            })}
-            
-            {/* Technology Stack */}
-            {INTERNAL_PAGES_ITEMS.map(item => {
-              const basePath = APP_CONFIG.basePath || '';
-              const langPath = lang === 'en' ? '' : `/${lang}`;
-              const fullHref = `${basePath}${langPath}/${item.href}`;
-              const isActive = currentPath === fullHref;
-
-              return (
-                <a
-                  key={item.id}
-                  href={fullHref}
-                  onClick={closeMobileSidebar}
-                  className={`flex items-center gap-2 py-2.5 px-3 text-sm font-medium transition-all duration-200 ${
-                    isActive 
-                      ? 'text-white bg-white/15' 
-                      : 'text-blue-200 hover:text-white hover:bg-white/10'
-                  }`}
-                >
-                  <span className="w-1 h-1 bg-blue-300 rounded-full opacity-60"></span>
-                  <span>{t(item.translationKey)}</span>
-                </a>
-              );
-            })}
-          </SidebarSection>
-
-          {/* EXTERNAL RESOURCES Section - Collapsible */}
-          <SidebarSection
-            title={t('sidebar.sections.externalResources')}
-            icon={<QuickLinksIcon />}
-            isOpen={openSections.includes('resources')}
-            onToggle={() => toggleSection('resources')}
-          >
-            {QUICK_LINKS_ITEMS.map((item, index) => {
-              // Different icons for each external resource
-              const externalIcons = ['📚', '🎯', '📖'];
-              
-              return (
+            {/* External Resources */}
+            <SidebarSection
+              title={t('sidebar.sections.externalResources')}
+              icon={
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
+                </svg>
+              }
+              isOpen={openSections.includes('resources')}
+              onToggle={() => toggleSection('resources')}
+              isCollapsed={isDesktopCollapsed}
+            >
+              {QUICK_LINKS_ITEMS.map((item) => (
                 <a
                   key={item.id}
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={closeMobileSidebar}
-                  className="flex items-center gap-2 py-2.5 px-3 text-sm font-medium text-blue-200 hover:text-white hover:bg-white/10 transition-all duration-200 group"
+                  className="
+                    flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
+                    text-neutral-600 dark:text-neutral-400
+                    hover:bg-neutral-100 dark:hover:bg-neutral-700/50
+                    hover:text-primary-600 dark:hover:text-primary-400
+                    transition-all duration-200 group
+                  "
                 >
-                  <span className="w-1 h-1 bg-blue-300 rounded-full opacity-60"></span>
-                  <span>{t(item.translationKey)}</span>
-                  <svg className="w-2 h-2 ml-auto opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                  <span className="flex-1">{t(item.translationKey)}</span>
+                  <svg className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                   </svg>
                 </a>
-              );
-            })}
-          </SidebarSection>
+              ))}
+            </SidebarSection>
+
+          </nav>
         </div>
       </aside>
     </>

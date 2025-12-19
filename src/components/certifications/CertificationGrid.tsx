@@ -40,7 +40,7 @@ export default function CertificationGrid({ lang }: CertificationGridProps) {
 
   return (
     <section id="certifications" className="pt-4 pb-12 sm:pt-6 sm:pb-16 scroll-section">
-      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-20 3xl:px-32">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-8 2xl:px-12 3xl:px-16">
         <CertificationHeader t={t} />
 
         <CertificationFilter currentFilter={filter} onFilterChange={setFilter} t={t} />
@@ -69,11 +69,11 @@ function CertificationHeader({ t }: { t: (key: string) => string }) {
   return (
     <div className="text-center mb-10 animate-fade-in-up">
       <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
-        <span className="bg-gradient-to-r from-blue-400 to-sky-300 bg-clip-text text-transparent">
+        <span className="text-neutral-900 dark:text-white">
           {t('certifications.title')}
         </span>
       </h2>
-      <p className="text-sm md:text-base text-gray-300 max-w-3xl mx-auto">
+      <p className="text-sm md:text-base text-neutral-600 dark:text-neutral-400 max-w-3xl mx-auto">
         {t('certifications.subtitle')}
       </p>
     </div>

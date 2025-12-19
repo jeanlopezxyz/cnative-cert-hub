@@ -1,6 +1,3 @@
-import { ChevronDownIcon } from '../icons';
-import { useRef, useEffect, useState } from 'react';
-
 interface SidebarSectionProps {
   title: string;
   icon: React.ReactNode;
@@ -11,7 +8,7 @@ interface SidebarSectionProps {
 }
 
 /**
- * Reusable sidebar section component with expand/collapse functionality
+ * WowDash-style sidebar section with expand/collapse
  */
 export default function SidebarSection({
   title,
@@ -21,68 +18,79 @@ export default function SidebarSection({
   children,
   isCollapsed = false,
 }: SidebarSectionProps) {
-  const contentRef = useRef<HTMLDivElement>(null);
-  const [height, setHeight] = useState<number>(0);
 
-  useEffect(() => {
-    if (contentRef.current) {
-      setHeight(contentRef.current.scrollHeight);
-    }
-  }, [children]);
-
-  // Icon-only mode when collapsed - Exactly aligned with hamburger
+  // Collapsed mode - icon only
   if (isCollapsed) {
     return (
-      <div className="mb-2 px-4">
-        <div className="flex justify-center">
-          <button
-            onClick={onToggle}
-            className="p-2 hover:bg-white/15 rounded-lg transition-all duration-200 group"
-            aria-expanded={isOpen}
-            aria-label={title}
-            title={title}
-          >
-            <div className={`text-lg transition-colors ${isOpen ? 'text-white' : 'text-indigo-200'} group-hover:text-white`}>
-              {icon}
-            </div>
-          </button>
-        </div>
+      <div className="mb-1">
+        <button
+          onClick={onToggle}
+          className={`
+            w-full flex items-center justify-center p-3 rounded-lg
+            transition-all duration-200
+            ${isOpen
+              ? 'bg-primary-600 text-white'
+              : 'text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-primary-600'
+            }
+          `}
+          aria-expanded={isOpen}
+          aria-label={title}
+          title={title}
+        >
+          {icon}
+        </button>
       </div>
     );
   }
 
   return (
-    <div className="mb-4">
+    <div className="mb-2">
+      {/* Section Header */}
       <button
         onClick={onToggle}
-        className="w-full flex items-center justify-between px-2 py-2.5 hover:bg-white/10 rounded-lg transition-all duration-200 group relative"
+        className={`
+          w-full flex items-center justify-between px-3 py-3 rounded-lg
+          transition-all duration-200 group
+          ${isOpen
+            ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400'
+            : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800'
+          }
+        `}
         aria-expanded={isOpen}
         aria-label={`Toggle ${title} section`}
       >
-        <div className="flex items-center gap-1.5">
-          <div className={`text-base transition-colors ${isOpen ? 'text-white' : 'text-blue-200'} group-hover:text-white`}>
+        <div className="flex items-center gap-3">
+          <span className={`transition-colors ${isOpen ? 'text-primary-600 dark:text-primary-400' : 'text-neutral-500 group-hover:text-primary-600 dark:group-hover:text-primary-400'}`}>
             {icon}
-          </div>
-          <span className={`font-medium text-sm transition-colors ${isOpen ? 'text-white' : 'text-blue-100'} group-hover:text-white`}>
+          </span>
+          <span className="font-medium text-sm">
             {title}
           </span>
         </div>
-        <div className={`transition-transform duration-200 ${isOpen ? 'rotate-180 text-white' : 'text-blue-200'} group-hover:text-white`}>
-          <ChevronDownIcon className="w-4 h-4" />
-        </div>
+
+        {/* Chevron Arrow */}
+        <svg
+          className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
       </button>
 
+      {/* Section Content - Using grid for smooth animation that handles dynamic content */}
       <div
-        ref={contentRef}
-        style={{
-          maxHeight: isOpen ? `${height}px` : '0px',
-          transition: 'max-height 400ms cubic-bezier(0.4, 0, 0.2, 1), opacity 300ms ease-out, transform 300ms ease-out',
-        }}
-        className={`mt-2 space-y-1 pl-11 pr-2 overflow-hidden ${
-          isOpen ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform -translate-y-2'
-        }`}
+        className={`
+          grid transition-all duration-300 ease-in-out
+          ${isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}
+        `}
       >
-        {children}
+        <div className="overflow-hidden">
+          <div className="pt-2 pl-4 space-y-1">
+            {children}
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -80,17 +80,17 @@ export interface BlogResource extends StudyResource {
 /**
  * Documentation resource
  */
-export interface DocumentationResource extends StudyResource {}
+export type DocumentationResource = StudyResource;
 
 /**
  * Community resource
  */
-export interface CommunityResource extends StudyResource {}
+export type CommunityResource = StudyResource;
 
 /**
  * Tool resource
  */
-export interface ToolResource extends StudyResource {}
+export type ToolResource = StudyResource;
 
 /**
  * Study resources for a certification

@@ -14,6 +14,7 @@
       "@/i18n/*": ["./src/i18n/*"],
       "@/data/*": ["./src/data/*"],
       "@/utils/*": ["./src/utils/*"],
+      "@/lib/*": ["./src/lib/*"],
       "@/layouts/*": ["./src/layouts/*"],
       "@/constants/*": ["./src/constants/*"]
     },

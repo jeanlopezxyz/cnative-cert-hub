@@ -1,10 +1,11 @@
 /**
- * Base Card Component
- * Provides consistent card styling across the application
+ * Base Card Component - shadcn/ui Card with custom CNCF variants
+ * Migrated to use shadcn/ui Card component while preserving existing API
  */
 
 import React from 'react';
-import { SHADOWS } from '../../config/app.config';
+import { Card } from '@/components/shadcn/ui/card';
+import { cn } from '@/lib/utils';
 
 type CardVariant = 'certification' | 'achievement' | 'info' | 'feature';
 type CardSize = 'compact' | 'normal' | 'large';
@@ -40,7 +41,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
           hoverBackground: hover ? 'hover:from-blue-900/50 hover:to-blue-950/60' : '',
           shadow: hover ? 'hover:shadow-lg hover:shadow-blue-500/30' : '',
         };
-      
+
       case 'achievement':
         return {
           background: gradient || 'from-blue-900/90 to-blue-950/95',
@@ -49,7 +50,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
           hoverBackground: hover ? 'hover:from-blue-850/95 hover:to-blue-900/100' : '',
           shadow: hover ? 'hover:shadow-lg hover:shadow-blue-500/50' : '',
         };
-      
+
       case 'info':
         return {
           background: gradient || 'from-slate-800/40 to-slate-900/60',
@@ -58,7 +59,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
           hoverBackground: hover ? 'hover:bg-slate-700/30' : '',
           shadow: hover ? 'hover:shadow-lg hover:shadow-slate-500/20' : '',
         };
-      
+
       case 'feature':
         return {
           background: gradient || 'from-blue-800/30 to-indigo-900/40',
@@ -67,7 +68,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
           hoverBackground: hover ? 'hover:from-blue-700/40 hover:to-indigo-800/50' : '',
           shadow: hover ? 'hover:shadow-lg hover:shadow-blue-500/20' : '',
         };
-      
+
       default:
         return {
           background: 'from-gray-800/40 to-gray-900/60',
@@ -87,14 +88,14 @@ const BaseCard: React.FC<BaseCardProps> = ({
           rounded: 'rounded-lg',
           minHeight: 'min-h-[120px]',
         };
-      
+
       case 'large':
         return {
           padding: 'p-6 sm:p-8',
           rounded: 'rounded-2xl',
           minHeight: 'min-h-[300px]',
         };
-      
+
       default: // normal
         return {
           padding: 'p-4 sm:p-5 md:p-6',
@@ -107,39 +108,32 @@ const BaseCard: React.FC<BaseCardProps> = ({
   const variantStyles = getVariantStyles();
   const sizeStyles = getSizeStyles();
 
-  const cardClasses = [
-    'relative',
-    'bg-gradient-to-br',
-    variantStyles.background,
-    'border-2',
-    variantStyles.border,
-    variantStyles.hoverBorder,
-    'transition-all',
-    'duration-300',
-    'overflow-hidden',
-    sizeStyles.padding,
-    sizeStyles.rounded,
-    sizeStyles.minHeight,
-    variantStyles.hoverBackground,
-    variantStyles.shadow,
-    hover ? 'group' : '',
-    onClick ? 'cursor-pointer' : '',
-    className,
-  ]
-    .filter(Boolean)
-    .join(' ');
+  const CardWrapper = Component === 'div' ? Card : Component;
 
   return (
-    <Component 
-      className={cardClasses}
+    <CardWrapper
+      className={cn(
+        'relative bg-gradient-to-br border-2 transition-all duration-300 overflow-hidden',
+        variantStyles.background,
+        variantStyles.border,
+        variantStyles.hoverBorder,
+        sizeStyles.padding,
+        sizeStyles.rounded,
+        sizeStyles.minHeight,
+        variantStyles.hoverBackground,
+        variantStyles.shadow,
+        hover && 'group',
+        onClick && 'cursor-pointer',
+        className
+      )}
       onClick={onClick}
       style={{
-        transform: 'translateZ(0)', // Forces GPU acceleration
-        backfaceVisibility: 'hidden', // Prevents rendering issues
+        transform: 'translateZ(0)',
+        backfaceVisibility: 'hidden',
       }}
     >
       {children}
-    </Component>
+    </CardWrapper>
   );
 };
 

@@ -1,11 +1,11 @@
 import React from 'react';
 import { useTranslations } from '../../i18n/utils';
-import type { Language } from '../../types';
-import { LevelBadge, PrerequisiteBadge } from '../ui/Badge';
+import type { Language, Certification } from '../../types';
+import { getLevelColors } from '../../utils';
 
 interface CertificationGridProps {
   certIds: string[];
-  certifications: any[];
+  certifications: Certification[];
   basePath: string;
   lang: Language;
   gridClass?: string;
@@ -14,49 +14,37 @@ interface CertificationGridProps {
   variant?: 'kubestronaut' | 'cncf';
 }
 
+/**
+ * WowDash-style certification grid for achievement pages
+ */
 export default function CertificationGrid({
   certIds,
   certifications,
   basePath,
   lang,
-  gridClass = "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5",
+  gridClass = "grid-cols-2 sm:grid-cols-3 md:grid-cols-5",
   role = "list",
   'aria-label': ariaLabel,
   variant = 'kubestronaut'
 }: CertificationGridProps) {
   const t = useTranslations(lang);
 
-  const getVariantStyles = () => {
+  const getGridClass = () => {
     if (variant === 'cncf') {
-      return {
-        background: "from-blue-800/30 to-indigo-900/40",
-        hoverBackground: "hover:from-blue-700/40 hover:to-indigo-800/50",
-        textColor: "text-blue-300",
-        hoverTextColor: "group-hover:text-blue-200",
-        gridClass: "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
-      };
+      return "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5";
     }
-    
-    return {
-      background: "from-blue-900/90 to-blue-950/95",
-      hoverBackground: "hover:from-blue-850/95 hover:to-blue-900/100",
-      textColor: "text-white",
-      hoverTextColor: "group-hover:text-blue-100",
-      gridClass
-    };
+    return gridClass;
   };
-
-  const styles = getVariantStyles();
 
   return (
     <div
-      className={`grid ${styles.gridClass} gap-2 sm:gap-3`}
+      className={`grid ${getGridClass()} gap-3 sm:gap-4`}
       role={role}
       aria-label={ariaLabel}
     >
       {certIds.map((certId, index) => {
         const cert = certifications.find(c => c.id === certId);
-        const isCKS = certId === 'cks';
+        const colors = getLevelColors(cert?.level || 'intermediate');
 
         return (
           <a
@@ -68,48 +56,28 @@ export default function CertificationGrid({
             aria-setsize={certIds.length}
             aria-label={`${t('certifications.card.viewDetails')}: ${cert?.acronym ?? certId}`}
           >
-            <div className={`h-full min-h-[240px] sm:min-h-[220px] p-4 sm:p-4 rounded-xl border-2 transition-all duration-300 bg-gradient-to-br ${styles.background} border-blue-700/70 hover:border-blue-500 hover:bg-gradient-to-br ${styles.hoverBackground} hover:shadow-lg hover:shadow-blue-500/50 flex relative`}>
-              {/* Badge for CKS */}
-              {isCKS && (
-                <div className="absolute top-2 right-2 z-10 hidden md:block">
-                  <span className="text-[10px] font-semibold px-2 py-1 rounded-md bg-orange-600/30 text-orange-100 border border-orange-500/40">
-                    {t('achievements.kubestronaut.requiresCka')}
-                  </span>
+            {/* WowDash Card - colored background based on level, no borders */}
+            <div className={`card h-full rounded-xl overflow-hidden border-0 ${colors.bg} text-center transition-all duration-300`}>
+              <div className="card-body p-4 sm:p-5">
+                {/* Icon */}
+                <div className={`w-10 h-10 sm:w-12 sm:h-12 mx-auto inline-flex items-center justify-center ${colors.icon} text-white mb-3 rounded-xl`}>
+                  <svg className="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" />
+                  </svg>
                 </div>
-              )}
-              
-              <div className={`w-full flex flex-col text-center ${isCKS ? 'md:pt-5' : ''}`}>
+
                 {/* Acronym */}
-                <div className="mb-3">
-                  <div className={`${variant === 'cncf' ? 'text-3xl sm:text-3xl lg:text-2xl xl:text-3xl' : 'text-3xl sm:text-3xl lg:text-3xl xl:text-3xl'} font-black ${styles.textColor} ${styles.hoverTextColor} transition-all duration-200 tracking-tight`}>
-                    {cert?.acronym}
-                  </div>
-                </div>
+                <h6 className={`text-base sm:text-lg font-bold mb-1 ${colors.text}`}>{cert?.acronym}</h6>
 
-                {/* Badge for mobile CKS */}
-                {isCKS && (
-                  <div className="md:hidden mb-2 flex justify-center">
-                    <span className="text-[10px] font-semibold px-2 py-1 rounded-md bg-orange-600/30 text-orange-100 border border-orange-500/40">
-                      {t('achievements.kubestronaut.requiresCka')}
-                    </span>
-                  </div>
-                )}
-
-                {/* Name - Fixed height for alignment */}
-                <div className="flex-1 px-2 mb-3 min-h-[3rem]">
-                  <div className={`${variant === 'cncf' ? 'text-sm sm:text-sm lg:text-xs xl:text-sm text-gray-400' : 'text-sm sm:text-sm lg:text-sm xl:text-sm text-gray-300 group-hover:text-gray-200'} text-center leading-tight transition-colors`}>
-                    {cert?.name}
-                  </div>
-                </div>
+                {/* Name */}
+                <p className="text-neutral-600 dark:text-neutral-300 text-xs mb-3 line-clamp-2 min-h-[32px]">
+                  {cert?.name}
+                </p>
 
                 {/* Level Badge */}
-                <div className="mt-auto">
-                  <div className="flex justify-center">
-                    <LevelBadge level={cert?.level || 'entry'} size="small">
-                      {t(`certifications.level.${cert?.level}`)}
-                    </LevelBadge>
-                  </div>
-                </div>
+                <span className={`text-xs px-2.5 py-1 rounded-md font-medium ${colors.text} bg-white/60 dark:bg-neutral-900/40`}>
+                  {t(`certifications.level.${cert?.level}`)}
+                </span>
               </div>
             </div>
           </a>

@@ -5,7 +5,6 @@
 
 import { useState, useEffect } from 'react';
 import type { Language } from '../types';
-import { extractLanguageFromUrl } from '../utils/url';
 
 interface UseCurrentPathOptions {
   includeHash?: boolean;
@@ -111,7 +110,7 @@ export function useActiveNavItem(itemPath: string, lang: Language): boolean {
  * Hook for breadcrumb generation
  */
 export function useBreadcrumbs(lang: Language): Array<{ label: string; url: string; isActive: boolean }> {
-  const { pathSegments, currentPath } = useCurrentPath(lang);
+  const { pathSegments } = useCurrentPath(lang);
   
   const breadcrumbs = [];
   let accumulatedPath = '';
