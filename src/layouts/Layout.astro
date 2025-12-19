@@ -164,42 +164,59 @@ const hreflangUrls = {
     </style>
 
     <!--
-      Theme Script - Astro Best Practices
-      Reference: https://docs.astro.build/en/guides/view-transitions/#script-behavior-with-view-transitions
+      Theme Script - Robust implementation for View Transitions
+      Multiple layers of protection to ensure theme persists
     -->
     <script is:inline>
       (function() {
+        var html = document.documentElement;
+
         // Get theme from storage or system preference
         function getTheme() {
           try {
-            const stored = localStorage.getItem('theme');
+            var stored = localStorage.getItem('theme');
             if (stored === 'dark' || stored === 'light') return stored;
-          } catch {}
+          } catch(e) {}
           return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         }
 
-        // Apply theme to document element
-        function setTheme(el, theme) {
-          el.classList.remove('dark', 'light');
-          el.classList.add(theme);
+        // Apply theme robustly
+        function applyTheme(theme) {
+          var t = theme || getTheme();
+          // Use className directly for maximum compatibility
+          var classes = html.className.replace(/\b(dark|light)\b/g, '').trim();
+          html.className = classes + ' ' + t;
+          // Also set data attribute as backup
+          html.dataset.theme = t;
         }
 
-        // Apply immediately (prevents flash on initial load)
-        setTheme(document.documentElement, getTheme());
+        // Apply immediately
+        applyTheme();
 
-        // Before swap: save current theme and apply to new document
-        document.addEventListener('astro:before-swap', (e) => {
-          // Get current visual theme
-          const theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-          // Save to localStorage so after-swap reads the correct value
-          try { localStorage.setItem('theme', theme); } catch {}
+        // Before swap: save and apply to new document
+        document.addEventListener('astro:before-swap', function(e) {
+          var theme = html.classList.contains('dark') ? 'dark' : 'light';
+          try { localStorage.setItem('theme', theme); } catch(err) {}
           // Apply to new document
-          setTheme(e.newDocument.documentElement, theme);
+          var newHtml = e.newDocument.documentElement;
+          var classes = newHtml.className.replace(/\b(dark|light)\b/g, '').trim();
+          newHtml.className = classes + ' ' + theme;
+          newHtml.dataset.theme = theme;
         });
 
-        // After swap: reapply from localStorage
-        document.addEventListener('astro:after-swap', () => {
-          setTheme(document.documentElement, getTheme());
+        // After swap: ensure theme is applied
+        document.addEventListener('astro:after-swap', function() {
+          applyTheme();
+        });
+
+        // Page load: final fallback
+        document.addEventListener('astro:page-load', function() {
+          applyTheme();
+        });
+
+        // DOMContentLoaded fallback
+        document.addEventListener('DOMContentLoaded', function() {
+          applyTheme();
         });
       })();
     </script>
