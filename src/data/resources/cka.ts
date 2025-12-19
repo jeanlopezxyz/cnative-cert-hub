@@ -1,12 +1,6 @@
 /**
  * CKA - Certified Kubernetes Administrator
- * Study Resources
- *
- * How to contribute:
- * 1. Add new resources to the appropriate category
- * 2. Follow the resource interface for each type
- * 3. Include all required fields
- * 4. Verify URLs are valid and accessible
+ * Study Resources - Updated December 2024
  */
 
 import type { CertificationResources } from '../../types';
@@ -16,7 +10,8 @@ export const ckaResources: CertificationResources = {
   github: [
     'https://github.com/walidshaari/Kubernetes-Certified-Administrator',
     'https://github.com/kodekloudhub/certified-kubernetes-administrator-course',
-    'https://github.com/dgkanatsios/CKAD-exercises',
+    'https://github.com/alijahnas/CKA-practice-exercises',
+    'https://github.com/David-VTUK/CKA-StudyGuide',
   ],
   practice: [
     'https://killer.sh',
@@ -24,125 +19,229 @@ export const ckaResources: CertificationResources = {
     'https://killercoda.com/killer-shell-cka',
   ],
 
-  // ============================================
-  // BOOKS
-  // ============================================
   books: [
     {
-      title: 'Kubernetes Up & Running',
-      url: 'https://www.oreilly.com/library/view/kubernetes-up-and/9781492046523/',
-      author: 'Brendan Burns, Joe Beda, Kelsey Hightower',
+      title: 'Kubernetes: Up and Running, 3rd Edition',
+      url: 'https://www.oreilly.com/library/view/kubernetes-up-and/9781098110192/',
+      author: 'Brendan Burns, Joe Beda, Kelsey Hightower, Lachlan Evenson',
       description: 'Comprehensive guide to deploying and managing Kubernetes clusters',
       isPaid: true,
       format: 'paperback',
-      year: 2022,
+      year: 2024,
       difficulty: 'intermediate',
     },
     {
-      title: 'The Kubernetes Book',
+      title: 'The Kubernetes Book - 2024 Edition',
       url: 'https://leanpub.com/thekubernetesbook',
       author: 'Nigel Poulton',
-      description: 'Clear and simple explanation of Kubernetes concepts and hands-on examples',
+      description: 'Clear and simple explanation of Kubernetes concepts with hands-on examples',
       isPaid: true,
       format: 'pdf',
-      year: 2023,
+      year: 2024,
       difficulty: 'beginner',
     },
     {
-      title: 'Kubernetes in Action',
+      title: 'Kubernetes in Action, 2nd Edition',
       url: 'https://www.manning.com/books/kubernetes-in-action-second-edition',
       author: 'Marko Lukša',
       description: 'Deep dive into Kubernetes internals with practical examples',
       isPaid: true,
       format: 'paperback',
-      year: 2022,
+      year: 2024,
       difficulty: 'advanced',
+    },
+    {
+      title: 'Certified Kubernetes Administrator (CKA) Study Guide',
+      url: 'https://www.oreilly.com/library/view/certified-kubernetes-administrator/9781098107215/',
+      author: 'Benjamin Muschko',
+      description: 'In-depth study guide specifically for the CKA exam',
+      isPaid: true,
+      format: 'paperback',
+      year: 2022,
+      difficulty: 'intermediate',
     },
   ],
 
-  // ============================================
-  // COURSES
-  // ============================================
   courses: [
     {
-      title: 'Introduction to Kubernetes (LFS158)',
-      url: 'https://www.edx.org/learn/kubernetes/the-linux-foundation-introduction-to-kubernetes',
-      author: 'The Linux Foundation',
-      description: 'Foundational course covering Kubernetes basics and architecture',
-      isPaid: false,
-      duration: '16 hours',
-      difficulty: 'beginner',
-      rating: 4.8,
-    },
-    {
-      title: 'Kubernetes Fundamentals (LFS258)',
-      url: 'https://training.linuxfoundation.org/training/kubernetes-fundamentals/',
-      author: 'The Linux Foundation',
-      description: 'Comprehensive paid course specifically designed for CKA preparation',
-      isPaid: true,
-      duration: '40 hours',
-      difficulty: 'intermediate',
-      rating: 4.9,
-    },
-    {
-      title: 'CKA Certification Course',
+      title: 'Kubernetes Administrator (CKA) with Practice Tests',
       url: 'https://www.udemy.com/course/certified-kubernetes-administrator-with-practice-tests/',
-      author: 'Mumshad Mannambeth',
+      author: 'Mumshad Mannambeth (KodeKloud)',
       description: 'Complete CKA preparation with hands-on labs and practice tests',
       isPaid: true,
       duration: '17.5 hours',
       difficulty: 'intermediate',
       rating: 4.7,
     },
+    {
+      title: 'Kubernetes Fundamentals (LFS258)',
+      url: 'https://training.linuxfoundation.org/training/kubernetes-fundamentals/',
+      author: 'The Linux Foundation',
+      description: 'Official Linux Foundation course for CKA preparation',
+      isPaid: true,
+      duration: '40 hours',
+      difficulty: 'intermediate',
+      rating: 4.9,
+    },
+    {
+      title: 'Introduction to Kubernetes (LFS158)',
+      url: 'https://www.edx.org/learn/kubernetes/the-linux-foundation-introduction-to-kubernetes',
+      author: 'The Linux Foundation',
+      description: 'Free foundational course covering Kubernetes basics',
+      isPaid: false,
+      duration: '16 hours',
+      difficulty: 'beginner',
+      rating: 4.8,
+    },
+    {
+      title: 'CKA Certification Course - KodeKloud',
+      url: 'https://kodekloud.com/courses/certified-kubernetes-administrator-cka/',
+      author: 'KodeKloud',
+      description: 'Interactive CKA course with built-in hands-on labs',
+      isPaid: true,
+      duration: '25 hours',
+      difficulty: 'intermediate',
+      rating: 4.9,
+    },
   ],
 
-  // ============================================
-  // VIDEOS
-  // ============================================
   videos: [
     {
       title: 'Kubernetes Tutorial for Beginners',
       url: 'https://www.youtube.com/watch?v=X48VuDVv0do',
       author: 'TechWorld with Nana',
-      description: 'Complete Kubernetes course in 4 hours',
+      description: 'Complete Kubernetes course for beginners',
       isPaid: false,
       duration: '4 hours',
       difficulty: 'beginner',
     },
+    {
+      title: 'CKA Full Course 2024',
+      url: 'https://www.youtube.com/watch?v=8PpgqEqkRBQ',
+      author: 'FreeCodeCamp',
+      description: 'Comprehensive CKA preparation course',
+      isPaid: false,
+      duration: '7 hours',
+      difficulty: 'intermediate',
+    },
+    {
+      title: 'Kubernetes Administration',
+      url: 'https://www.youtube.com/playlist?list=PLy7NrYWoggjziYQIDorlXjTvvwweTYoNC',
+      author: 'TechWorld with Nana',
+      description: 'Kubernetes administration concepts playlist',
+      isPaid: false,
+      duration: '10 hours',
+      difficulty: 'intermediate',
+    },
   ],
 
-  // ============================================
-  // DOCUMENTATION
-  // ============================================
   documentation: [
     {
       title: 'Kubernetes Official Documentation',
       url: 'https://kubernetes.io/docs/',
-      description: 'Official Kubernetes documentation - your primary reference',
+      description: 'Official Kubernetes documentation - your primary exam reference',
+      isPaid: false,
+    },
+    {
+      title: 'CKA Exam Curriculum',
+      url: 'https://github.com/cncf/curriculum/blob/master/CKA_Curriculum.pdf',
+      description: 'Official CKA exam curriculum and objectives',
       isPaid: false,
     },
     {
       title: 'kubectl Cheat Sheet',
       url: 'https://kubernetes.io/docs/reference/kubectl/cheatsheet/',
-      description: 'Essential kubectl commands for the exam',
+      description: 'Essential kubectl commands - bookmarkable during exam',
+      isPaid: false,
+    },
+    {
+      title: 'Kubernetes Tasks',
+      url: 'https://kubernetes.io/docs/tasks/',
+      description: 'Step-by-step guides for common Kubernetes operations',
       isPaid: false,
     },
   ],
 
-  // ============================================
-  // COMMUNITIES
-  // ============================================
+  blogs: [
+    {
+      title: 'CKA Exam Study Guide',
+      url: 'https://devopscube.com/cka-exam-study-guide/',
+      author: 'DevOpsCube',
+      description: 'Comprehensive CKA study guide with tips and resources',
+      isPaid: false,
+    },
+    {
+      title: 'How to Pass CKA Exam',
+      url: 'https://kodekloud.com/blog/tips-to-ace-cka-exam/',
+      author: 'KodeKloud',
+      description: 'Practical tips for passing the CKA exam',
+      isPaid: false,
+    },
+    {
+      title: 'CKA Exam Tips and Tricks',
+      url: 'https://www.yourdevopsmentor.com/blog/cka-exam-tips',
+      author: 'Your DevOps Mentor',
+      description: 'Time management and exam strategies',
+      isPaid: false,
+    },
+  ],
+
   communities: [
     {
       title: 'Kubernetes Slack',
       url: 'https://slack.k8s.io/',
-      description: 'Official Kubernetes Slack community with 100k+ members',
+      description: 'Official Kubernetes Slack with #cka-exam channel',
+      isPaid: false,
+    },
+    {
+      title: 'CNCF Slack',
+      url: 'https://slack.cncf.io/',
+      description: 'CNCF community with certification support channels',
       isPaid: false,
     },
     {
       title: 'r/kubernetes Reddit',
       url: 'https://www.reddit.com/r/kubernetes/',
-      description: 'Active Reddit community for Kubernetes discussions',
+      description: 'Active Reddit community for Kubernetes and CKA discussions',
+      isPaid: false,
+    },
+    {
+      title: 'KodeKloud Community',
+      url: 'https://kodekloud.com/community/',
+      description: 'KodeKloud student community for CKA preparation',
+      isPaid: false,
+    },
+  ],
+
+  tools: [
+    {
+      title: 'Killer.sh CKA Simulator',
+      url: 'https://killer.sh/',
+      description: 'Official CKA exam simulator included with exam registration',
+      isPaid: true,
+    },
+    {
+      title: 'Killercoda CKA Scenarios',
+      url: 'https://killercoda.com/killer-shell-cka',
+      description: 'Free browser-based CKA practice scenarios',
+      isPaid: false,
+    },
+    {
+      title: 'Minikube',
+      url: 'https://minikube.sigs.k8s.io/',
+      description: 'Local Kubernetes cluster for practice',
+      isPaid: false,
+    },
+    {
+      title: 'Kind (Kubernetes in Docker)',
+      url: 'https://kind.sigs.k8s.io/',
+      description: 'Run multi-node Kubernetes clusters locally',
+      isPaid: false,
+    },
+    {
+      title: 'K9s',
+      url: 'https://k9scli.io/',
+      description: 'Terminal UI for Kubernetes cluster management',
       isPaid: false,
     },
   ],

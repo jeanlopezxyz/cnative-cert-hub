@@ -25,7 +25,7 @@ export const pt = {
   'hero.cta.certifications': 'Explorar Certificações',
   'hero.cta.start': 'Começar a Aprender',
   'hero.cta.explore': 'Recursos de Estudo',
-  'hero.stats.badge': '15 Certificações Reconhecidas Globalmente',
+  'hero.stats.badge': '16 Certificações Reconhecidas Globalmente',
   'hero.stats.certifications': 'Certificações',
   'hero.stats.languages': 'Idiomas',
   'hero.stats.freeResources': 'Recursos Gratuitos',
@@ -141,7 +141,6 @@ export const pt = {
   'certifications.upcoming.ckne': 'CKNE (Certified Kubernetes Network Engineer)',
   'certifications.upcoming.ckneDesc': 'Certificação de nível intermediário para redes em Kubernetes e plataformas cloud native.',
   'certifications.upcoming.expected': 'Previsto',
-  'certifications.upcoming.note': 'Novas certificações são tipicamente anunciadas em eventos KubeCon e ficam disponíveis logo após.',
 
   // Certification Card
   'certifications.card.domains': 'Domínios',
@@ -206,6 +205,7 @@ export const pt = {
   'sidebar.curriculum': 'Currículo CNCF',
   'sidebar.practice': 'Plataforma de Prática',
   'sidebar.docs': 'Documentação',
+  'sidebar.discounts': 'Descontos do Mês',
 
   // Sidebar Tips
   'sidebar.tips.exam': 'Preparação para Exame',
@@ -307,6 +307,9 @@ export const pt = {
   'cert.cnpa.name': 'Associado de Plataformas Cloud Native',
   'cert.cnpa.description':
     'Valida habilidades fundamentais para construir, automatizar e gerenciar plataformas cloud native em escala',
+  'cert.cnpe.name': 'Engenheiro de Plataformas Cloud Native',
+  'cert.cnpe.description':
+    'Certificação avançada prática para arquitetar e operar plataformas de desenvolvimento internas em escala empresarial. Necessário para Golden Kubestronaut após março de 2026',
 
   // Certification Details
   'certification.examInfo': 'Informações do Exame',
@@ -334,6 +337,8 @@ export const pt = {
   'certification.practice': 'Prática',
   'certification.additional': 'Recursos Adicionais',
   'certification.official': 'Oficial',
+  'certification.learning': 'Aprendizagem',
+  'certification.community': 'Comunidade',
   'certification.totalDomains': 'Total de Domínios',
   'certification.totalTopics': 'Total de Tópicos',
   'certification.by': 'por',
@@ -652,10 +657,15 @@ export const pt = {
   'quiz.title': 'Simulador de Exame de Prática',
   'quiz.subtitle': 'Teste seus conhecimentos com questões de prática',
   'quiz.questionsAvailable': 'Questões Disponíveis',
+  'quiz.questions': 'Questões',
   'quiz.suggestedDuration': 'Duração Sugerida',
+  'quiz.duration': 'Duração',
   'quiz.passingScore': 'Pontuação de Aprovação',
+  'quiz.passing': 'Aprovação',
   'quiz.examMode': 'Modo Exame',
+  'quiz.examModeShort': 'Simula o exame real',
   'quiz.studyMode': 'Modo Estudo',
+  'quiz.studyModeShort': 'Aprenda no seu ritmo',
   'quiz.startExamMode': 'Iniciar Modo Exame',
   'quiz.startStudyMode': 'Iniciar Modo Estudo',
   'quiz.examModeDesc1': '• Questões sequenciais (não é possível voltar)',

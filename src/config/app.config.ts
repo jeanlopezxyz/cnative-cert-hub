@@ -20,6 +20,9 @@ export const EXTERNAL_URLS = {
     killercoda: 'https://killercoda.com',
     acloudGuru: 'https://learn.acloud.guru',
   },
+  discounts: {
+    linuxFoundationCoupons: 'https://github.com/techiescamp/linux-foundation-coupon',
+  },
   cncf: {
     certifications: 'https://www.cncf.io/certification/',
     main: 'https://www.cncf.io/',

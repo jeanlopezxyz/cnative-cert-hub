@@ -15,28 +15,92 @@ export interface Props {
   showSidebar?: boolean;
   lang?: string;
   compactFooter?: boolean;
+  image?: string;
+  type?: 'website' | 'article';
 }
 
-const { title, description, showSidebar = false, lang: propLang, compactFooter = false } = Astro.props;
+const {
+  title,
+  description,
+  showSidebar = false,
+  lang: propLang,
+  compactFooter = false,
+  image,
+  type = 'website'
+} = Astro.props;
+
 const lang = propLang || getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const finalDescription = description || t('site.description');
-const baseUrl = (import.meta.env.BASE_URL || '/').endsWith('/') 
-  ? import.meta.env.BASE_URL 
+const baseUrl = (import.meta.env.BASE_URL || '/').endsWith('/')
+  ? import.meta.env.BASE_URL
   : import.meta.env.BASE_URL + '/';
+
+// SEO URLs
+const siteUrl = 'https://jeanlopezxyz.github.io';
+const basePath = '/cncf-certification-hub';
+const currentPath = Astro.url.pathname.replace(basePath, '').replace(/^\/+/, '');
+const canonicalURL = new URL(`${basePath}/${currentPath}`, siteUrl).href.replace(/\/$/, '');
+
+// Default OG Image (1200x630 for optimal social sharing)
+const ogImage = image || `${siteUrl}${basePath}/og-image.png`;
+
+// Hreflang URLs
+const pathWithoutLang = currentPath.replace(/^(es|pt)\//, '');
+const hreflangUrls = {
+  en: `${siteUrl}${basePath}/${pathWithoutLang}`.replace(/\/$/, ''),
+  es: `${siteUrl}${basePath}/es/${pathWithoutLang}`.replace(/\/$/, ''),
+  pt: `${siteUrl}${basePath}/pt/${pathWithoutLang}`.replace(/\/$/, ''),
+};
 ---
 
 <!doctype html>
 <html lang={lang}>
   <head>
     <meta charset="UTF-8" />
-    <meta name="description" content={finalDescription} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
-    <link rel="icon" type="image/svg+xml" href={`${baseUrl}favicon.svg`} />
-    <meta name="theme-color" content="#1E50D9" />
     <meta name="generator" content={Astro.generator} />
+
+    <!-- Primary Meta Tags -->
     <title>{title} | CNCF Certification Resources Hub</title>
+    <meta name="title" content={`${title} | CNCF Certification Resources Hub`} />
+    <meta name="description" content={finalDescription} />
+    <meta name="keywords" content="CNCF, Kubernetes, CKA, CKAD, CKS, KCNA, KCSA, certification, cloud native, DevOps, container, exam preparation" />
+    <meta name="author" content="CNCF Certification Hub" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#1E50D9" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Hreflang for International SEO -->
+    <link rel="alternate" hreflang="en" href={hreflangUrls.en} />
+    <link rel="alternate" hreflang="es" href={hreflangUrls.es} />
+    <link rel="alternate" hreflang="pt" href={hreflangUrls.pt} />
+    <link rel="alternate" hreflang="x-default" href={hreflangUrls.en} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={`${title} | CNCF Certification Resources Hub`} />
+    <meta property="og:description" content={finalDescription} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content="CNCF Certification Resources Hub - Study Guides for CKA, CKAD, CKS, KCNA, KCSA and more" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content={lang === 'es' ? 'es_ES' : lang === 'pt' ? 'pt_BR' : 'en_US'} />
+    <meta property="og:site_name" content="CNCF Certification Resources Hub" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalURL} />
+    <meta name="twitter:title" content={`${title} | CNCF Certification Resources Hub`} />
+    <meta name="twitter:description" content={finalDescription} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href={`${baseUrl}favicon.svg`} />
+    <link rel="apple-touch-icon" sizes="180x180" href={`${baseUrl}apple-touch-icon.png`} />
 
     <!-- View Transitions for smooth navigation -->
     <ViewTransitions />
@@ -124,6 +188,48 @@ const baseUrl = (import.meta.env.BASE_URL || '/').endsWith('/')
 
     <!-- Load global.css synchronously for instant styling -->
     <link rel="stylesheet" href="/src/styles/global.css" />
+
+    <!-- Structured Data - JSON-LD -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "CNCF Certification Resources Hub",
+      "description": finalDescription,
+      "url": `${siteUrl}${basePath}`,
+      "inLanguage": [lang, "en", "es", "pt"],
+      "publisher": {
+        "@type": "Organization",
+        "name": "CNCF Certification Hub",
+        "logo": {
+          "@type": "ImageObject",
+          "url": `${siteUrl}${basePath}/favicon.svg`
+        }
+      },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": `${siteUrl}${basePath}/?q={search_term_string}`,
+        "query-input": "required name=search_term_string"
+      }
+    })} />
+
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": `${siteUrl}${basePath}`
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": title,
+          "item": canonicalURL
+        }
+      ]
+    })} />
   </head>
   <body class="min-h-screen">
     <a 

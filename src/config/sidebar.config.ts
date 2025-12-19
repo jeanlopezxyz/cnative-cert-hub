@@ -36,7 +36,7 @@ export const CERTIFICATION_CATEGORIES: SidebarCategory[] = [
   {
     key: 'platform',
     name: 'categories.platform',
-    certificationIds: ['cba', 'cnpa'], // Backstage (dev portal) and Cloud Native Platform
+    certificationIds: ['cba', 'cnpa', 'cnpe'], // Backstage, CNPA (Associate), CNPE (Engineer)
   },
   {
     key: 'security',
@@ -91,6 +91,11 @@ export const QUICK_LINKS_ITEMS = [
     id: 'docs',
     translationKey: 'sidebar.docs',
     href: EXTERNAL_URLS.kubernetes.docs,
+  },
+  {
+    id: 'discounts',
+    translationKey: 'sidebar.discounts',
+    href: EXTERNAL_URLS.discounts.linuxFoundationCoupons,
   },
 ];
 

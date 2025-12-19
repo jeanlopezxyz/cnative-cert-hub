@@ -22,20 +22,13 @@ const t = useTranslations(lang);
     <section class="px-4 sm:px-6 lg:px-8">
       <div class="card rounded-2xl overflow-hidden border-0 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-600/10 dark:to-indigo-600/10">
         <div class="card-body p-6 sm:p-8">
-          <div class="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 mb-6">
-            <div class="w-14 h-14 flex-shrink-0 inline-flex items-center justify-center bg-purple-600 text-white rounded-xl">
-              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-              </svg>
-            </div>
-            <div>
-              <h2 class="text-xl sm:text-2xl font-bold text-purple-600 dark:text-purple-400 mb-1">
-                {t('certifications.upcoming.title')}
-              </h2>
-              <p class="text-neutral-600 dark:text-neutral-400 text-sm">
-                {t('certifications.upcoming.subtitle')}
-              </p>
-            </div>
+          <div class="mb-6">
+            <h2 class="text-xl sm:text-2xl font-bold text-purple-600 dark:text-purple-400 mb-1">
+              {t('certifications.upcoming.title')}
+            </h2>
+            <p class="text-neutral-600 dark:text-neutral-400 text-sm">
+              {t('certifications.upcoming.subtitle')}
+            </p>
           </div>
 
           <!-- CKNE Card -->
@@ -62,13 +55,6 @@ const t = useTranslations(lang);
             </div>
           </div>
 
-          <!-- Note -->
-          <p class="mt-5 text-xs text-neutral-500 dark:text-neutral-400 flex items-start gap-2">
-            <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-            </svg>
-            <span>{t('certifications.upcoming.note')}</span>
-          </p>
         </div>
       </div>
     </section>

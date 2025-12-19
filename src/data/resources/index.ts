@@ -32,6 +32,7 @@ export { cbaResources } from './cba';
 export { ccaResources } from './cca';
 export { cgoaResources } from './cgoa';
 export { cnpaResources } from './cnpa';
+export { cnpeResources } from './cnpe';
 export { icaResources } from './ica';
 export { kcaResources } from './kca';
 export { otcaResources } from './otca';
@@ -51,6 +52,7 @@ import { cbaResources } from './cba';
 import { ccaResources } from './cca';
 import { cgoaResources } from './cgoa';
 import { cnpaResources } from './cnpa';
+import { cnpeResources } from './cnpe';
 import { icaResources } from './ica';
 import { kcaResources } from './kca';
 import { otcaResources } from './otca';
@@ -74,6 +76,7 @@ export const resourcesByCertification: Record<string, CertificationResources> = 
   cca: ccaResources,
   cgoa: cgoaResources,
   cnpa: cnpaResources,
+  cnpe: cnpeResources,
   ica: icaResources,
   kca: kcaResources,
   otca: otcaResources,

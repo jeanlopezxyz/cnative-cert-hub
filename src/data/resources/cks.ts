@@ -1,12 +1,6 @@
 /**
  * CKS - Certified Kubernetes Security Specialist
- * Study Resources
- *
- * How to contribute:
- * 1. Add new resources to the appropriate category
- * 2. Follow the resource interface for each type
- * 3. Include all required fields
- * 4. Verify URLs are valid and accessible
+ * Study Resources - Updated December 2024
  */
 
 import type { CertificationResources } from '../../types';
@@ -16,15 +10,131 @@ export const cksResources: CertificationResources = {
   github: [
     'https://github.com/walidshaari/Certified-Kubernetes-Security-Specialist',
     'https://github.com/kodekloudhub/certified-kubernetes-security-specialist-cks-course',
+    'https://github.com/moabukar/CKS-Exercises-Certified-Kubernetes-Security-Specialist',
+    'https://github.com/ahmetb/kubernetes-network-policy-recipes',
   ],
   practice: [
     'https://killer.sh',
     'https://kodekloud.com/courses/certified-kubernetes-security-specialist-cks/',
     'https://killercoda.com/killer-shell-cks',
   ],
-  books: [],
-  courses: [],
-  videos: [],
+
+  books: [
+    {
+      title: 'Kubernetes Security and Observability',
+      url: 'https://www.oreilly.com/library/view/kubernetes-security-and/9781098107093/',
+      author: 'Brendan Creane, Amit Gupta',
+      description: 'Comprehensive guide to securing Kubernetes clusters',
+      isPaid: true,
+      format: 'paperback',
+      year: 2022,
+      difficulty: 'advanced',
+    },
+    {
+      title: 'Hacking Kubernetes',
+      url: 'https://www.oreilly.com/library/view/hacking-kubernetes/9781492081722/',
+      author: 'Andrew Martin, Michael Hausenblas',
+      description: 'Threat-driven analysis and defense for Kubernetes',
+      isPaid: true,
+      format: 'paperback',
+      year: 2022,
+      difficulty: 'advanced',
+    },
+    {
+      title: 'Container Security',
+      url: 'https://www.oreilly.com/library/view/container-security/9781492056690/',
+      author: 'Liz Rice',
+      description: 'Fundamental technology concepts for securing containers',
+      isPaid: true,
+      format: 'paperback',
+      year: 2020,
+      difficulty: 'intermediate',
+    },
+    {
+      title: 'Kubernetes: Up and Running, 3rd Edition',
+      url: 'https://www.oreilly.com/library/view/kubernetes-up-and/9781098110192/',
+      author: 'Brendan Burns, Joe Beda, Kelsey Hightower, Lachlan Evenson',
+      description: 'Comprehensive Kubernetes guide with security chapters',
+      isPaid: true,
+      format: 'paperback',
+      year: 2024,
+      difficulty: 'intermediate',
+    },
+  ],
+
+  courses: [
+    {
+      title: 'CKS with Practice Tests',
+      url: 'https://www.udemy.com/course/certified-kubernetes-security-specialist/',
+      author: 'Mumshad Mannambeth (KodeKloud)',
+      description: 'Complete CKS preparation with hands-on security labs',
+      isPaid: true,
+      duration: '12 hours',
+      difficulty: 'advanced',
+      rating: 4.7,
+    },
+    {
+      title: 'Kubernetes Security Essentials (LFS260)',
+      url: 'https://training.linuxfoundation.org/training/kubernetes-security-essentials-lfs260/',
+      author: 'The Linux Foundation',
+      description: 'Official Linux Foundation CKS preparation course',
+      isPaid: true,
+      duration: '32 hours',
+      difficulty: 'advanced',
+      rating: 4.8,
+    },
+    {
+      title: 'CKS Certification Course - KodeKloud',
+      url: 'https://kodekloud.com/courses/certified-kubernetes-security-specialist-cks/',
+      author: 'KodeKloud',
+      description: 'Interactive CKS course with security labs',
+      isPaid: true,
+      duration: '20 hours',
+      difficulty: 'advanced',
+      rating: 4.9,
+    },
+    {
+      title: 'Kubernetes CKS Complete Course',
+      url: 'https://www.udemy.com/course/certified-kubernetes-security-specialist-cks/',
+      author: 'Kim Wuestkamp',
+      description: 'CKS preparation with hands-on security scenarios',
+      isPaid: true,
+      duration: '18 hours',
+      difficulty: 'advanced',
+      rating: 4.8,
+    },
+  ],
+
+  videos: [
+    {
+      title: 'CKS Full Course 2024',
+      url: 'https://www.youtube.com/watch?v=wqsUfvRyYpw',
+      author: 'KodeKloud',
+      description: 'Complete CKS preparation course',
+      isPaid: false,
+      duration: '5 hours',
+      difficulty: 'advanced',
+    },
+    {
+      title: 'Kubernetes Security Best Practices',
+      url: 'https://www.youtube.com/watch?v=oBf5lrmquYI',
+      author: 'Google Cloud Tech',
+      description: 'Security best practices for Kubernetes',
+      isPaid: false,
+      duration: '1 hour',
+      difficulty: 'intermediate',
+    },
+    {
+      title: 'CKS Exam Tips and Practice',
+      url: 'https://www.youtube.com/watch?v=VN8Y89PIfxg',
+      author: 'That DevOps Guy',
+      description: 'CKS exam tips and live practice',
+      isPaid: false,
+      duration: '2 hours',
+      difficulty: 'advanced',
+    },
+  ],
+
   documentation: [
     {
       title: 'Kubernetes Security Documentation',
@@ -32,7 +142,119 @@ export const cksResources: CertificationResources = {
       description: 'Official Kubernetes security documentation',
       isPaid: false,
     },
+    {
+      title: 'CKS Exam Curriculum',
+      url: 'https://github.com/cncf/curriculum/blob/master/CKS_Curriculum.pdf',
+      description: 'Official CKS exam curriculum and objectives',
+      isPaid: false,
+    },
+    {
+      title: 'Pod Security Standards',
+      url: 'https://kubernetes.io/docs/concepts/security/pod-security-standards/',
+      description: 'Pod security standards and policies',
+      isPaid: false,
+    },
+    {
+      title: 'Network Policies',
+      url: 'https://kubernetes.io/docs/concepts/services-networking/network-policies/',
+      description: 'Kubernetes network policies documentation',
+      isPaid: false,
+    },
+    {
+      title: 'RBAC Authorization',
+      url: 'https://kubernetes.io/docs/reference/access-authn-authz/rbac/',
+      description: 'Role-based access control in Kubernetes',
+      isPaid: false,
+    },
   ],
-  communities: [],
-  tools: [],
+
+  blogs: [
+    {
+      title: 'CKS Exam Study Guide',
+      url: 'https://devopscube.com/cks-exam-guide-tips/',
+      author: 'DevOpsCube',
+      description: 'Comprehensive CKS study guide',
+      isPaid: false,
+    },
+    {
+      title: 'CKS Exam Tips',
+      url: 'https://kodekloud.com/blog/cks-exam-tips/',
+      author: 'KodeKloud',
+      description: 'Tips for passing the CKS exam',
+      isPaid: false,
+    },
+    {
+      title: 'Kubernetes Security Best Practices',
+      url: 'https://sysdig.com/learn-cloud-native/kubernetes-security/',
+      author: 'Sysdig',
+      description: 'Comprehensive Kubernetes security guide',
+      isPaid: false,
+    },
+  ],
+
+  communities: [
+    {
+      title: 'Kubernetes Slack',
+      url: 'https://slack.k8s.io/',
+      description: 'Official Kubernetes Slack with #cks-exam-prep channel',
+      isPaid: false,
+    },
+    {
+      title: 'CNCF Slack',
+      url: 'https://slack.cncf.io/',
+      description: 'CNCF community with security channels',
+      isPaid: false,
+    },
+    {
+      title: 'r/kubernetes Reddit',
+      url: 'https://www.reddit.com/r/kubernetes/',
+      description: 'Active community for CKS discussions',
+      isPaid: false,
+    },
+    {
+      title: 'Kubernetes Security SIG',
+      url: 'https://github.com/kubernetes/community/tree/master/sig-security',
+      description: 'Kubernetes Security Special Interest Group',
+      isPaid: false,
+    },
+  ],
+
+  tools: [
+    {
+      title: 'Killer.sh CKS Simulator',
+      url: 'https://killer.sh/',
+      description: 'Official CKS exam simulator included with registration',
+      isPaid: true,
+    },
+    {
+      title: 'Killercoda CKS Scenarios',
+      url: 'https://killercoda.com/killer-shell-cks',
+      description: 'Free browser-based CKS practice scenarios',
+      isPaid: false,
+    },
+    {
+      title: 'Falco',
+      url: 'https://falco.org/',
+      description: 'Cloud native runtime security',
+      isPaid: false,
+    },
+    {
+      title: 'Trivy',
+      url: 'https://trivy.dev/',
+      description: 'Container and Kubernetes vulnerability scanner',
+      isPaid: false,
+    },
+    {
+      title: 'kube-bench',
+      url: 'https://github.com/aquasecurity/kube-bench',
+      description: 'CIS Kubernetes Benchmark checks',
+      isPaid: false,
+    },
+    {
+      title: 'OPA Gatekeeper',
+      url: 'https://open-policy-agent.github.io/gatekeeper/',
+      description: 'Policy controller for Kubernetes',
+      isPaid: false,
+    },
+  ],
 };

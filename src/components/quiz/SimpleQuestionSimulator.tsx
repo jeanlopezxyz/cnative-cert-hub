@@ -130,25 +130,23 @@ export default function SimpleQuestionSimulator({
     return Math.round((correct / questions.length) * 100);
   };
 
-  // No questions available state
+  // No questions available state - WowDash empty style
   if (!questions || questions.length === 0) {
     return (
       <div className="card rounded-2xl border border-neutral-200 dark:border-neutral-600 bg-white dark:bg-neutral-700 overflow-hidden">
-        <div className="card-body p-6 sm:p-8">
-          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
-            <div className="w-16 h-16 inline-flex items-center justify-center bg-warning-600 text-white rounded-xl flex-shrink-0">
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <div className="card-body p-8 sm:p-12">
+          <div className="text-center">
+            <div className="w-24 h-24 mx-auto mb-6 inline-flex items-center justify-center bg-purple-100 dark:bg-purple-600/25 text-purple-600 dark:text-purple-400 rounded-full">
+              <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
               </svg>
             </div>
-            <div className="text-center sm:text-left">
-              <h5 className="text-xl font-semibold text-neutral-900 dark:text-neutral-200 mb-2">
-                {t('quiz.title')}
-              </h5>
-              <p className="text-neutral-600 dark:text-neutral-400 mb-0">
-                {t('quiz.comingSoon')}
-              </p>
-            </div>
+            <h5 className="text-xl font-semibold text-neutral-900 dark:text-neutral-200 mb-2">
+              {t('quiz.title')}
+            </h5>
+            <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-0">
+              {t('quiz.comingSoon')}
+            </p>
           </div>
         </div>
       </div>
@@ -158,142 +156,50 @@ export default function SimpleQuestionSimulator({
   // Start screen
   if (!state.isActive && !state.showResults) {
     return (
-      <div className="space-y-6">
-        {/* Header Card - WowDash style with gradient */}
-        <div className="card rounded-2xl border-0 overflow-hidden bg-gradient-to-r from-primary-600/10 to-white dark:from-primary-600/20 dark:to-neutral-800">
-          <div className="card-body p-6 sm:p-8">
-            <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
-              <div className="w-16 h-16 inline-flex items-center justify-center bg-primary-600 text-white rounded-xl flex-shrink-0">
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <div className="text-center sm:text-left">
-                <h4 className="text-2xl font-semibold text-neutral-900 dark:text-neutral-200 mb-2">
-                  {t('quiz.title')}
-                </h4>
-                <p className="text-neutral-600 dark:text-neutral-400 text-lg mb-0">
-                  {t('quiz.subtitle')} {questions.length} {t('quiz.questionsAvailable').toLowerCase()}
-                </p>
-              </div>
-            </div>
+      <div className="border border-neutral-200 dark:border-neutral-600 rounded-xl bg-white dark:bg-neutral-700 p-5 sm:p-6">
+        {/* Header */}
+        <div className="flex items-center gap-4 mb-5">
+          <div className="w-12 h-12 bg-purple-600 rounded-xl flex justify-center items-center flex-shrink-0">
+            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div>
+            <h5 className="font-semibold text-neutral-900 dark:text-white text-lg">{t('quiz.title')}</h5>
+            <p className="text-sm text-neutral-600 dark:text-neutral-400">{t('quiz.subtitle')}</p>
           </div>
         </div>
 
-        {/* Stats Cards - WowDash style */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          <div className="card rounded-2xl border border-neutral-200 dark:border-neutral-600 bg-white dark:bg-neutral-700 overflow-hidden">
-            <div className="card-body p-6 text-center">
-              <div className="w-12 h-12 mx-auto mb-4 inline-flex items-center justify-center bg-primary-100 dark:bg-primary-600/25 text-primary-600 dark:text-primary-400 rounded-xl">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
-              </div>
-              <h3 className="text-2xl font-bold text-primary-600 dark:text-primary-400 mb-1">{questions.length}</h3>
-              <p className="text-neutral-600 dark:text-neutral-400 text-sm mb-0">{t('quiz.questionsAvailable')}</p>
-            </div>
+        {/* Stats */}
+        <div className="flex gap-4 mb-5 text-center">
+          <div className="flex-1 p-3 bg-cyan-50 dark:bg-cyan-900/20 rounded-lg">
+            <div className="text-lg font-bold text-cyan-700 dark:text-cyan-400">{questions.length}</div>
+            <div className="text-base text-cyan-600 dark:text-cyan-300">{t('quiz.questions')}</div>
           </div>
-          <div className="card rounded-2xl border border-neutral-200 dark:border-neutral-600 bg-white dark:bg-neutral-700 overflow-hidden">
-            <div className="card-body p-6 text-center">
-              <div className="w-12 h-12 mx-auto mb-4 inline-flex items-center justify-center bg-warning-100 dark:bg-warning-600/25 text-warning-600 dark:text-warning-400 rounded-xl">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h3 className="text-2xl font-bold text-warning-600 dark:text-warning-400 mb-1">{examDuration} {t('quiz.min')}</h3>
-              <p className="text-neutral-600 dark:text-neutral-400 text-sm mb-0">{t('quiz.suggestedDuration')}</p>
-            </div>
+          <div className="flex-1 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+            <div className="text-lg font-bold text-amber-700 dark:text-amber-400">{examDuration}m</div>
+            <div className="text-base text-amber-600 dark:text-amber-300">{t('quiz.duration')}</div>
           </div>
-          <div className="card rounded-2xl border border-neutral-200 dark:border-neutral-600 bg-white dark:bg-neutral-700 overflow-hidden">
-            <div className="card-body p-6 text-center">
-              <div className="w-12 h-12 mx-auto mb-4 inline-flex items-center justify-center bg-success-100 dark:bg-success-600/25 text-success-600 dark:text-success-400 rounded-xl">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                </svg>
-              </div>
-              <h3 className="text-2xl font-bold text-success-600 dark:text-success-400 mb-1">75%</h3>
-              <p className="text-neutral-600 dark:text-neutral-400 text-sm mb-0">{t('quiz.passingScore')}</p>
-            </div>
+          <div className="flex-1 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+            <div className="text-lg font-bold text-green-700 dark:text-green-400">75%</div>
+            <div className="text-base text-green-600 dark:text-green-300">{t('quiz.passing')}</div>
           </div>
         </div>
 
-        {/* Mode Selection Cards - WowDash colored background style */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Exam Mode */}
-          <div className="card rounded-2xl border-0 overflow-hidden bg-purple-100 dark:bg-purple-600/25 h-full">
-            <div className="card-body p-6 flex flex-col h-full">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 inline-flex items-center justify-center bg-purple-600 text-white rounded-xl">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <h6 className="text-lg font-semibold text-neutral-900 dark:text-neutral-200 mb-0">{t('quiz.examMode')}</h6>
-              </div>
-              <ul className="text-sm text-neutral-600 dark:text-neutral-300 space-y-2 mb-6 flex-1">
-                <li className="flex items-start gap-2">
-                  <span className="text-purple-600 dark:text-purple-400 mt-0.5">•</span>
-                  {t('quiz.examModeDesc1')}
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-purple-600 dark:text-purple-400 mt-0.5">•</span>
-                  {t('quiz.examModeDesc2')}
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-purple-600 dark:text-purple-400 mt-0.5">•</span>
-                  {t('quiz.examModeDesc3')}
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-purple-600 dark:text-purple-400 mt-0.5">•</span>
-                  {t('quiz.examModeDesc4')}
-                </li>
-              </ul>
-              <button
-                onClick={() => startQuiz('exam')}
-                className="w-full px-4 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl transition-colors"
-              >
-                {t('quiz.startExamMode')}
-              </button>
-            </div>
-          </div>
-
-          {/* Study Mode */}
-          <div className="card rounded-2xl border-0 overflow-hidden bg-success-100 dark:bg-success-600/25 h-full">
-            <div className="card-body p-6 flex flex-col h-full">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 inline-flex items-center justify-center bg-success-600 text-white rounded-xl">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                  </svg>
-                </div>
-                <h6 className="text-lg font-semibold text-neutral-900 dark:text-neutral-200 mb-0">{t('quiz.studyMode')}</h6>
-              </div>
-              <ul className="text-sm text-neutral-600 dark:text-neutral-300 space-y-2 mb-6 flex-1">
-                <li className="flex items-start gap-2">
-                  <span className="text-success-600 dark:text-success-400 mt-0.5">•</span>
-                  {t('quiz.studyModeDesc1')}
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-success-600 dark:text-success-400 mt-0.5">•</span>
-                  {t('quiz.studyModeDesc2')}
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-success-600 dark:text-success-400 mt-0.5">•</span>
-                  {t('quiz.studyModeDesc3')}
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-success-600 dark:text-success-400 mt-0.5">•</span>
-                  {t('quiz.studyModeDesc4')}
-                </li>
-              </ul>
-              <button
-                onClick={() => startQuiz('study')}
-                className="w-full px-4 py-3 bg-success-600 hover:bg-success-700 text-white font-semibold rounded-xl transition-colors"
-              >
-                {t('quiz.startStudyMode')}
-              </button>
-            </div>
-          </div>
+        {/* Buttons */}
+        <div className="flex gap-3">
+          <button
+            onClick={() => startQuiz('exam')}
+            className="flex-1 py-3 px-4 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-base font-semibold transition-colors shadow-sm"
+          >
+            {t('quiz.examMode')}
+          </button>
+          <button
+            onClick={() => startQuiz('study')}
+            className="flex-1 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-base font-semibold transition-colors shadow-sm"
+          >
+            {t('quiz.studyMode')}
+          </button>
         </div>
       </div>
     );

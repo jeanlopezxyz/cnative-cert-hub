@@ -42,8 +42,8 @@ export default function CertificationStudyGuide({
   const [expandedDomains, setExpandedDomains] = useState<string[]>([]);
   const [expandedResourceCategories, setExpandedResourceCategories] = useState<string[]>([]);
   const [activeResourceTab, setActiveResourceTab] = useState<
-    'fundamentals' | 'courses' | 'practice' | 'additional'
-  >('fundamentals');
+    'official' | 'learning' | 'practice' | 'community'
+  >('official');
   const [expandedSections, setExpandedSections] = useState<string[]>([]);
 
   const toggleExpandDomain = (domainName: string) => {
@@ -64,23 +64,14 @@ export default function CertificationStudyGuide({
     );
   };
 
-  // New organized study sections structure
+  // Organized study sections structure
   const studySections = [
-    // FUNDAMENTALS TAB
-    {
-      id: 'linux-foundation',
-      title: t('certification.sections.linuxFoundation'),
-      type: 'courses' as const,
-      tab: 'fundamentals',
-      resources: (certification.resources.courses || []).filter(course => 
-        (course.author === 'Linux Foundation' || course.author === 'The Linux Foundation') && !course.isPaid
-      ),
-    },
+    // OFFICIAL TAB - Official resources and documentation
     {
       id: 'official',
       title: t('certification.sections.official'),
       type: 'official' as const,
-      tab: 'fundamentals',
+      tab: 'official',
       resources: [
         {
           title: t('certification.resource.officialPage'),
@@ -97,36 +88,44 @@ export default function CertificationStudyGuide({
           url: 'https://glossary.cncf.io/',
           description: t('certification.resource.cloudNativeGlossaryDesc'),
         },
-        ...(certification.resources.documentation || [])
-          .filter(doc => !doc.url.includes('landscape.cncf.io') && !doc.url.includes('glossary.cncf.io'))
-          .map(doc => ({
-            title: doc.title || t('certification.resource.projectDocs'),
-            url: doc.url,
-            description: doc.description || t('certification.resource.projectDocsDesc'),
-            type: 'documentation' as const,
-          })),
       ],
     },
-    
-    // COURSES TAB
     {
-      id: 'paid-courses',
+      id: 'documentation',
+      title: t('certification.sections.documentation'),
+      type: 'documentation' as const,
+      tab: 'official',
+      resources: (certification.resources.documentation || []).map(doc => ({
+        title: doc.title || t('certification.resource.projectDocs'),
+        url: doc.url,
+        description: doc.description || t('certification.resource.projectDocsDesc'),
+      })),
+    },
+
+    // LEARNING TAB - All courses, videos, and books
+    {
+      id: 'courses',
       title: t('certification.sections.courses'),
       type: 'courses' as const,
-      tab: 'courses',
-      resources: (certification.resources.courses || []).filter(course => 
-        course.author !== 'Linux Foundation' && course.author !== 'The Linux Foundation'
-      ),
+      tab: 'learning',
+      resources: certification.resources.courses || [],
+    },
+    {
+      id: 'videos',
+      title: t('certification.sections.videos'),
+      type: 'videos' as const,
+      tab: 'learning',
+      resources: certification.resources.videos || [],
     },
     {
       id: 'books',
       title: t('certification.sections.books'),
       type: 'books' as const,
-      tab: 'courses',
+      tab: 'learning',
       resources: certification.resources.books || [],
     },
-    
-    // PRACTICE TAB
+
+    // PRACTICE TAB - Simulators, GitHub repos, and tools
     {
       id: 'simulators',
       title: t('certification.sections.practice'),
@@ -162,46 +161,28 @@ export default function CertificationStudyGuide({
         description: t('certification.resource.githubDesc'),
       })),
     },
-    
-    // ADDITIONAL TAB
     {
-      id: 'videos',
-      title: t('certification.sections.videos'),
-      type: 'videos' as const,
-      tab: 'additional',
-      resources: certification.resources.videos || [],
+      id: 'tools',
+      title: t('certification.sections.tools'),
+      type: 'tools' as const,
+      tab: 'practice',
+      resources: certification.resources.tools || [],
     },
+
+    // COMMUNITY TAB - Blogs and communities
     {
       id: 'blogs',
       title: t('certification.sections.blogs'),
-      type: 'blogs',
-      tab: 'additional',
+      type: 'blogs' as const,
+      tab: 'community',
       resources: certification.resources.blogs || [],
     },
     {
       id: 'communities',
       title: t('certification.sections.communities'),
-      type: 'communities',
-      tab: 'additional',
+      type: 'communities' as const,
+      tab: 'community',
       resources: certification.resources.communities || [],
-    },
-    {
-      id: 'tools',
-      title: t('certification.sections.tools'),
-      type: 'tools',
-      tab: 'additional',
-      resources: certification.resources.tools || [],
-    },
-    {
-      id: 'additional-docs',
-      title: t('certification.sections.documentation'),
-      type: 'documentation',
-      tab: 'additional',
-      resources: (certification.resources.documentation || []).filter(doc => 
-        !['Documentación Oficial de Kubernetes', 'Kubernetes Official Documentation', 'Documentação Oficial do Kubernetes'].includes(doc.title || '') &&
-        !doc.url.includes('landscape.cncf.io') && 
-        !doc.url.includes('glossary.cncf.io')
-      ),
     },
   ].filter(section => section.resources.length > 0); // Only show sections with resources
 
@@ -293,28 +274,28 @@ export default function CertificationStudyGuide({
                       {/* Left sub-column */}
                       <div className="space-y-3">
                         <div className="p-3 bg-white/60 dark:bg-neutral-900/40 rounded-lg">
-                          <div className="text-xs text-sky-600 dark:text-sky-400 font-medium mb-1">
+                          <div className="text-sm text-sky-600 dark:text-sky-400 font-semibold mb-1">
                             {t('certification.examType')}
                           </div>
-                          <div className="font-semibold text-neutral-800 dark:text-neutral-100">
+                          <div className="text-sm text-neutral-800 dark:text-neutral-100">
                             {certification.type === 'performance'
                               ? t('certification.performance')
                               : t('certification.multipleChoice')}
                           </div>
                         </div>
                         <div className="p-3 bg-white/60 dark:bg-neutral-900/40 rounded-lg">
-                          <div className="text-xs text-sky-600 dark:text-sky-400 font-medium mb-1">
+                          <div className="text-sm text-sky-600 dark:text-sky-400 font-semibold mb-1">
                             {t('certification.duration')}
                           </div>
-                          <div className="font-semibold text-neutral-800 dark:text-neutral-100">
+                          <div className="text-sm text-neutral-800 dark:text-neutral-100">
                             {certification.duration} {t('certification.minutes')}
                           </div>
                         </div>
                         <div className="p-3 bg-white/60 dark:bg-neutral-900/40 rounded-lg">
-                          <div className="text-xs text-sky-600 dark:text-sky-400 font-medium mb-1">
+                          <div className="text-sm text-sky-600 dark:text-sky-400 font-semibold mb-1">
                             {t('certification.level')}
                           </div>
-                          <div className="font-semibold text-neutral-800 dark:text-neutral-100 capitalize">
+                          <div className="text-sm text-neutral-800 dark:text-neutral-100 capitalize">
                             {certification.level === 'entry'
                               ? t('certification.beginner')
                               : certification.level === 'intermediate'
@@ -324,10 +305,10 @@ export default function CertificationStudyGuide({
                         </div>
                         {certification.kubernetesVersion && (
                           <div className="p-3 bg-white/60 dark:bg-neutral-900/40 rounded-lg">
-                            <div className="text-xs text-sky-600 dark:text-sky-400 font-medium mb-1">
+                            <div className="text-sm text-sky-600 dark:text-sky-400 font-semibold mb-1">
                               {t('certification.kubernetesVersion')}
                             </div>
-                            <div className="font-semibold text-neutral-800 dark:text-neutral-100">
+                            <div className="text-sm text-neutral-800 dark:text-neutral-100">
                               {translateCertificationValue(certification.kubernetesVersion, lang)}
                             </div>
                           </div>
@@ -338,30 +319,30 @@ export default function CertificationStudyGuide({
                       <div className="space-y-3">
                         {certification.prerequisites && (
                           <div className="p-3 bg-amber-100/60 dark:bg-amber-900/30 rounded-lg">
-                            <div className="text-xs text-amber-600 dark:text-amber-400 font-medium mb-1">
+                            <div className="text-sm text-amber-600 dark:text-amber-400 font-semibold mb-1">
                               {t('certification.prerequisites')}
                             </div>
-                            <div className="font-semibold text-neutral-800 dark:text-neutral-100">
+                            <div className="text-sm text-neutral-800 dark:text-neutral-100">
                               {translateCertificationValue(certification.prerequisites, lang)}
                             </div>
                           </div>
                         )}
                         {certification.examAttempts && (
                           <div className="p-3 bg-emerald-100/60 dark:bg-emerald-900/30 rounded-lg">
-                            <div className="text-xs text-emerald-600 dark:text-emerald-400 font-medium mb-1">
+                            <div className="text-sm text-emerald-600 dark:text-emerald-400 font-semibold mb-1">
                               {t('certification.examAttempts')}
                             </div>
-                            <div className="font-semibold text-neutral-800 dark:text-neutral-100">
+                            <div className="text-sm text-neutral-800 dark:text-neutral-100">
                               {certification.examAttempts} {t('certification.attemptsIncluded')}
                             </div>
                           </div>
                         )}
                         {certification.requiredFor && (
                           <div className="p-3 bg-purple-100/60 dark:bg-purple-900/30 rounded-lg">
-                            <div className="text-xs text-purple-600 dark:text-purple-400 font-medium mb-1">
+                            <div className="text-sm text-purple-600 dark:text-purple-400 font-semibold mb-1">
                               {t('certification.requiredFor')}
                             </div>
-                            <div className="font-semibold text-neutral-800 dark:text-neutral-100">
+                            <div className="text-sm text-neutral-800 dark:text-neutral-100">
                               {certification.requiredFor
                                 .map(item => translateCertificationValue(item, lang))
                                 .join(', ')}
@@ -609,24 +590,24 @@ export default function CertificationStudyGuide({
               {/* Resource Tabs - WowDash Style */}
               <div className="flex flex-wrap gap-2 mb-6 p-1 bg-neutral-100 dark:bg-neutral-800 rounded-xl">
                 <button
-                  onClick={() => setActiveResourceTab('fundamentals')}
+                  onClick={() => setActiveResourceTab('official')}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                    activeResourceTab === 'fundamentals'
+                    activeResourceTab === 'official'
                       ? 'bg-white dark:bg-neutral-900 text-primary-600 dark:text-primary-400 shadow-sm'
                       : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
                   }`}
                 >
-                  {t('certification.fundamentals')}
+                  {t('certification.official')}
                 </button>
                 <button
-                  onClick={() => setActiveResourceTab('courses')}
+                  onClick={() => setActiveResourceTab('learning')}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                    activeResourceTab === 'courses'
+                    activeResourceTab === 'learning'
                       ? 'bg-white dark:bg-neutral-900 text-primary-600 dark:text-primary-400 shadow-sm'
                       : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
                   }`}
                 >
-                  {t('certification.courses')}
+                  {t('certification.learning')}
                 </button>
                 <button
                   onClick={() => setActiveResourceTab('practice')}
@@ -639,27 +620,27 @@ export default function CertificationStudyGuide({
                   {t('certification.practice')}
                 </button>
                 <button
-                  onClick={() => setActiveResourceTab('additional')}
+                  onClick={() => setActiveResourceTab('community')}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                    activeResourceTab === 'additional'
+                    activeResourceTab === 'community'
                       ? 'bg-white dark:bg-neutral-900 text-primary-600 dark:text-primary-400 shadow-sm'
                       : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
                   }`}
                 >
-                  {t('certification.additional')}
+                  {t('certification.community')}
                 </button>
               </div>
 
               {/* Resource Content by Tab */}
               <div className="space-y-4">
                 {/* All Resource Tabs - Professional Style with Tab Colors */}
-                {['fundamentals', 'courses', 'practice', 'additional'].map(tabName => {
+                {['official', 'learning', 'practice', 'community'].map(tabName => {
                   // Color per tab type
                   const tabColors: Record<string, { bg: string; icon: string; text: string }> = {
-                    fundamentals: { bg: 'bg-primary-50 dark:bg-primary-600/20', icon: 'bg-primary-600', text: 'text-primary-600 dark:text-primary-400' },
-                    courses: { bg: 'bg-violet-50 dark:bg-violet-600/20', icon: 'bg-violet-600', text: 'text-violet-600 dark:text-violet-400' },
+                    official: { bg: 'bg-primary-50 dark:bg-primary-600/20', icon: 'bg-primary-600', text: 'text-primary-600 dark:text-primary-400' },
+                    learning: { bg: 'bg-violet-50 dark:bg-violet-600/20', icon: 'bg-violet-600', text: 'text-violet-600 dark:text-violet-400' },
                     practice: { bg: 'bg-teal-50 dark:bg-teal-600/20', icon: 'bg-teal-600', text: 'text-teal-600 dark:text-teal-400' },
-                    additional: { bg: 'bg-slate-100 dark:bg-slate-600/20', icon: 'bg-slate-600', text: 'text-slate-600 dark:text-slate-400' },
+                    community: { bg: 'bg-amber-50 dark:bg-amber-600/20', icon: 'bg-amber-600', text: 'text-amber-600 dark:text-amber-400' },
                   };
                   const colors = tabColors[tabName];
 
@@ -671,16 +652,20 @@ export default function CertificationStudyGuide({
                           // Icons for each section type
                           const getIcon = (id: string) => {
                             switch (id) {
-                              case 'linux-foundation':
                               case 'official':
-                              case 'books':
-                                return <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />;
-                              case 'paid-courses':
+                                return <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />;
+                              case 'documentation':
+                                return <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />;
+                              case 'courses':
+                                return <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />;
                               case 'videos':
                                 return <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />;
+                              case 'books':
+                                return <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />;
                               case 'simulators':
-                              case 'github':
                                 return <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />;
+                              case 'github':
+                                return <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />;
                               case 'blogs':
                                 return <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />;
                               case 'communities':
@@ -695,37 +680,28 @@ export default function CertificationStudyGuide({
                           return (
                             <div
                               key={section.id}
-                              className={`card rounded-xl overflow-hidden border-0 ${colors.bg}`}
+                              className="card rounded-xl overflow-hidden border border-neutral-200 dark:border-neutral-600 bg-white dark:bg-neutral-700"
                             >
                               <button
                                 onClick={() => toggleResourceCategory(section.id)}
-                                className="w-full p-4 flex items-center justify-between transition-colors"
+                                className="w-full px-4 py-3 flex items-center justify-between transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-600"
                               >
-                                <div className="flex items-center gap-3">
-                                  <div className={`w-10 h-10 sm:w-12 sm:h-12 inline-flex items-center justify-center ${colors.icon} text-white rounded-xl`}>
-                                    <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                      {getIcon(section.id)}
-                                    </svg>
-                                  </div>
-                                  <h4 className={`text-lg font-semibold ${colors.text} flex items-center gap-2`}>
-                                    {section.title}
-                                    <span className="text-sm text-neutral-500 dark:text-neutral-400 font-normal">
-                                      ({section.resources.length})
-                                    </span>
-                                  </h4>
-                                </div>
-                                <div className="p-2 rounded-lg bg-white/60 dark:bg-neutral-900/40">
-                                  <svg
-                                    className={`w-4 h-4 text-neutral-500 dark:text-neutral-400 transition-transform ${
-                                      expandedResourceCategories.includes(section.id) ? 'rotate-180' : ''
-                                    }`}
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                  >
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                  </svg>
-                                </div>
+                                <h4 className={`text-base font-semibold ${colors.text} flex items-center gap-2`}>
+                                  {section.title}
+                                  <span className="text-sm text-neutral-500 dark:text-neutral-400 font-normal">
+                                    ({section.resources.length})
+                                  </span>
+                                </h4>
+                                <svg
+                                  className={`w-4 h-4 text-neutral-500 dark:text-neutral-400 transition-transform ${
+                                    expandedResourceCategories.includes(section.id) ? 'rotate-180' : ''
+                                  }`}
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                </svg>
                               </button>
 
                               {expandedResourceCategories.includes(section.id) && (

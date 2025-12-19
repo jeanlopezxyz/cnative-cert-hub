@@ -1,21 +1,6 @@
 /**
  * KCNA - Kubernetes and Cloud Native Associate
- * Study Resources
- *
- * How to contribute:
- * 1. Add new resources to the appropriate category
- * 2. Follow the resource interface for each type
- * 3. Include all required fields
- * 4. Verify URLs are valid and accessible
- *
- * Resource Categories:
- * - books: Physical or digital books
- * - courses: Online courses (free or paid)
- * - videos: YouTube videos, playlists, webinars
- * - documentation: Official docs and references
- * - blogs: Blog posts and articles
- * - communities: Slack, Discord, Reddit, forums
- * - tools: Practice tools and simulators
+ * Study Resources - Updated December 2024
  */
 
 import type { CertificationResources } from '../../types';
@@ -26,57 +11,62 @@ export const kcnaResources: CertificationResources = {
     'https://github.com/cncf/curriculum',
     'https://github.com/moabukar/KCNA-Kubernetes-and-Cloud-Native-Associate',
     'https://github.com/walidshaari/Kubernetes-and-Cloud-Native-Associate',
+    'https://github.com/James-Quigley/KCNA-Study-Guide',
   ],
   practice: [
     'https://kodekloud.com/courses/kubernetes-and-cloud-native-associate-kcna/',
-    'https://learn.acloud.guru/course/kubernetes-and-cloud-native-essentials',
+    'https://killercoda.com/playgrounds/scenario/kubernetes',
   ],
 
-  // ============================================
-  // BOOKS
-  // ============================================
   books: [
     {
-      title: 'Kubernetes: Up and Running',
-      url: 'https://www.oreilly.com/library/view/kubernetes-up-and/9781492046523/',
-      author: 'Brendan Burns, Joe Beda, Kelsey Hightower',
-      description: 'Guía completa para implementar y gestionar clústeres de Kubernetes',
+      title: 'Kubernetes: Up and Running, 3rd Edition',
+      url: 'https://www.oreilly.com/library/view/kubernetes-up-and/9781098110192/',
+      author: 'Brendan Burns, Joe Beda, Kelsey Hightower, Lachlan Evenson',
+      description: 'Dive into Kubernetes - the industry standard for container orchestration',
       isPaid: true,
       format: 'paperback',
-      year: 2022,
-      difficulty: 'beginner',
-    },
-    {
-      title: 'Cloud Native DevOps with Kubernetes',
-      url: 'https://www.oreilly.com/library/view/cloud-native-devops/9781492040750/',
-      author: 'John Arundel, Justin Domingus',
-      description: 'Construcción, implementación y escalado de aplicaciones modernas en la nube',
-      isPaid: true,
-      format: 'pdf',
-      year: 2022,
+      year: 2024,
       difficulty: 'beginner',
     },
     {
       title: 'The KCNA Book',
       url: 'https://leanpub.com/thekcnabook',
       author: 'Nigel Poulton',
-      description: 'Preparación específica para el examen KCNA con ejemplos prácticos',
+      description: 'Focused preparation for the KCNA exam with practical examples',
       isPaid: true,
       format: 'pdf',
-      year: 2023,
+      year: 2024,
+      difficulty: 'beginner',
+    },
+    {
+      title: 'Cloud Native DevOps with Kubernetes, 2nd Edition',
+      url: 'https://www.oreilly.com/library/view/cloud-native-devops/9781098116811/',
+      author: 'John Arundel, Justin Domingus',
+      description: 'Build, deploy, and scale modern applications in the cloud',
+      isPaid: true,
+      format: 'pdf',
+      year: 2024,
       difficulty: 'beginner',
     },
   ],
 
-  // ============================================
-  // COURSES
-  // ============================================
   courses: [
+    {
+      title: 'Kubernetes and Cloud Native Associate (KCNA) - Official',
+      url: 'https://training.linuxfoundation.org/training/kubernetes-and-cloud-native-associate-kcna/',
+      author: 'The Linux Foundation',
+      description: 'Official KCNA preparation course from Linux Foundation',
+      isPaid: true,
+      duration: '15 hours',
+      difficulty: 'beginner',
+      rating: 4.8,
+    },
     {
       title: 'Introduction to Kubernetes (LFS158)',
       url: 'https://www.edx.org/learn/kubernetes/the-linux-foundation-introduction-to-kubernetes',
       author: 'The Linux Foundation',
-      description: 'Comprehensive introduction to Kubernetes concepts, architecture, and deployment',
+      description: 'Free comprehensive introduction to Kubernetes concepts and architecture',
       isPaid: false,
       duration: '16 hours',
       difficulty: 'beginner',
@@ -86,145 +76,155 @@ export const kcnaResources: CertificationResources = {
       title: 'Introduction to Cloud Infrastructure Technologies (LFS151)',
       url: 'https://training.linuxfoundation.org/training/introduction-to-cloud-infrastructure-technologies/',
       author: 'The Linux Foundation',
-      description: 'Comprehensive introduction to cloud technologies, containers, and Kubernetes',
+      description: 'Introduction to cloud technologies, containers, and Kubernetes',
       isPaid: false,
       duration: '12 hours',
       difficulty: 'beginner',
       rating: 4.7,
     },
     {
-      title: 'Introduction to Kubernetes on Edge with K3s (LFS156x)',
-      url: 'https://training.linuxfoundation.org/training/introduction-to-kubernetes-on-edge-with-k3s-lfs156x/',
-      author: 'The Linux Foundation',
-      description: 'Course on edge computing with Kubernetes and K3s',
-      isPaid: false,
-      duration: '15 hours',
-      difficulty: 'intermediate',
-      rating: 4.6,
+      title: 'KCNA Certification Course',
+      url: 'https://kodekloud.com/courses/kubernetes-and-cloud-native-associate-kcna/',
+      author: 'KodeKloud',
+      description: 'Complete KCNA preparation with hands-on labs',
+      isPaid: true,
+      duration: '10 hours',
+      difficulty: 'beginner',
+      rating: 4.9,
     },
   ],
 
-  // ============================================
-  // VIDEOS
-  // ============================================
   videos: [
     {
-      title: 'KCNA Course - Full Course',
+      title: 'KCNA Full Course - Kubernetes and Cloud Native Associate',
       url: 'https://www.youtube.com/watch?v=AplluksKvzI',
       author: 'FreeCodeCamp',
-      description: 'Curso completo de KCNA gratuito',
+      description: 'Complete free KCNA course covering all exam domains',
       isPaid: false,
-      duration: '14 horas',
+      duration: '14 hours',
       difficulty: 'beginner',
     },
     {
-      title: 'Cloud Native Fundamentals',
-      url: 'https://www.youtube.com/watch?v=OOXJhauP5Dg',
-      author: 'Saiyam Pathak',
-      description: 'Fundamentos de Cloud Native y Kubernetes',
+      title: 'KCNA Crash Course 2024',
+      url: 'https://www.youtube.com/watch?v=iGkFHB1kFZ0',
+      author: 'TechWorld with Nana',
+      description: 'Quick comprehensive KCNA preparation guide',
       isPaid: false,
-      duration: '2 horas',
+      duration: '3 hours',
       difficulty: 'beginner',
     },
     {
-      title: 'Kubernetes Basics for KCNA',
-      url: 'https://www.youtube.com/playlist?list=PL2We04F3Y_43dAehLMT5GxJhtk3mJtkl5',
-      author: 'Kunal Kushwaha',
-      description: 'Serie de videos sobre conceptos básicos de Kubernetes',
+      title: 'Kubernetes Tutorial for Beginners',
+      url: 'https://www.youtube.com/watch?v=X48VuDVv0do',
+      author: 'TechWorld with Nana',
+      description: 'Full Kubernetes course for beginners',
       isPaid: false,
-      duration: '10 horas',
+      duration: '4 hours',
       difficulty: 'beginner',
     },
   ],
 
-  // ============================================
-  // DOCUMENTATION
-  // ============================================
   documentation: [
     {
-      title: 'Documentación Oficial de Kubernetes',
+      title: 'Kubernetes Official Documentation',
       url: 'https://kubernetes.io/docs/',
-      description: 'Documentación completa de Kubernetes - tu referencia principal',
+      description: 'Complete Kubernetes documentation - your primary reference',
+      isPaid: false,
+    },
+    {
+      title: 'KCNA Exam Curriculum',
+      url: 'https://github.com/cncf/curriculum/blob/master/KCNA_Curriculum.pdf',
+      description: 'Official KCNA exam curriculum and objectives',
       isPaid: false,
     },
     {
       title: 'CNCF Landscape',
       url: 'https://landscape.cncf.io/',
-      description: 'Mapa interactivo del ecosistema Cloud Native',
+      description: 'Interactive map of the Cloud Native ecosystem',
       isPaid: false,
     },
     {
       title: 'Cloud Native Glossary',
       url: 'https://glossary.cncf.io/',
-      description: 'Glosario de términos Cloud Native en múltiples idiomas',
+      description: 'Cloud Native terminology glossary in multiple languages',
       isPaid: false,
     },
   ],
 
-  // ============================================
-  // BLOGS
-  // ============================================
   blogs: [
     {
       title: 'KCNA Exam Study Guide',
       url: 'https://kodekloud.com/blog/kcna-exam-guide/',
       author: 'KodeKloud',
-      description: 'Guía detallada de estudio con tips y recursos',
+      description: 'Detailed study guide with tips and resources',
       isPaid: false,
     },
     {
-      title: 'How I Passed the KCNA Exam',
-      url: 'https://medium.com/@javedalam0/how-i-passed-the-kcna-exam-5c94d6a4f5e2',
-      author: 'Javed Alam',
-      description: 'Experiencia personal y consejos para aprobar el KCNA',
+      title: 'KCNA Certification Guide 2024',
+      url: 'https://devopscube.com/kcna-certification-guide/',
+      author: 'DevOpsCube',
+      description: 'Comprehensive guide with study plan and resources',
+      isPaid: false,
+    },
+    {
+      title: 'CNCF Official Blog',
+      url: 'https://www.cncf.io/blog/',
+      author: 'CNCF',
+      description: 'Latest news and updates from the Cloud Native ecosystem',
       isPaid: false,
     },
   ],
 
-  // ============================================
-  // COMMUNITIES
-  // ============================================
   communities: [
     {
       title: 'CNCF Slack',
       url: 'https://slack.cncf.io/',
-      description: 'Comunidad oficial de CNCF con canales dedicados a certificaciones',
+      description: 'Official CNCF community with channels dedicated to certifications',
+      isPaid: false,
+    },
+    {
+      title: 'Kubernetes Slack',
+      url: 'https://slack.k8s.io/',
+      description: 'Official Kubernetes community Slack workspace',
       isPaid: false,
     },
     {
       title: 'r/kubernetes Reddit',
       url: 'https://www.reddit.com/r/kubernetes/',
-      description: 'Comunidad activa de Kubernetes con discusiones sobre KCNA',
+      description: 'Active Kubernetes community with KCNA discussions',
       isPaid: false,
     },
     {
       title: 'Kubernetes Forum',
       url: 'https://discuss.kubernetes.io/',
-      description: 'Foro oficial de Kubernetes para preguntas y discusiones',
+      description: 'Official Kubernetes discussion forum',
       isPaid: false,
     },
   ],
 
-  // ============================================
-  // TOOLS
-  // ============================================
   tools: [
     {
-      title: 'Minikube',
-      url: 'https://minikube.sigs.k8s.io/',
-      description: 'Kubernetes local para aprendizaje y desarrollo',
+      title: 'Killercoda - Kubernetes Playground',
+      url: 'https://killercoda.com/playgrounds/scenario/kubernetes',
+      description: 'Free browser-based Kubernetes environment for practice',
       isPaid: false,
     },
     {
-      title: 'Katacoda Kubernetes Playground',
-      url: 'https://www.katacoda.com/courses/kubernetes/playground',
-      description: 'Entorno de Kubernetes en el navegador sin instalación',
+      title: 'Minikube',
+      url: 'https://minikube.sigs.k8s.io/',
+      description: 'Local Kubernetes cluster for learning and development',
+      isPaid: false,
+    },
+    {
+      title: 'Kind (Kubernetes in Docker)',
+      url: 'https://kind.sigs.k8s.io/',
+      description: 'Run local Kubernetes clusters using Docker containers',
       isPaid: false,
     },
     {
       title: 'K9s - Kubernetes CLI',
       url: 'https://k9scli.io/',
-      description: 'Terminal UI para gestionar clústeres de Kubernetes',
+      description: 'Terminal UI for managing Kubernetes clusters',
       isPaid: false,
     },
   ],

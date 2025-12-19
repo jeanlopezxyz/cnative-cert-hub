@@ -14,6 +14,7 @@ import { kca } from './kca';
 import { otca } from './otca';
 import { cba } from './cba';
 import { cnpa } from './cnpa';
+import { cnpe } from './cnpe';
 
 // Re-export types
 export type { Certification, StudyResource } from '../../types';
@@ -35,6 +36,7 @@ export const certifications = [
   otca,
   cba,
   cnpa,
+  cnpe,
 ];
 
 // Export special certification groups
@@ -42,4 +44,4 @@ export const kubestronautCerts = ['cka', 'ckad', 'cks', 'kcna', 'kcsa'];
 export const goldenKubestronautCerts = certifications.map(c => c.id);
 
 // Export individual certifications for direct access
-export { cka, ckad, cks, kcna, kcsa, pca, ica, cca, capa, cgoa, lfcs, kca, otca, cba, cnpa };
+export { cka, ckad, cks, kcna, kcsa, pca, ica, cca, capa, cgoa, lfcs, kca, otca, cba, cnpa, cnpe };
