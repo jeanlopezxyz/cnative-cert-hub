@@ -168,32 +168,40 @@ const hreflangUrls = {
       Reference: https://docs.astro.build/en/guides/view-transitions/#script-behavior-with-view-transitions
     -->
     <script is:inline>
-      // Get theme from storage or system preference
-      function getTheme() {
-        const stored = localStorage.getItem('theme');
-        if (stored) return stored;
-        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      }
+      (function() {
+        // Get theme from storage or system preference
+        function getTheme() {
+          try {
+            const stored = localStorage.getItem('theme');
+            if (stored === 'dark' || stored === 'light') return stored;
+          } catch {}
+          return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
 
-      // Apply theme to document
-      function applyTheme() {
-        const theme = getTheme();
-        document.documentElement.classList.toggle('dark', theme === 'dark');
-        document.documentElement.classList.toggle('light', theme === 'light');
-      }
+        // Apply theme to document element
+        function setTheme(el, theme) {
+          el.classList.remove('dark', 'light');
+          el.classList.add(theme);
+        }
 
-      // Apply immediately (prevents flash on initial load)
-      applyTheme();
+        // Apply immediately (prevents flash on initial load)
+        setTheme(document.documentElement, getTheme());
 
-      // Before swap: copy theme class to new document (prevents flash during navigation)
-      document.addEventListener('astro:before-swap', (e) => {
-        const isDark = document.documentElement.classList.contains('dark');
-        e.newDocument.documentElement.classList.toggle('dark', isDark);
-        e.newDocument.documentElement.classList.toggle('light', !isDark);
-      });
+        // Before swap: save current theme and apply to new document
+        document.addEventListener('astro:before-swap', (e) => {
+          // Get current visual theme
+          const theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+          // Save to localStorage so after-swap reads the correct value
+          try { localStorage.setItem('theme', theme); } catch {}
+          // Apply to new document
+          setTheme(e.newDocument.documentElement, theme);
+        });
 
-      // After swap: reapply theme (backup for edge cases)
-      document.addEventListener('astro:after-swap', applyTheme);
+        // After swap: reapply from localStorage
+        document.addEventListener('astro:after-swap', () => {
+          setTheme(document.documentElement, getTheme());
+        });
+      })();
     </script>
 
     <!-- Load global.css synchronously for instant styling -->
