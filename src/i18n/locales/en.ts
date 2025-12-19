@@ -16,11 +16,11 @@ export const en = {
   'nav.roadmap': 'Roadmap',
 
   // Hero
-  'hero.title': 'Master Cloud Native Technologies',
-  'hero.subtitle': 'Your comprehensive preparation hub for CNCF certifications',
+  'hero.title': 'Cloud Native Certifications',
+  'hero.subtitle': 'Prepare for CNCF certifications',
   'hero.badge': 'Official CNCF Curriculum Aligned',
   'hero.description':
-    'Comprehensive study guides, hands-on labs, and community resources to help you achieve CNCF certifications. From Kubernetes fundamentals to advanced cloud native architectures.',
+    'Study guides, resources, and learning paths to achieve CNCF certifications.',
   'hero.cta.programs': 'Certification Paths',
   'hero.cta.certifications': 'Browse Certifications',
   'hero.cta.start': 'Start Learning',
@@ -90,11 +90,6 @@ export const en = {
   'achievements.golden.how': 'Path to Golden Kubestronaut',
   'achievements.golden.upcomingTitle': 'Program Update Notice',
   'achievements.golden.upcomingDesc': 'Effective March 1, 2026, CNPE (Certified Cloud Native Platform Engineer) will be added as a requirement for Golden Kubestronaut status, increasing the total to 16 certifications. Current Golden Kubestronauts retain their lifetime status.',
-  'achievements.golden.upcomingCertsTitle': 'Upcoming Certifications',
-  'achievements.golden.upcomingCertsDesc': 'New certifications will be added to the Golden Kubestronaut requirements as they become available.',
-  'achievements.golden.upcomingCert1': 'CKNE (Certified Kubernetes Network Engineer)',
-  'achievements.golden.upcomingCert1Desc': 'Intermediate-level certification for Kubernetes and cloud native platform networking. Expected release: 2026.',
-  'achievements.golden.upcomingNote': 'New certifications are added to requirements 90+ days after reaching General Availability (GA).',
   'achievements.golden.intro': '',
   'achievements.golden.definition': '',
   'achievements.golden.req1':
@@ -126,12 +121,12 @@ export const en = {
   'achievements.golden.step2Title': 'Phase 2: Cloud Native Specializations',
   'achievements.golden.step3Title': 'Phase 3: Linux Systems Expertise',
   'achievements.golden.requiresCka': 'Prerequisite: CKA',
-  'achievements.golden.howStep1Title': 'Achieve Kubestronaut Status',
-  'achievements.golden.howStep1Desc': 'Complete all 5 Kubernetes certifications to establish your foundation',
-  'achievements.golden.howStep2Title': 'Expand Cloud Native Expertise',
-  'achievements.golden.howStep2Desc': 'Master observability, service mesh, GitOps, and platform engineering certifications',
-  'achievements.golden.howStep3Title': 'Complete Linux Mastery',
-  'achievements.golden.howStep3Desc': 'Obtain LFCS certification and claim your Golden Kubestronaut status',
+  'achievements.golden.howStep1Title': 'Become Kubestronaut',
+  'achievements.golden.howStep1Desc': 'Complete all 5 Kubernetes certifications',
+  'achievements.golden.howStep2Title': '9 CNCF Certifications',
+  'achievements.golden.howStep2Desc': 'Obtain the additional certifications',
+  'achievements.golden.howStep3Title': 'Linux Foundation',
+  'achievements.golden.howStep3Desc': 'Complete the LFCS certification',
   'achievements.golden.ctaText': 'Ready to complete the full certification program?',
   'achievements.golden.ctaButton': 'Begin Your Journey',
   'achievements.kubestronaut.requiresCka': 'Requires CKA',
@@ -144,6 +139,14 @@ export const en = {
   'certifications.filter.entry': 'Entry',
   'certifications.filter.intermediate': 'Intermediate',
   'certifications.filter.advanced': 'Advanced',
+
+  // Upcoming Certifications
+  'certifications.upcoming.title': 'Upcoming Certifications',
+  'certifications.upcoming.subtitle': 'New certifications coming to the CNCF ecosystem',
+  'certifications.upcoming.ckne': 'CKNE (Certified Kubernetes Network Engineer)',
+  'certifications.upcoming.ckneDesc': 'Intermediate-level certification for Kubernetes and cloud native platform networking.',
+  'certifications.upcoming.expected': 'Expected',
+  'certifications.upcoming.note': 'New certifications are typically announced at KubeCon events and become available shortly after.',
 
   // Certification Card
   'certifications.card.domains': 'Domains',

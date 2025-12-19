@@ -18,6 +18,61 @@ const t = useTranslations(lang);
     <!-- Achievement Programs -->
     <AchievementPrograms client:load lang={lang} />
 
+    <!-- Upcoming Certifications Section -->
+    <section class="px-4 sm:px-6 lg:px-8">
+      <div class="card rounded-2xl overflow-hidden border-0 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-600/10 dark:to-indigo-600/10">
+        <div class="card-body p-6 sm:p-8">
+          <div class="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 mb-6">
+            <div class="w-14 h-14 flex-shrink-0 inline-flex items-center justify-center bg-purple-600 text-white rounded-xl">
+              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+              </svg>
+            </div>
+            <div>
+              <h2 class="text-xl sm:text-2xl font-bold text-purple-600 dark:text-purple-400 mb-1">
+                {t('certifications.upcoming.title')}
+              </h2>
+              <p class="text-neutral-600 dark:text-neutral-400 text-sm">
+                {t('certifications.upcoming.subtitle')}
+              </p>
+            </div>
+          </div>
+
+          <!-- CKNE Card -->
+          <div class="bg-white dark:bg-neutral-800 rounded-xl p-5 border border-purple-200 dark:border-purple-600/30 shadow-sm">
+            <div class="flex flex-col sm:flex-row sm:items-start gap-4">
+              <div class="w-12 h-12 flex-shrink-0 inline-flex items-center justify-center bg-purple-100 dark:bg-purple-600/30 text-purple-600 dark:text-purple-400 rounded-xl">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.14 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"></path>
+                </svg>
+              </div>
+              <div class="flex-1">
+                <div class="flex flex-wrap items-center gap-2 mb-2">
+                  <h3 class="text-lg font-bold text-purple-600 dark:text-purple-400">
+                    {t('certifications.upcoming.ckne')}
+                  </h3>
+                  <span class="px-2.5 py-1 bg-purple-100 dark:bg-purple-600/30 text-purple-600 dark:text-purple-400 text-xs font-semibold rounded-lg">
+                    {t('certifications.upcoming.expected')} 2026
+                  </span>
+                </div>
+                <p class="text-neutral-600 dark:text-neutral-300 text-sm leading-relaxed">
+                  {t('certifications.upcoming.ckneDesc')}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Note -->
+          <p class="mt-5 text-xs text-neutral-500 dark:text-neutral-400 flex items-start gap-2">
+            <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+            </svg>
+            <span>{t('certifications.upcoming.note')}</span>
+          </p>
+        </div>
+      </div>
+    </section>
+
     <!-- Certifications Grid -->
     <CertificationGrid client:load lang={lang} />
   </div>

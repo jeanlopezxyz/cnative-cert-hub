@@ -16,11 +16,11 @@ export const pt = {
   'nav.roadmap': 'Roteiro',
 
   // Hero
-  'hero.title': 'Domine as Tecnologias Cloud Native',
-  'hero.subtitle': 'Seu centro completo de preparação para certificações CNCF',
+  'hero.title': 'Certificações Cloud Native',
+  'hero.subtitle': 'Prepare-se para as certificações CNCF',
   'hero.badge': 'Alinhado com o Currículo Oficial CNCF',
   'hero.description':
-    'Guias de estudo completos, laboratórios práticos e recursos da comunidade para ajudá-lo a obter certificações CNCF. Dos fundamentos de Kubernetes às arquiteturas cloud native avançadas.',
+    'Guias de estudo, recursos e rotas de aprendizagem para obter as certificações CNCF.',
   'hero.cta.programs': 'Rotas de Certificação',
   'hero.cta.certifications': 'Explorar Certificações',
   'hero.cta.start': 'Começar a Aprender',
@@ -90,11 +90,6 @@ export const pt = {
   'achievements.golden.how': 'Caminho para Golden Kubestronaut',
   'achievements.golden.upcomingTitle': 'Aviso de Atualização do Programa',
   'achievements.golden.upcomingDesc': 'A partir de 1º de março de 2026, CNPE (Certified Cloud Native Platform Engineer) será adicionada como requisito para o status Golden Kubestronaut, elevando o total para 16 certificações. Os Golden Kubestronauts atuais mantêm seu status vitalício.',
-  'achievements.golden.upcomingCertsTitle': 'Próximas Certificações',
-  'achievements.golden.upcomingCertsDesc': 'Novas certificações serão adicionadas aos requisitos do Golden Kubestronaut conforme forem disponibilizadas.',
-  'achievements.golden.upcomingCert1': 'CKNE (Certified Kubernetes Network Engineer)',
-  'achievements.golden.upcomingCert1Desc': 'Certificação de nível intermediário para redes em Kubernetes e plataformas cloud native. Lançamento previsto: 2026.',
-  'achievements.golden.upcomingNote': 'Novas certificações são adicionadas aos requisitos 90+ dias após atingir Disponibilidade Geral (GA).',
   'achievements.golden.req1':
     'Completar todas as 14 certificações CNCF: CKA, CKAD, CKS, KCNA, KCSA, PCA, ICA, CCA, CAPA, CGOA, CBA, OTCA, KCA e CNPA',
   'achievements.golden.req2': 'Obter a certificação Linux Foundation Certified System Administrator (LFCS)',
@@ -122,12 +117,12 @@ export const pt = {
   'achievements.golden.step2Title': 'Fase 2: Especializações Cloud Native',
   'achievements.golden.step3Title': 'Fase 3: Expertise em Sistemas Linux',
   'achievements.golden.requiresCka': 'Pré-requisito: CKA',
-  'achievements.golden.howStep1Title': 'Alcançar o Status Kubestronaut',
-  'achievements.golden.howStep1Desc': 'Complete todas as 5 certificações Kubernetes para estabelecer sua base',
-  'achievements.golden.howStep2Title': 'Expandir Expertise Cloud Native',
-  'achievements.golden.howStep2Desc': 'Domine certificações de observabilidade, service mesh, GitOps e engenharia de plataforma',
-  'achievements.golden.howStep3Title': 'Completar Maestria em Linux',
-  'achievements.golden.howStep3Desc': 'Obtenha a certificação LFCS e reivindique seu status Golden Kubestronaut',
+  'achievements.golden.howStep1Title': 'Ser Kubestronaut',
+  'achievements.golden.howStep1Desc': 'Complete as 5 certificações Kubernetes',
+  'achievements.golden.howStep2Title': '9 Certificações CNCF',
+  'achievements.golden.howStep2Desc': 'Obtenha as certificações adicionais',
+  'achievements.golden.howStep3Title': 'Linux Foundation',
+  'achievements.golden.howStep3Desc': 'Complete a certificação LFCS',
   'achievements.golden.ctaText': 'Pronto para completar o programa completo de certificação?',
   'achievements.golden.ctaButton': 'Começar Sua Jornada',
   'achievements.kubestronaut.requiresCka': 'Requer CKA',
@@ -140,6 +135,14 @@ export const pt = {
   'certifications.filter.entry': 'Básico',
   'certifications.filter.intermediate': 'Intermediário',
   'certifications.filter.advanced': 'Avançado',
+
+  // Upcoming Certifications
+  'certifications.upcoming.title': 'Próximas Certificações',
+  'certifications.upcoming.subtitle': 'Novas certificações chegando ao ecossistema CNCF',
+  'certifications.upcoming.ckne': 'CKNE (Certified Kubernetes Network Engineer)',
+  'certifications.upcoming.ckneDesc': 'Certificação de nível intermediário para redes em Kubernetes e plataformas cloud native.',
+  'certifications.upcoming.expected': 'Previsto',
+  'certifications.upcoming.note': 'Novas certificações são tipicamente anunciadas em eventos KubeCon e ficam disponíveis logo após.',
 
   // Certification Card
   'certifications.card.domains': 'Domínios',
