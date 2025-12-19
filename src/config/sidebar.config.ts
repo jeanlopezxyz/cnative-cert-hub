@@ -83,11 +83,6 @@ export const QUICK_LINKS_ITEMS = [
     href: EXTERNAL_URLS.discounts.linuxFoundationCoupons,
   },
   {
-    id: 'practice',
-    translationKey: 'sidebar.practice',
-    href: EXTERNAL_URLS.learning.killerSh,
-  },
-  {
     id: 'curriculum',
     translationKey: 'sidebar.curriculum',
     href: EXTERNAL_URLS.githubCNCF,
