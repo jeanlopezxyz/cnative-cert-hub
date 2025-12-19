@@ -151,7 +151,7 @@ export default function Sidebar({ lang }: SidebarProps) {
             </div>
             {/* Logo Text - Hidden when collapsed */}
             <div className={`transition-opacity duration-200 ${isDesktopCollapsed ? 'lg:opacity-0 lg:group-hover:opacity-100' : ''}`}>
-              <span className="text-lg font-bold text-neutral-900 dark:text-white">CNCF</span>
+              <span className="text-lg font-bold text-neutral-900 dark:text-white">CNative</span>
               <span className="text-lg font-bold text-primary-600">Cert</span>
               <span className="text-lg font-bold text-neutral-900 dark:text-white">Hub</span>
             </div>

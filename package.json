@@ -1,10 +1,10 @@
 {
-  "name": "cncf-certification-hub",
+  "name": "cnative-cert-hub",
   "type": "module",
   "version": "1.0.0",
-  "description": "CNCF Certification Resources Hub - A comprehensive platform for tracking CNCF certifications and study progress",
+  "description": "Cloud Native Certification Resources Hub - A comprehensive platform for tracking cloud native certifications and study progress",
   "keywords": [
-    "cncf",
+    "cloud-native",
     "kubernetes",
     "certification",
     "study-guide",
@@ -12,15 +12,15 @@
     "react",
     "typescript"
   ],
-  "author": "CNCF Certification Hub Team",
+  "author": "CNativeCertHub Team",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jeanlopezxyz/cncf-certification-hub.git"
+    "url": "https://github.com/jeanlopezxyz/cnative-cert-hub.git"
   },
-  "homepage": "https://jeanlopezxyz.github.io/cncf-certification-hub",
+  "homepage": "https://cnativecerthub.xyz",
   "bugs": {
-    "url": "https://github.com/jeanlopezxyz/cncf-certification-hub/issues"
+    "url": "https://github.com/jeanlopezxyz/cnative-cert-hub/issues"
   },
   "engines": {
     "node": ">=18.0.0",

@@ -66,10 +66,9 @@ export function useCurrentPath(
   // Derive path information
   const pathSegments = currentPath.split('/').filter(Boolean);
   
-  // Remove base path and language segments
-  const basePath = process.env.NODE_ENV === 'production' ? 'cncf-certification-hub' : '';
-  const relevantSegments = pathSegments.filter(segment => 
-    segment !== basePath && segment !== lang
+  // Remove language segments (no base path needed with custom domain)
+  const relevantSegments = pathSegments.filter(segment =>
+    segment !== lang
   );
 
   const isHomePage = relevantSegments.length === 0;

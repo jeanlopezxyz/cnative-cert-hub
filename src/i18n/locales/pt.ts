@@ -4,10 +4,10 @@
 
 export const pt = {
   // Site/Header
-  'site.title': 'CNCF Certification Resources Hub',
+  'site.title': 'Cloud Native Certification Resources Hub',
   'site.subtitle': 'Guias de Estudo e Preparação para Exames',
   'site.description':
-    'Centro de Recursos de Certificações CNCF - Guias de estudo, dicas e materiais de preparação para exames',
+    'Centro de Recursos de Certificações Cloud Native - Guias de estudo, dicas e materiais de preparação para exames CNCF',
 
   // Navigation
   'nav.dashboard': 'Painel',
@@ -262,7 +262,7 @@ export const pt = {
   'footer.community': 'Comunidade',
   'footer.journey': 'Comece sua jornada de certificação cloud native hoje!',
   'footer.github': 'Ver no GitHub',
-  'footer.title': 'Centro de Recursos de Certificação CNCF',
+  'footer.title': 'Centro de Recursos de Certificação Cloud Native',
   'footer.kubernetesDocs': 'Documentação do Kubernetes',
   'footer.killersh': 'Killer.sh',
   'footer.cncfCurriculum': 'Currículo CNCF',
@@ -595,7 +595,7 @@ export const pt = {
   'accessibility.kubernetesSlack': 'Slack do Kubernetes',
 
   // Site
-  'site.titleShort': 'Centro Cert CNCF',
+  'site.titleShort': 'CNative CertHub',
 
 
   // Common

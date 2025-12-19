@@ -37,20 +37,19 @@ const baseUrl = (import.meta.env.BASE_URL || '/').endsWith('/')
   : import.meta.env.BASE_URL + '/';
 
 // SEO URLs
-const siteUrl = 'https://jeanlopezxyz.github.io';
-const basePath = '/cncf-certification-hub';
-const currentPath = Astro.url.pathname.replace(basePath, '').replace(/^\/+/, '');
-const canonicalURL = new URL(`${basePath}/${currentPath}`, siteUrl).href.replace(/\/$/, '');
+const siteUrl = 'https://cnativecerthub.xyz';
+const currentPath = Astro.url.pathname.replace(/^\/+/, '');
+const canonicalURL = new URL(`/${currentPath}`, siteUrl).href.replace(/\/$/, '') || siteUrl;
 
 // Default OG Image (1200x630 for optimal social sharing)
-const ogImage = image || `${siteUrl}${basePath}/og-image.png`;
+const ogImage = image || `${siteUrl}/og-image.png`;
 
 // Hreflang URLs
 const pathWithoutLang = currentPath.replace(/^(es|pt)\//, '');
 const hreflangUrls = {
-  en: `${siteUrl}${basePath}/${pathWithoutLang}`.replace(/\/$/, ''),
-  es: `${siteUrl}${basePath}/es/${pathWithoutLang}`.replace(/\/$/, ''),
-  pt: `${siteUrl}${basePath}/pt/${pathWithoutLang}`.replace(/\/$/, ''),
+  en: `${siteUrl}/${pathWithoutLang}`.replace(/\/$/, '') || siteUrl,
+  es: `${siteUrl}/es/${pathWithoutLang}`.replace(/\/$/, ''),
+  pt: `${siteUrl}/pt/${pathWithoutLang}`.replace(/\/$/, ''),
 };
 ---
 
@@ -76,11 +75,11 @@ const hreflangUrls = {
     <meta name="generator" content={Astro.generator} />
 
     <!-- Primary Meta Tags -->
-    <title>{title} | CNCF Certification Resources Hub</title>
-    <meta name="title" content={`${title} | CNCF Certification Resources Hub`} />
+    <title>{title} | Cloud Native Certification Resources Hub</title>
+    <meta name="title" content={`${title} | Cloud Native Certification Resources Hub`} />
     <meta name="description" content={finalDescription} />
     <meta name="keywords" content="CNCF, Kubernetes, CKA, CKAD, CKS, KCNA, KCSA, certification, cloud native, DevOps, container, exam preparation" />
-    <meta name="author" content="CNCF Certification Hub" />
+    <meta name="author" content="CNative CertHub" />
     <meta name="robots" content="index, follow" />
     <meta name="theme-color" content="#1E50D9" />
 
@@ -96,19 +95,19 @@ const hreflangUrls = {
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content={type} />
     <meta property="og:url" content={canonicalURL} />
-    <meta property="og:title" content={`${title} | CNCF Certification Resources Hub`} />
+    <meta property="og:title" content={`${title} | Cloud Native Certification Resources Hub`} />
     <meta property="og:description" content={finalDescription} />
     <meta property="og:image" content={ogImage} />
-    <meta property="og:image:alt" content="CNCF Certification Resources Hub - Study Guides for CKA, CKAD, CKS, KCNA, KCSA and more" />
+    <meta property="og:image:alt" content="Cloud Native Certification Resources Hub - Study Guides for CKA, CKAD, CKS, KCNA, KCSA and more" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:locale" content={lang === 'es' ? 'es_ES' : lang === 'pt' ? 'pt_BR' : 'en_US'} />
-    <meta property="og:site_name" content="CNCF Certification Resources Hub" />
+    <meta property="og:site_name" content="Cloud Native Certification Resources Hub" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content={canonicalURL} />
-    <meta name="twitter:title" content={`${title} | CNCF Certification Resources Hub`} />
+    <meta name="twitter:title" content={`${title} | Cloud Native Certification Resources Hub`} />
     <meta name="twitter:description" content={finalDescription} />
     <meta name="twitter:image" content={ogImage} />
 
@@ -204,21 +203,21 @@ const hreflangUrls = {
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "WebSite",
-      "name": "CNCF Certification Resources Hub",
+      "name": "Cloud Native Certification Resources Hub",
       "description": finalDescription,
-      "url": `${siteUrl}${basePath}`,
+      "url": siteUrl,
       "inLanguage": [lang, "en", "es", "pt"],
       "publisher": {
         "@type": "Organization",
-        "name": "CNCF Certification Hub",
+        "name": "CNative CertHub",
         "logo": {
           "@type": "ImageObject",
-          "url": `${siteUrl}${basePath}/favicon.svg`
+          "url": `${siteUrl}/favicon.svg`
         }
       },
       "potentialAction": {
         "@type": "SearchAction",
-        "target": `${siteUrl}${basePath}/?q={search_term_string}`,
+        "target": `${siteUrl}/?q={search_term_string}`,
         "query-input": "required name=search_term_string"
       }
     })} />
@@ -231,7 +230,7 @@ const hreflangUrls = {
           "@type": "ListItem",
           "position": 1,
           "name": "Home",
-          "item": `${siteUrl}${basePath}`
+          "item": siteUrl
         },
         {
           "@type": "ListItem",
@@ -338,7 +337,7 @@ const hreflangUrls = {
                     </svg>
                   </div>
                   <div>
-                    <span class="text-lg font-bold text-neutral-900 dark:text-white">CNCF</span>
+                    <span class="text-lg font-bold text-neutral-900 dark:text-white">CNative</span>
                     <span class="text-lg font-bold text-primary-600">Cert</span>
                     <span class="text-lg font-bold text-neutral-900 dark:text-white">Hub</span>
                   </div>

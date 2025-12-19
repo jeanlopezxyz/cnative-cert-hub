@@ -5,9 +5,9 @@
 
 // External URLs
 export const EXTERNAL_URLS = {
-  github: 'https://github.com/jeanlopezxyz/cncf-certification-hub',
+  github: 'https://github.com/jeanlopezxyz/cnative-cert-hub',
   githubCNCF: 'https://github.com/cncf/curriculum',
-  githubRepo: 'jeanlopezxyz/cncf-certification-hub',
+  githubRepo: 'jeanlopezxyz/cnative-cert-hub',
   kubernetes: {
     docs: 'https://kubernetes.io/docs/',
     slack: 'https://slack.k8s.io/',

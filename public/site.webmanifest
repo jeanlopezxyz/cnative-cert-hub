@@ -1,6 +1,6 @@
 {
-  "name": "CNCF Certification Hub",
-  "short_name": "CNCF Cert Hub",
+  "name": "Cloud Native Certification Hub",
+  "short_name": "CNative CertHub",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",
@@ -11,4 +11,3 @@
     { "src": "favicon-512x512.png", "sizes": "512x512", "type": "image/png" }
   ]
 }
-

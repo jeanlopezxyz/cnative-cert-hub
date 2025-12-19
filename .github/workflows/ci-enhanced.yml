@@ -137,7 +137,7 @@ jobs:
       - name: OWASP Dependency Check
         uses: dependency-check/Dependency-Check_Action@main
         with:
-          project: 'cncf-certification-hub'
+          project: 'cnative-cert-hub'
           path: '.'
           format: 'HTML'
         continue-on-error: true
