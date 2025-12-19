@@ -179,11 +179,11 @@ const hreflangUrls = {
 
     <!--
       View Transitions Theme Handler
-      Applies theme after View Transitions swap completes
+      Uses astro:page-load which fires on both initial load and after View Transitions
     -->
     <script is:inline>
-      // Apply theme after View Transition swap completes
-      document.addEventListener('astro:after-swap', function() {
+      // Apply theme on every page load (initial and after View Transitions)
+      document.addEventListener('astro:page-load', function() {
         var theme;
         try {
           theme = localStorage.getItem('theme');
@@ -191,7 +191,9 @@ const hreflangUrls = {
         if (theme !== 'dark' && theme !== 'light') {
           theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         }
-        document.documentElement.className = theme;
+        // Preserve 'visible' class if present, add theme
+        var hasVisible = document.documentElement.classList.contains('visible');
+        document.documentElement.className = theme + (hasVisible ? ' visible' : '');
       });
     </script>
 
