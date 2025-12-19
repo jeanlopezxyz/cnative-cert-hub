@@ -55,13 +55,14 @@ const hreflangUrls = {
 ---
 
 <!doctype html>
-<html lang={lang} class="dark">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <!-- Theme initialization - MUST be first script -->
     <script is:inline>
       (function() {
         // Immediately set theme from localStorage or system preference
+        // Using classList.toggle instead of className to avoid replacing other classes
         var theme;
         try {
           theme = localStorage.getItem('theme');
@@ -69,7 +70,8 @@ const hreflangUrls = {
         if (theme !== 'dark' && theme !== 'light') {
           theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         }
-        document.documentElement.className = theme;
+        // Toggle dark class based on theme preference
+        document.documentElement.classList.toggle('dark', theme === 'dark');
       })();
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -179,8 +181,8 @@ const hreflangUrls = {
 
     <!--
       View Transitions Theme Handler
-      Uses astro:before-swap to apply theme to incoming document BEFORE it replaces current
-      This prevents any flash or theme change during navigation
+      Uses classList.toggle to add/remove 'dark' class without affecting other classes
+      This prevents theme reset during language navigation
     -->
     <script is:inline>
       // Helper function to get current theme from localStorage or system preference
@@ -196,19 +198,24 @@ const hreflangUrls = {
       }
 
       // CRITICAL: Apply theme to NEW document BEFORE it replaces the current one
-      // This prevents the flash/change because the new document already has correct theme
+      // Using classList.toggle to only affect the 'dark' class, not replace all classes
       document.addEventListener('astro:before-swap', function(event) {
         var theme = getThemePreference();
-        // Apply theme to the incoming document's html element
-        event.newDocument.documentElement.className = theme;
+        // Toggle dark class on the incoming document's html element
+        event.newDocument.documentElement.classList.toggle('dark', theme === 'dark');
       });
 
       // Fallback: Also apply on page load for initial render and edge cases
       document.addEventListener('astro:page-load', function() {
         var theme = getThemePreference();
-        // Preserve 'visible' class if present, add theme
-        var hasVisible = document.documentElement.classList.contains('visible');
-        document.documentElement.className = theme + (hasVisible ? ' visible' : '');
+        // Toggle dark class based on theme preference
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+      });
+
+      // Additional handler for after-swap to ensure theme persists
+      document.addEventListener('astro:after-swap', function() {
+        var theme = getThemePreference();
+        document.documentElement.classList.toggle('dark', theme === 'dark');
       });
     </script>
 
