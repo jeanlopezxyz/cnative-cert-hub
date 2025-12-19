@@ -138,6 +138,7 @@ export interface Certification {
   studyTimeWeeks?: number;
   passingScore?: number;
   validity?: number;
+  isNew?: boolean; // Flag to show "New" badge in sidebar
 }
 
 /**

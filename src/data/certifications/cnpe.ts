@@ -10,6 +10,7 @@ export const cnpe: Certification = {
   duration: 120,
   price: 395,
   requiredFor: ['Golden Kubestronaut (after March 2026)'],
+  isNew: true, // Launched November 2025
   color: 'from-indigo-700 to-purple-800',
   kubernetesVersion: 'Latest stable',
   examAttempts: 2,

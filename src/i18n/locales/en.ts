@@ -210,6 +210,7 @@ export const en = {
   'sidebar.practice': 'Practice Platform',
   'sidebar.docs': 'Documentation',
   'sidebar.discounts': 'Monthly Discounts',
+  'sidebar.new': 'New',
 
   // Sidebar Tips
   'sidebar.tips.exam': 'Exam Preparation',

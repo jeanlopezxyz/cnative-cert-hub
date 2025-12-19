@@ -206,6 +206,7 @@ export const pt = {
   'sidebar.practice': 'Plataforma de Prática',
   'sidebar.docs': 'Documentação',
   'sidebar.discounts': 'Descontos do Mês',
+  'sidebar.new': 'Novo',
 
   // Sidebar Tips
   'sidebar.tips.exam': 'Preparação para Exame',

@@ -111,7 +111,18 @@ export default function CertificationCategory({
                   `}
                 >
                   <span className={`w-1 h-1 rounded-full ${isActive ? 'bg-white' : 'bg-neutral-400'}`} />
-                  <span>{cert.acronym}</span>
+                  <span className="flex-1">{cert.acronym}</span>
+                  {cert.isNew && (
+                    <span className={`
+                      text-[10px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider
+                      ${isActive
+                        ? 'bg-white/20 text-white'
+                        : 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400'
+                      }
+                    `}>
+                      {t('sidebar.new')}
+                    </span>
+                  )}
                 </a>
               );
             })}
