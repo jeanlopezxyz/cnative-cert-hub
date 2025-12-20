@@ -1,5 +1,6 @@
 ---
-import { ViewTransitions } from 'astro:transitions';
+// ViewTransitions removed to prevent theme flash during navigation
+// import { ViewTransitions } from 'astro:transitions';
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
 import { EXTERNAL_URLS, TYPOGRAPHY } from '../config/app.config';
 import { APP_CONFIG } from '../constants/index';
@@ -56,11 +57,11 @@ const hreflangUrls = {
 ---
 
 <!doctype html>
-<html lang={lang} transition:animate="none">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
-    <!-- Theme initialization - runs on every page load/navigation via data-astro-rerun -->
-    <script is:inline data-astro-rerun>
+    <!-- Theme initialization - runs on every page load -->
+    <script is:inline>
       (function() {
         var theme;
         try { theme = localStorage.getItem('theme'); } catch(e) {}
@@ -115,8 +116,8 @@ const hreflangUrls = {
     <link rel="icon" type="image/svg+xml" href={`${baseUrl}favicon.svg`} />
     <link rel="apple-touch-icon" sizes="180x180" href={`${baseUrl}apple-touch-icon.png`} />
 
-    <!-- View Transitions for smooth navigation -->
-    <ViewTransitions />
+    <!-- View Transitions disabled to prevent theme flash -->
+    <!-- <ViewTransitions /> -->
     
     <!-- Optimized font loading: preconnect + preload + display=swap for best performance -->
     <!-- Preconnect establishes early connections to font servers -->
@@ -181,32 +182,6 @@ const hreflangUrls = {
       }
     </style>
 
-    <!--
-      View Transitions Theme Handler
-      Uses astro:before-swap to apply theme to the NEW document BEFORE the swap
-      This prevents the flash by ensuring the new document already has the theme class
-    -->
-    <script is:inline>
-      (function() {
-        function getTheme() {
-          try {
-            var t = localStorage.getItem('theme');
-            if (t === 'dark' || t === 'light') return t;
-          } catch(e) {}
-          return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        }
-
-        // Listen for View Transition before-swap event
-        // This fires BEFORE the new document replaces the current one
-        // We apply theme to event.newDocument so it's ready before swap
-        document.addEventListener('astro:before-swap', function(event) {
-          var theme = getTheme();
-          event.newDocument.documentElement.classList.remove('dark', 'light');
-          event.newDocument.documentElement.classList.add(theme);
-        });
-      })();
-    </script>
-
     <!-- Structured Data - JSON-LD -->
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
@@ -249,7 +224,7 @@ const hreflangUrls = {
       ]
     })} />
   </head>
-  <body class="min-h-screen" transition:animate="none">
+  <body class="min-h-screen">
     <a 
       href="#main-content" 
       class="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 bg-blue-600 text-white p-2 z-50 rounded-br-md focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium"
@@ -330,14 +305,11 @@ const hreflangUrls = {
 
       // Setup on initial load
       setupMobileMenuToggle();
-
-      // Re-setup after View Transitions
-      document.addEventListener('astro:page-load', setupMobileMenuToggle);
     </script>
     
     <div class="min-h-screen">
       {showSidebar && (
-        <Sidebar client:load lang={lang} transition:persist transition:name="sidebar" transition:animate="none" />
+        <Sidebar client:load lang={lang} />
       )}
 
       <div
