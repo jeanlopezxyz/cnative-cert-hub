@@ -179,42 +179,42 @@ const hreflangUrls = {
     </style>
 
     <!--
-      View Transitions Theme Handler - MUST run on every navigation
-      Uses data-astro-rerun to ensure listeners are always active
+      View Transitions Theme Handler - Registers once, persists across navigations
+      Uses window object which persists during View Transitions
     -->
-    <script is:inline data-astro-rerun>
-      // Helper function to get current theme from localStorage or system preference
-      function getThemePreference() {
-        var theme;
-        try {
-          theme = localStorage.getItem('theme');
-        } catch(e) {}
-        if (theme !== 'dark' && theme !== 'light') {
-          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        }
-        return theme;
-      }
+    <script is:inline>
+      // Only register listeners once - window object persists during View Transitions
+      if (!window.__themeHandlerInitialized) {
+        window.__themeHandlerInitialized = true;
 
-      // Only register listeners once per document using a flag
-      if (!window.__themeListenersRegistered) {
-        window.__themeListenersRegistered = true;
+        // Helper function to get theme preference
+        window.__getThemePreference = function() {
+          try {
+            var stored = localStorage.getItem('theme');
+            if (stored === 'dark' || stored === 'light') return stored;
+          } catch(e) {}
+          return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        };
 
-        // CRITICAL: Apply theme to NEW document BEFORE it replaces the current one
+        // Helper to apply theme to any document
+        window.__applyTheme = function(doc) {
+          var theme = window.__getThemePreference();
+          doc.documentElement.classList.toggle('dark', theme === 'dark');
+          doc.documentElement.classList.toggle('light', theme === 'light');
+        };
+
+        // CRITICAL: Apply theme to NEW document BEFORE swap
         document.addEventListener('astro:before-swap', function(event) {
-          var theme = getThemePreference();
-          event.newDocument.documentElement.classList.toggle('dark', theme === 'dark');
+          window.__applyTheme(event.newDocument);
         });
 
-        // Fallback: Also apply on page load for initial render and edge cases
+        // Apply on page load and after swap as fallbacks
         document.addEventListener('astro:page-load', function() {
-          var theme = getThemePreference();
-          document.documentElement.classList.toggle('dark', theme === 'dark');
+          window.__applyTheme(document);
         });
 
-        // Additional handler for after-swap to ensure theme persists
         document.addEventListener('astro:after-swap', function() {
-          var theme = getThemePreference();
-          document.documentElement.classList.toggle('dark', theme === 'dark');
+          window.__applyTheme(document);
         });
       }
     </script>
