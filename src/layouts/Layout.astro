@@ -177,8 +177,8 @@ const hreflangUrls = {
 
     <!--
       View Transitions Theme Handler
-      Uses astro:after-swap to apply theme AFTER the swap completes
-      This is more reliable as it modifies the actual document.documentElement
+      Uses astro:before-swap to apply theme to the NEW document BEFORE the swap
+      This prevents the flash by ensuring the new document already has the theme class
     -->
     <script is:inline>
       (function() {
@@ -190,15 +190,14 @@ const hreflangUrls = {
           return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         }
 
-        function applyTheme() {
+        // Listen for View Transition before-swap event
+        // This fires BEFORE the new document replaces the current one
+        // We apply theme to event.newDocument so it's ready before swap
+        document.addEventListener('astro:before-swap', function(event) {
           var theme = getTheme();
-          document.documentElement.classList.remove('dark', 'light');
-          document.documentElement.classList.add(theme);
-        }
-
-        // Listen for View Transition after-swap event
-        // This fires AFTER the new document replaces the current one
-        document.addEventListener('astro:after-swap', applyTheme);
+          event.newDocument.documentElement.classList.remove('dark', 'light');
+          event.newDocument.documentElement.classList.add(theme);
+        });
       })();
     </script>
 
