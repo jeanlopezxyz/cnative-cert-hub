@@ -56,7 +56,7 @@ const hreflangUrls = {
 ---
 
 <!doctype html>
-<html lang={lang}>
+<html lang={lang} transition:animate="none">
   <head>
     <meta charset="UTF-8" />
     <!-- Theme initialization - runs on every page load/navigation via data-astro-rerun -->
@@ -249,7 +249,7 @@ const hreflangUrls = {
       ]
     })} />
   </head>
-  <body class="min-h-screen">
+  <body class="min-h-screen" transition:animate="none">
     <a 
       href="#main-content" 
       class="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 bg-blue-600 text-white p-2 z-50 rounded-br-md focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium"
