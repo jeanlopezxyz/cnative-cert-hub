@@ -149,29 +149,35 @@ const hreflangUrls = {
         color: var(--text-primary);
       }
 
-      /* View Transitions - instant swap without animation */
-      ::view-transition-old(root),
-      ::view-transition-new(root) {
+      /* COMPLETELY DISABLE View Transitions animations */
+      ::view-transition-group(*),
+      ::view-transition-old(*),
+      ::view-transition-new(*) {
         animation: none !important;
-        mix-blend-mode: normal;
+        animation-duration: 0s !important;
+        animation-delay: 0s !important;
       }
 
-      /* Set explicit background during view transition */
-      ::view-transition-group(root) {
-        background-color: var(--bg-primary);
+      /* Set explicit background during view transition - use dark color by default */
+      ::view-transition,
+      ::view-transition-group(root),
+      ::view-transition-image-pair(root) {
+        background-color: #1E293B !important; /* dark mode color */
+      }
+
+      /* Override for light mode */
+      :root:not(.dark) ::view-transition,
+      :root:not(.dark) ::view-transition-group(root),
+      :root:not(.dark) ::view-transition-image-pair(root) {
+        background-color: #E2E8F0 !important; /* light mode color */
       }
 
       /* Hide old snapshot immediately, show new one instantly */
       ::view-transition-old(root) {
-        opacity: 0 !important;
+        display: none !important;
       }
       ::view-transition-new(root) {
-        opacity: 1 !important;
-      }
-
-      /* Fallback for transition container */
-      html::view-transition {
-        background-color: var(--bg-primary);
+        animation: none !important;
       }
     </style>
 
