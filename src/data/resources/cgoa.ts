@@ -14,7 +14,22 @@ export const cgoaResources: CertificationResources = {
     'https://github.com/open-gitops/documents',
   ],
   practice: [
-    // Note: Practice resources are documented in tools and courses arrays with full metadata
+    {
+      title: 'Killercoda Argo Scenarios',
+      url: 'https://killercoda.com/argoproj/courses',
+      description: 'Interactive Argo CD and GitOps scenarios',
+      isPaid: false,
+      type: 'scenario',
+      difficulty: 'beginner',
+    },
+    {
+      title: 'KodeKloud CGOA Labs',
+      url: 'https://kodekloud.com/courses/certified-gitops-associate-cgoa/',
+      description: 'Interactive CGOA practice labs with hands-on exercises',
+      isPaid: true,
+      type: 'lab',
+      difficulty: 'intermediate',
+    },
   ],
 
   books: [
@@ -236,12 +251,6 @@ export const cgoaResources: CertificationResources = {
       title: 'Flux',
       url: 'https://fluxcd.io/docs/get-started/',
       description: 'GitOps toolkit for Kubernetes',
-      isPaid: false,
-    },
-    {
-      title: 'Killercoda Argo Scenarios',
-      url: 'https://killercoda.com/argoproj/courses',
-      description: 'Interactive Argo CD scenarios',
       isPaid: false,
     },
     {

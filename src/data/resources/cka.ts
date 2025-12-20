@@ -14,7 +14,31 @@ export const ckaResources: CertificationResources = {
     'https://github.com/David-VTUK/CKA-StudyGuide',
   ],
   practice: [
-    // Note: Practice simulators are documented in the tools array with full metadata
+    {
+      title: 'Killer.sh CKA Simulator',
+      url: 'https://killer.sh/',
+      description: 'Official CKA exam simulator included with exam registration',
+      isPaid: true,
+      isOfficial: true,
+      type: 'simulator',
+      difficulty: 'intermediate',
+    },
+    {
+      title: 'Killercoda CKA Scenarios',
+      url: 'https://killercoda.com/killer-shell-cka',
+      description: 'Free browser-based CKA practice scenarios',
+      isPaid: false,
+      type: 'scenario',
+      difficulty: 'intermediate',
+    },
+    {
+      title: 'KodeKloud CKA Labs',
+      url: 'https://kodekloud.com/courses/certified-kubernetes-administrator-cka/',
+      description: 'Interactive CKA practice labs with hands-on exercises',
+      isPaid: true,
+      type: 'lab',
+      difficulty: 'intermediate',
+    },
   ],
 
   books: [
@@ -212,18 +236,6 @@ export const ckaResources: CertificationResources = {
   ],
 
   tools: [
-    {
-      title: 'Killer.sh CKA Simulator',
-      url: 'https://killer.sh/',
-      description: 'Official CKA exam simulator included with exam registration',
-      isPaid: true,
-    },
-    {
-      title: 'Killercoda CKA Scenarios',
-      url: 'https://killercoda.com/killer-shell-cka',
-      description: 'Free browser-based CKA practice scenarios',
-      isPaid: false,
-    },
     {
       title: 'Minikube',
       url: 'https://minikube.sigs.k8s.io/',

@@ -12,7 +12,23 @@ export const lfcsResources: CertificationResources = {
     'https://github.com/Bes0n/LFCS',
   ],
   practice: [
-    // Note: Practice resources are documented in tools and courses arrays with full metadata
+    {
+      title: 'Killer.sh LFCS Simulator',
+      url: 'https://killer.sh/',
+      description: 'Official LFCS exam simulator included with registration',
+      isPaid: true,
+      isOfficial: true,
+      type: 'simulator',
+      difficulty: 'intermediate',
+    },
+    {
+      title: 'KodeKloud LFCS Labs',
+      url: 'https://kodekloud.com/courses/linux-foundation-certified-system-administrator-lfcs/',
+      description: 'Interactive LFCS practice labs with hands-on exercises',
+      isPaid: true,
+      type: 'lab',
+      difficulty: 'intermediate',
+    },
   ],
 
   books: [
@@ -240,12 +256,6 @@ export const lfcsResources: CertificationResources = {
   ],
 
   tools: [
-    {
-      title: 'Killer.sh LFCS Simulator',
-      url: 'https://killer.sh/',
-      description: 'LFCS exam simulator',
-      isPaid: true,
-    },
     {
       title: 'VirtualBox',
       url: 'https://www.virtualbox.org/',

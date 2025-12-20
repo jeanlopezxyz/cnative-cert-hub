@@ -14,7 +14,22 @@ export const ccaResources: CertificationResources = {
     'https://github.com/cilium/hubble',
   ],
   practice: [
-    // Note: Practice resources are documented in tools and courses arrays with full metadata
+    {
+      title: 'Isovalent Labs',
+      url: 'https://isovalent.com/labs/',
+      description: 'Free browser-based Cilium labs from the creators',
+      isPaid: false,
+      type: 'lab',
+      difficulty: 'intermediate',
+    },
+    {
+      title: 'KodeKloud CCA Labs',
+      url: 'https://kodekloud.com/courses/cilium-certified-associate-cca/',
+      description: 'Interactive CCA practice labs with hands-on exercises',
+      isPaid: true,
+      type: 'lab',
+      difficulty: 'intermediate',
+    },
   ],
 
   books: [
@@ -206,12 +221,6 @@ export const ccaResources: CertificationResources = {
       title: 'Hubble',
       url: 'https://github.com/cilium/hubble',
       description: 'Network observability for Cilium',
-      isPaid: false,
-    },
-    {
-      title: 'Isovalent Labs',
-      url: 'https://isovalent.com/labs/',
-      description: 'Free browser-based Cilium labs',
       isPaid: false,
     },
     {

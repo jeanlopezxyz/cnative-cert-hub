@@ -14,7 +14,22 @@ export const kcnaResources: CertificationResources = {
     'https://github.com/James-Quigley/KCNA-Study-Guide',
   ],
   practice: [
-    // Note: Practice resources are documented in tools and courses with full metadata
+    {
+      title: 'Killercoda - Kubernetes Playground',
+      url: 'https://killercoda.com/playgrounds/scenario/kubernetes',
+      description: 'Free browser-based Kubernetes environment for practice',
+      isPaid: false,
+      type: 'playground',
+      difficulty: 'beginner',
+    },
+    {
+      title: 'KodeKloud KCNA Course Labs',
+      url: 'https://kodekloud.com/courses/kubernetes-and-cloud-native-associate-kcna/',
+      description: 'Interactive KCNA practice labs with hands-on exercises',
+      isPaid: true,
+      type: 'lab',
+      difficulty: 'beginner',
+    },
   ],
 
   books: [
@@ -232,12 +247,6 @@ export const kcnaResources: CertificationResources = {
   ],
 
   tools: [
-    {
-      title: 'Killercoda - Kubernetes Playground',
-      url: 'https://killercoda.com/playgrounds/scenario/kubernetes',
-      description: 'Free browser-based Kubernetes environment for practice',
-      isPaid: false,
-    },
     {
       title: 'Minikube',
       url: 'https://minikube.sigs.k8s.io/',

@@ -14,7 +14,22 @@ export const otcaResources: CertificationResources = {
     'https://github.com/cncf/curriculum',
   ],
   practice: [
-    // Note: Practice resources are documented in tools array with full metadata
+    {
+      title: 'OpenTelemetry Demo',
+      url: 'https://opentelemetry.io/docs/demo/',
+      description: 'Complete demo application with OpenTelemetry instrumentation',
+      isPaid: false,
+      type: 'playground',
+      difficulty: 'intermediate',
+    },
+    {
+      title: 'Aspecto OpenTelemetry Bootcamp',
+      url: 'https://www.aspecto.io/opentelemetry-bootcamp/',
+      description: 'Free interactive OpenTelemetry labs and exercises',
+      isPaid: false,
+      type: 'lab',
+      difficulty: 'beginner',
+    },
   ],
 
   books: [
@@ -196,12 +211,6 @@ export const otcaResources: CertificationResources = {
   ],
 
   tools: [
-    {
-      title: 'OpenTelemetry Demo',
-      url: 'https://opentelemetry.io/docs/demo/',
-      description: 'Complete demo application with OpenTelemetry',
-      isPaid: false,
-    },
     {
       title: 'OpenTelemetry Collector',
       url: 'https://opentelemetry.io/docs/collector/getting-started/',

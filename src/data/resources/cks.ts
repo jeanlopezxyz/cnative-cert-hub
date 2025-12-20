@@ -14,8 +14,31 @@ export const cksResources: CertificationResources = {
     'https://github.com/ahmetb/kubernetes-network-policy-recipes',
   ],
   practice: [
-    // Note: Practice simulators are now in the tools array with full metadata
-    // killer.sh, killercoda, and kodekloud are documented there
+    {
+      title: 'Killer.sh CKS Simulator',
+      url: 'https://killer.sh/',
+      description: 'Official CKS exam simulator included with registration',
+      isPaid: true,
+      isOfficial: true,
+      type: 'simulator',
+      difficulty: 'advanced',
+    },
+    {
+      title: 'Killercoda CKS Scenarios',
+      url: 'https://killercoda.com/killer-shell-cks',
+      description: 'Free browser-based CKS practice scenarios',
+      isPaid: false,
+      type: 'scenario',
+      difficulty: 'advanced',
+    },
+    {
+      title: 'KodeKloud CKS Labs',
+      url: 'https://kodekloud.com/courses/certified-kubernetes-security-specialist-cks/',
+      description: 'Interactive CKS security labs with hands-on exercises',
+      isPaid: true,
+      type: 'lab',
+      difficulty: 'advanced',
+    },
   ],
 
   books: [
@@ -259,18 +282,6 @@ export const cksResources: CertificationResources = {
   ],
 
   tools: [
-    {
-      title: 'Killer.sh CKS Simulator',
-      url: 'https://killer.sh/',
-      description: 'Official CKS exam simulator included with registration',
-      isPaid: true,
-    },
-    {
-      title: 'Killercoda CKS Scenarios',
-      url: 'https://killercoda.com/killer-shell-cks',
-      description: 'Free browser-based CKS practice scenarios',
-      isPaid: false,
-    },
     {
       title: 'Falco',
       url: 'https://falco.org/',

@@ -13,7 +13,22 @@ export const kcsaResources: CertificationResources = {
     'https://github.com/ahmetb/kubernetes-network-policy-recipes',
   ],
   practice: [
-    // Note: Practice resources are documented in tools and courses arrays with full metadata
+    {
+      title: 'Killercoda Kubernetes Playground',
+      url: 'https://killercoda.com/playgrounds/scenario/kubernetes',
+      description: 'Free browser-based Kubernetes environment for security practice',
+      isPaid: false,
+      type: 'playground',
+      difficulty: 'beginner',
+    },
+    {
+      title: 'KodeKloud KCSA Course Labs',
+      url: 'https://kodekloud.com/courses/kubernetes-and-cloud-security-associate-kcsa/',
+      description: 'Interactive KCSA security labs with hands-on exercises',
+      isPaid: true,
+      type: 'lab',
+      difficulty: 'beginner',
+    },
   ],
 
   books: [
@@ -257,12 +272,6 @@ export const kcsaResources: CertificationResources = {
   ],
 
   tools: [
-    {
-      title: 'Killercoda Kubernetes Playground',
-      url: 'https://killercoda.com/playgrounds/scenario/kubernetes',
-      description: 'Free browser-based Kubernetes environment',
-      isPaid: false,
-    },
     {
       title: 'Trivy',
       url: 'https://trivy.dev/',

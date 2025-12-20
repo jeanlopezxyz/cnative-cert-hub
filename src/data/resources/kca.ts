@@ -13,7 +13,22 @@ export const kcaResources: CertificationResources = {
     'https://github.com/cncf/curriculum',
   ],
   practice: [
-    // Note: Practice resources are documented in tools array with full metadata
+    {
+      title: 'Kyverno Playground',
+      url: 'https://kyverno.io/playground/',
+      description: 'Online Kyverno policy testing environment',
+      isPaid: false,
+      type: 'playground',
+      difficulty: 'beginner',
+    },
+    {
+      title: 'Nirmata Kyverno Labs',
+      url: 'https://nirmata.com/kyverno-learning-path/',
+      description: 'Comprehensive Kyverno learning path with hands-on exercises',
+      isPaid: false,
+      type: 'lab',
+      difficulty: 'intermediate',
+    },
   ],
 
   books: [
@@ -185,12 +200,6 @@ export const kcaResources: CertificationResources = {
   ],
 
   tools: [
-    {
-      title: 'Kyverno Playground',
-      url: 'https://kyverno.io/playground/',
-      description: 'Online Kyverno policy testing',
-      isPaid: false,
-    },
     {
       title: 'Kyverno CLI',
       url: 'https://kyverno.io/docs/kyverno-cli/',

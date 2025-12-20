@@ -14,7 +14,22 @@ export const icaResources: CertificationResources = {
     'https://github.com/tetratelabs/istio-weekly',
   ],
   practice: [
-    // Note: Practice resources are documented in tools and courses arrays with full metadata
+    {
+      title: 'Tetrate Academy Labs',
+      url: 'https://academy.tetrate.io/courses/istio-fundamentals',
+      description: 'Free interactive Istio labs from Tetrate',
+      isPaid: false,
+      type: 'lab',
+      difficulty: 'beginner',
+    },
+    {
+      title: 'KodeKloud ICA Labs',
+      url: 'https://kodekloud.com/courses/istio-certified-associate-ica/',
+      description: 'Interactive ICA practice labs with hands-on exercises',
+      isPaid: true,
+      type: 'lab',
+      difficulty: 'intermediate',
+    },
   ],
 
   books: [

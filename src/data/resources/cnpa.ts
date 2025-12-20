@@ -12,7 +12,22 @@ export const cnpaResources: CertificationResources = {
     'https://github.com/cncf/tag-app-delivery',
   ],
   practice: [
-    // Note: Practice resources are documented in tools array with full metadata
+    {
+      title: 'Killercoda Kubernetes Playground',
+      url: 'https://killercoda.com/playgrounds/scenario/kubernetes',
+      description: 'Free browser-based Kubernetes environment for platform engineering practice',
+      isPaid: false,
+      type: 'playground',
+      difficulty: 'beginner',
+    },
+    {
+      title: 'Argo CD Playground',
+      url: 'https://killercoda.com/argoproj/course/argo-cd-basics',
+      description: 'Interactive Argo CD scenarios for GitOps practice',
+      isPaid: false,
+      type: 'scenario',
+      difficulty: 'intermediate',
+    },
   ],
 
   books: [

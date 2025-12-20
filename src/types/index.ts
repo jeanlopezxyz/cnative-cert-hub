@@ -93,12 +93,20 @@ export type CommunityResource = StudyResource;
 export type ToolResource = StudyResource;
 
 /**
+ * Practice/Simulator resource
+ */
+export interface PracticeResource extends StudyResource {
+  isOfficial?: boolean;
+  type?: 'simulator' | 'scenario' | 'lab' | 'playground';
+}
+
+/**
  * Study resources for a certification
  */
 export interface CertificationResources {
   official: string;
   github: string[];
-  practice: string[];
+  practice: PracticeResource[];
   books?: BookResource[];
   courses?: CourseResource[];
   videos?: VideoResource[];

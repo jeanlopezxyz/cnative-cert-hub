@@ -15,7 +15,22 @@ export const capaResources: CertificationResources = {
     'https://github.com/cncf/curriculum',
   ],
   practice: [
-    // Note: Practice resources are documented in tools and courses arrays with full metadata
+    {
+      title: 'Killercoda Argo Scenarios',
+      url: 'https://killercoda.com/argoproj/courses',
+      description: 'Interactive Argo project scenarios for hands-on practice',
+      isPaid: false,
+      type: 'scenario',
+      difficulty: 'intermediate',
+    },
+    {
+      title: 'KodeKloud CAPA Labs',
+      url: 'https://kodekloud.com/courses/certified-argo-project-associate-capa/',
+      description: 'Interactive CAPA practice labs with hands-on exercises',
+      isPaid: true,
+      type: 'lab',
+      difficulty: 'intermediate',
+    },
   ],
 
   books: [
@@ -203,12 +218,6 @@ export const capaResources: CertificationResources = {
   ],
 
   tools: [
-    {
-      title: 'Killercoda Argo Scenarios',
-      url: 'https://killercoda.com/argoproj/courses',
-      description: 'Interactive Argo project scenarios',
-      isPaid: false,
-    },
     {
       title: 'Argo CD CLI',
       url: 'https://argo-cd.readthedocs.io/en/stable/cli_installation/',

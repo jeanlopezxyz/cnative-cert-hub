@@ -14,7 +14,22 @@ export const pcaResources: CertificationResources = {
     'https://github.com/moabukar/Prometheus-Certified-Associate-PCA',
   ],
   practice: [
-    // Note: Practice resources are documented in tools and courses arrays with full metadata
+    {
+      title: 'Prometheus Playground',
+      url: 'https://killercoda.com/playgrounds/scenario/prometheus',
+      description: 'Browser-based Prometheus environment for hands-on practice',
+      isPaid: false,
+      type: 'playground',
+      difficulty: 'beginner',
+    },
+    {
+      title: 'KodeKloud PCA Labs',
+      url: 'https://kodekloud.com/courses/prometheus-certified-associate-pca/',
+      description: 'Interactive PCA practice labs with hands-on exercises',
+      isPaid: true,
+      type: 'lab',
+      difficulty: 'intermediate',
+    },
   ],
 
   books: [
@@ -196,12 +211,6 @@ export const pcaResources: CertificationResources = {
       title: 'Grafana',
       url: 'https://grafana.com/grafana/download',
       description: 'Visualization platform for Prometheus metrics',
-      isPaid: false,
-    },
-    {
-      title: 'Prometheus Playground',
-      url: 'https://killercoda.com/playgrounds/scenario/prometheus',
-      description: 'Browser-based Prometheus environment',
       isPaid: false,
     },
     {

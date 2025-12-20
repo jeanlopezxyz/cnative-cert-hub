@@ -13,7 +13,22 @@ export const cbaResources: CertificationResources = {
     'https://github.com/backstage/community',
   ],
   practice: [
-    // Note: Practice resources are documented in tools array with full metadata
+    {
+      title: 'Backstage Demo',
+      url: 'https://demo.backstage.io/',
+      description: 'Live Backstage demo instance for hands-on exploration',
+      isPaid: false,
+      type: 'playground',
+      difficulty: 'beginner',
+    },
+    {
+      title: 'Create Backstage App',
+      url: 'https://backstage.io/docs/getting-started/create-an-app',
+      description: 'Quick start to create and explore a Backstage app locally',
+      isPaid: false,
+      type: 'lab',
+      difficulty: 'beginner',
+    },
   ],
 
   books: [
@@ -176,21 +191,9 @@ export const cbaResources: CertificationResources = {
 
   tools: [
     {
-      title: 'Backstage Demo',
-      url: 'https://demo.backstage.io/',
-      description: 'Live Backstage demo instance',
-      isPaid: false,
-    },
-    {
       title: 'Backstage CLI',
       url: 'https://backstage.io/docs/local-dev/cli-overview/',
       description: 'Backstage command-line interface',
-      isPaid: false,
-    },
-    {
-      title: 'Create Backstage App',
-      url: 'https://backstage.io/docs/getting-started/create-an-app',
-      description: 'Quick start to create a Backstage app',
       isPaid: false,
     },
   ],

@@ -131,24 +131,7 @@ export default function CertificationStudyGuide({
       title: t('certification.sections.practice'),
       type: 'practice' as const,
       tab: 'practice',
-      resources: certification.resources.practice.map(url => ({
-        title: url.includes('killer')
-          ? t('certification.resource.killersh')
-          : url.includes('kodekloud')
-            ? t('certification.resource.kodekloud')
-            : url.includes('killercoda')
-              ? t('certification.resource.killercoda')
-              : t('certification.resource.practiceplatform'),
-        url,
-        description: url.includes('killer')
-          ? t('certification.resource.killershDesc')
-          : url.includes('kodekloud')
-            ? t('certification.resource.kodekloudDesc')
-            : url.includes('killercoda')
-              ? t('certification.resource.killercodaDesc')
-              : t('certification.resource.practiceDesc'),
-        isPaid: url.includes('killer.sh') || url.includes('kodekloud'),
-      })),
+      resources: certification.resources.practice || [],
     },
     {
       id: 'github',

@@ -15,7 +15,31 @@ export const ckadResources: CertificationResources = {
     'https://github.com/lucassha/CKAD-resources',
   ],
   practice: [
-    // Note: Practice simulators are documented in the tools array with full metadata
+    {
+      title: 'Killer.sh CKAD Simulator',
+      url: 'https://killer.sh/',
+      description: 'Official CKAD exam simulator included with registration',
+      isPaid: true,
+      isOfficial: true,
+      type: 'simulator',
+      difficulty: 'intermediate',
+    },
+    {
+      title: 'Killercoda CKAD Scenarios',
+      url: 'https://killercoda.com/killer-shell-ckad',
+      description: 'Free browser-based CKAD practice scenarios',
+      isPaid: false,
+      type: 'scenario',
+      difficulty: 'intermediate',
+    },
+    {
+      title: 'KodeKloud CKAD Labs',
+      url: 'https://kodekloud.com/courses/certified-kubernetes-application-developer-ckad/',
+      description: 'Interactive CKAD practice labs with hands-on exercises',
+      isPaid: true,
+      type: 'lab',
+      difficulty: 'intermediate',
+    },
   ],
 
   books: [
@@ -213,18 +237,6 @@ export const ckadResources: CertificationResources = {
   ],
 
   tools: [
-    {
-      title: 'Killer.sh CKAD Simulator',
-      url: 'https://killer.sh/',
-      description: 'Official CKAD exam simulator included with registration',
-      isPaid: true,
-    },
-    {
-      title: 'Killercoda CKAD Scenarios',
-      url: 'https://killercoda.com/killer-shell-ckad',
-      description: 'Free browser-based CKAD practice scenarios',
-      isPaid: false,
-    },
     {
       title: 'K9s',
       url: 'https://k9scli.io/',

@@ -17,7 +17,31 @@ export const cnpeResources: CertificationResources = {
     'https://github.com/crossplane/crossplane',
   ],
   practice: [
-    // Note: Practice resources are documented in tools array with full metadata
+    {
+      title: 'Killer.sh CNPE Simulator',
+      url: 'https://killer.sh/',
+      description: 'Official CNPE exam simulator included with registration',
+      isPaid: true,
+      isOfficial: true,
+      type: 'simulator',
+      difficulty: 'advanced',
+    },
+    {
+      title: 'Killercoda Platform Engineering Scenarios',
+      url: 'https://killercoda.com/',
+      description: 'Free interactive platform engineering scenarios',
+      isPaid: false,
+      type: 'scenario',
+      difficulty: 'intermediate',
+    },
+    {
+      title: 'Argo CD Playground',
+      url: 'https://killercoda.com/argoproj/course/argo-cd-basics',
+      description: 'Interactive Argo CD scenarios for GitOps practice',
+      isPaid: false,
+      type: 'scenario',
+      difficulty: 'intermediate',
+    },
   ],
 
   books: [
@@ -253,18 +277,6 @@ export const cnpeResources: CertificationResources = {
   ],
 
   tools: [
-    {
-      title: 'Killer.sh CNPE Simulator',
-      url: 'https://killer.sh/',
-      description: 'CNPE exam simulator (included with registration)',
-      isPaid: true,
-    },
-    {
-      title: 'Killercoda Scenarios',
-      url: 'https://killercoda.com/',
-      description: 'Free interactive platform engineering scenarios',
-      isPaid: false,
-    },
     {
       title: 'Argo CD',
       url: 'https://argo-cd.readthedocs.io/en/stable/getting_started/',
