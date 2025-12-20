@@ -59,8 +59,8 @@ const hreflangUrls = {
 <html lang={lang}>
   <head>
     <meta charset="UTF-8" />
-    <!-- Theme initialization - runs immediately on initial page load (NO data-astro-rerun) -->
-    <script is:inline>
+    <!-- Theme initialization - runs on every page load/navigation via data-astro-rerun -->
+    <script is:inline data-astro-rerun>
       (function() {
         var theme;
         try { theme = localStorage.getItem('theme'); } catch(e) {}
