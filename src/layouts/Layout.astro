@@ -8,6 +8,7 @@ import Logo from '../components/Logo';
 import SearchBar from '../components/search/SearchBar';
 import Sidebar from '../components/sidebar/Sidebar';
 import ThemeToggle from '../components/theme/ThemeToggle';
+import '../styles/global.css';
 
 export interface Props {
   title: string;
@@ -130,8 +131,7 @@ const hreflangUrls = {
     <!-- Using variable fonts reduces HTTP requests and provides smooth weight transitions -->
     <link href={EXTERNAL_URLS.fonts.googleFontsCss} rel="stylesheet" />
     
-    <!-- Preload critical JS -->
-    <link rel="modulepreload" href="/src/components/theme/ThemeToggle.tsx" />
+    <!-- Note: Astro automatically handles preloading of compiled assets -->
 
     <!-- Critical anti-flash CSS - Minimal inline styles for instant render -->
     <style>
@@ -218,9 +218,6 @@ const hreflangUrls = {
         document.documentElement.classList.toggle('dark', theme === 'dark');
       });
     </script>
-
-    <!-- Load global.css synchronously for instant styling -->
-    <link rel="stylesheet" href="/src/styles/global.css" />
 
     <!-- Structured Data - JSON-LD -->
     <script type="application/ld+json" set:html={JSON.stringify({
