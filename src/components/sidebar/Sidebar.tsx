@@ -6,6 +6,7 @@ import { APP_CONFIG } from '../../constants';
 import {
   CERTIFICATION_CATEGORIES,
   ACHIEVEMENTS_ITEMS,
+  DOCUMENTATION_ITEMS,
   QUICK_LINKS_ITEMS,
   groupCertificationsByCategory,
 } from '../../config/sidebar.config';
@@ -243,6 +244,50 @@ export default function Sidebar({ lang }: SidebarProps) {
                   />
                 ))}
               </div>
+            </SidebarSection>
+
+            {/* Separator */}
+            <div className="my-4 mx-3">
+              <div className="h-px bg-gradient-to-r from-transparent via-neutral-200 dark:via-neutral-600/50 to-transparent" />
+            </div>
+
+            {/* Project Documentation */}
+            <SidebarSection
+              title={t('sidebar.sections.documentation')}
+              icon={
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+              }
+              isOpen={openSections.includes('documentation')}
+              onToggle={() => toggleSection('documentation')}
+              isCollapsed={isDesktopCollapsed}
+            >
+              {DOCUMENTATION_ITEMS.map((item) => {
+                const basePath = APP_CONFIG.basePath || '';
+                const langPath = lang === 'en' ? '' : `/${lang}`;
+                const href = `${basePath}${langPath}/${item.href}`;
+                const isActive = currentPath === href;
+
+                return (
+                  <a
+                    key={item.id}
+                    href={href}
+                    onClick={closeMobileSidebar}
+                    className={`
+                      flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
+                      transition-all duration-200
+                      ${isActive
+                        ? 'bg-primary-600 text-white shadow-md shadow-primary-600/30'
+                        : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-700/50 hover:text-primary-600 dark:hover:text-primary-400'
+                      }
+                    `}
+                  >
+                    <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-white' : 'bg-indigo-500'}`} />
+                    <span>{t(item.translationKey)}</span>
+                  </a>
+                );
+              })}
             </SidebarSection>
 
             {/* Separator */}

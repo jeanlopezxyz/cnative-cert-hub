@@ -288,29 +288,19 @@
     @apply bg-blue-400/60;
   }
 
-  /* View Transitions API - Ultra fast for snappy navigation */
+  /* View Transitions API - Instant swap without animation to prevent flash */
   ::view-transition-old(root),
   ::view-transition-new(root) {
-    animation-duration: 0.08s;
-    animation-timing-function: ease-out;
+    animation: none !important;
+    mix-blend-mode: normal;
   }
 
   ::view-transition-old(root) {
-    animation-name: fade-out-fast;
+    opacity: 0 !important;
   }
 
   ::view-transition-new(root) {
-    animation-name: fade-in-fast;
-  }
-
-  @keyframes fade-out-fast {
-    from { opacity: 1; }
-    to { opacity: 0; }
-  }
-
-  @keyframes fade-in-fast {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    opacity: 1 !important;
   }
 
   /* Fade in up animation - Optimized */
@@ -439,11 +429,12 @@
   }
 
   /* Theme color transitions - only on theme toggle, not navigation */
+  /* Using a very fast transition to make theme switching feel instant but smooth */
   html.theme-transition,
   html.theme-transition *,
   html.theme-transition *::before,
   html.theme-transition *::after {
-    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease !important;
+    transition: background-color 0.1s ease-out, border-color 0.1s ease-out, color 0.1s ease-out !important;
   }
 
   /* Smooth backdrop filter transitions */

@@ -76,6 +76,15 @@ export const ACHIEVEMENTS_ITEMS = [
   },
 ];
 
+export const DOCUMENTATION_ITEMS = [
+  {
+    id: 'project-docs',
+    translationKey: 'sidebar.projectDocs',
+    href: 'docs',
+    icon: 'book',
+  },
+];
+
 export const QUICK_LINKS_ITEMS = [
   {
     id: 'discounts',

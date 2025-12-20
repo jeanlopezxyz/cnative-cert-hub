@@ -39,7 +39,7 @@ export default function ThemeToggle() {
 
     setTimeout(() => {
       document.documentElement.classList.remove('theme-transition');
-    }, 200);
+    }, 100);
   };
 
   return (
