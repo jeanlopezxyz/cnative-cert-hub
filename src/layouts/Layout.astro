@@ -59,11 +59,10 @@ const hreflangUrls = {
 <html lang={lang}>
   <head>
     <meta charset="UTF-8" />
-    <!-- Theme initialization - MUST be first script -->
-    <script is:inline>
+    <!-- Theme initialization - MUST be first script, runs on every navigation -->
+    <script is:inline data-astro-rerun>
       (function() {
         // Immediately set theme from localStorage or system preference
-        // Using classList.toggle instead of className to avoid replacing other classes
         var theme;
         try {
           theme = localStorage.getItem('theme');
@@ -71,7 +70,7 @@ const hreflangUrls = {
         if (theme !== 'dark' && theme !== 'light') {
           theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         }
-        // Toggle dark class based on theme preference
+        // Apply theme immediately
         document.documentElement.classList.toggle('dark', theme === 'dark');
       })();
     </script>
