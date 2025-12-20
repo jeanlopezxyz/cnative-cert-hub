@@ -59,15 +59,14 @@ const hreflangUrls = {
 <html lang={lang}>
   <head>
     <meta charset="UTF-8" />
-    <!-- Theme initialization - runs on every navigation via data-astro-rerun -->
-    <script is:inline data-astro-rerun>
+    <!-- Theme initialization - runs immediately on initial page load (NO data-astro-rerun) -->
+    <script is:inline>
       (function() {
         var theme;
         try { theme = localStorage.getItem('theme'); } catch(e) {}
         if (theme !== 'dark' && theme !== 'light') {
           theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         }
-        // Apply theme - remove both classes first, then add the correct one
         document.documentElement.classList.remove('dark', 'light');
         document.documentElement.classList.add(theme);
       })();
@@ -178,9 +177,10 @@ const hreflangUrls = {
 
     <!--
       View Transitions Theme Handler
-      Uses astro:page-load which fires AFTER the transition completes
+      Uses astro:before-swap to apply theme to the NEW document BEFORE the swap happens
+      This runs ONCE on initial page load (NO data-astro-rerun) and persists across navigations
     -->
-    <script is:inline data-astro-rerun>
+    <script is:inline>
       (function() {
         function getTheme() {
           try {
@@ -190,17 +190,14 @@ const hreflangUrls = {
           return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         }
 
-        function applyTheme() {
+        // Listen for View Transition swap event
+        // This fires BEFORE the new document replaces the current one
+        document.addEventListener('astro:before-swap', function(event) {
           var theme = getTheme();
-          document.documentElement.classList.remove('dark', 'light');
-          document.documentElement.classList.add(theme);
-        }
-
-        // Apply immediately
-        applyTheme();
-
-        // Also apply on page load event (after View Transitions)
-        document.addEventListener('astro:page-load', applyTheme);
+          // Apply theme to the NEW document that's about to be swapped in
+          event.newDocument.documentElement.classList.remove('dark', 'light');
+          event.newDocument.documentElement.classList.add(theme);
+        });
       })();
     </script>
 
