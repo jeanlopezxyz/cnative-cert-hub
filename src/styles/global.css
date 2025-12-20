@@ -288,20 +288,7 @@
     @apply bg-blue-400/60;
   }
 
-  /* View Transitions API - Instant swap without animation to prevent flash */
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation: none !important;
-    mix-blend-mode: normal;
-  }
-
-  ::view-transition-old(root) {
-    opacity: 0 !important;
-  }
-
-  ::view-transition-new(root) {
-    opacity: 1 !important;
-  }
+  /* View Transitions - moved to end of file for higher specificity */
 
   /* Fade in up animation - Optimized */
   @keyframes fade-in-up {
@@ -455,4 +442,43 @@
     opacity: 1;
   }
 
+}
+
+/**
+ * View Transitions Override - MUST be outside @layer for highest specificity
+ * This completely disables Astro's default view transition animations
+ * to prevent the white flash when navigating between pages
+ */
+::view-transition-group(*),
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation: none !important;
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+}
+
+::view-transition-old(root) {
+  display: none !important;
+  opacity: 0 !important;
+}
+
+::view-transition-new(root) {
+  animation: none !important;
+  opacity: 1 !important;
+}
+
+/* Set background color during view transition to match theme */
+::view-transition,
+::view-transition-group(root),
+::view-transition-image-pair(root) {
+  background-color: #1E293B !important;
+}
+
+html:not(.dark) ::view-transition,
+html:not(.dark) ::view-transition-group(root),
+html:not(.dark) ::view-transition-image-pair(root),
+html.light ::view-transition,
+html.light ::view-transition-group(root),
+html.light ::view-transition-image-pair(root) {
+  background-color: #E2E8F0 !important;
 }

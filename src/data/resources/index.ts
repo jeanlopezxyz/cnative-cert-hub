@@ -9,6 +9,7 @@
  * - Each certification has its own resource file (e.g., kcna.ts, cka.ts)
  * - Resources follow the CertificationResources interface from types/index.ts
  * - Resources are organized by category (books, courses, videos, etc.)
+ * - Linux Foundation free courses are available in lf-free-courses.ts
  *
  * How to add resources:
  * 1. Find the certification file (e.g., src/data/resources/cka.ts)
@@ -18,6 +19,16 @@
  */
 
 import type { CertificationResources } from '../../types';
+
+// Linux Foundation Free Courses
+export {
+  lfFreeCourses,
+  getCoursesByTopicArea,
+  getCoursesForCertification,
+  searchCourses,
+  type LFFreeCourse,
+  type LFTopicArea,
+} from './lf-free-courses';
 
 // Kubestronaut Certifications
 export { kcnaResources } from './kcna';

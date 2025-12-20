@@ -62,6 +62,16 @@ export const otcaResources: CertificationResources = {
       rating: 4.8,
     },
     {
+      title: 'Getting Started with OpenTelemetry (LFS148)',
+      url: 'https://training.linuxfoundation.org/training/getting-started-with-opentelemetry-lfs148/',
+      author: 'The Linux Foundation',
+      description: 'Learn to use OpenTelemetry to build and manage unified observability',
+      isPaid: false,
+      duration: '15-20 hours',
+      difficulty: 'intermediate',
+      rating: 4.8,
+    },
+    {
       title: 'Getting Started with OpenTelemetry',
       url: 'https://opentelemetry.io/docs/getting-started/',
       author: 'OpenTelemetry',

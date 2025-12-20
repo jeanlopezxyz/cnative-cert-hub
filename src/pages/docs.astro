@@ -1,0 +1,12 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+import ProjectDocs from '../components/docs/ProjectDocs';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<Layout title={t('docs.title')} lang={lang} showSidebar={true}>
+  <ProjectDocs lang={lang} client:load />
+</Layout>

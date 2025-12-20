@@ -72,6 +72,16 @@ export const icaResources: CertificationResources = {
       rating: 4.9,
     },
     {
+      title: 'Introduction to Istio (LFS144)',
+      url: 'https://training.linuxfoundation.org/training/introduction-to-istio-lfs144/',
+      author: 'The Linux Foundation',
+      description: 'Learn how to monitor, connect, and secure microservices using Istio',
+      isPaid: false,
+      duration: '15-20 hours',
+      difficulty: 'intermediate',
+      rating: 4.8,
+    },
+    {
       title: 'Istio Fundamentals',
       url: 'https://academy.tetrate.io/courses/istio-fundamentals',
       author: 'Tetrate Academy',
