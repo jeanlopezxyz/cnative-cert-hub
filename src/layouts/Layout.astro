@@ -177,10 +177,11 @@ const hreflangUrls = {
     </style>
 
     <!--
-      View Transitions Theme Handler - NO data-astro-rerun
-      Runs once on initial load, sets up persistent astro:before-swap listener
+      View Transitions Theme Handler
+      data-astro-rerun ensures it runs on each navigation
+      window flag prevents duplicate listeners since window persists in View Transitions
     -->
-    <script is:inline>
+    <script is:inline data-astro-rerun>
       (function() {
         // Only set up listener once
         if (window.__themeSwapListenerReady) return;
