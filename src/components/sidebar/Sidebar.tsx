@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useTranslations } from '../../i18n/utils';
 import { certifications } from '../../data/certifications';
 import { useOptimizedStorage } from '../../utils/storage';
@@ -36,6 +36,15 @@ export default function Sidebar({ lang }: SidebarProps) {
       setIsDesktopCollapsed(true);
     }
 
+    const savedSections = storage.getItem('sidebarOpenSections');
+    if (savedSections) {
+      try {
+        setOpenSections(JSON.parse(savedSections));
+      } catch {
+        // Keep default state
+      }
+    }
+
     const savedCategories = storage.getItem('sidebarOpenCategories');
     if (savedCategories) {
       try {
@@ -43,6 +52,11 @@ export default function Sidebar({ lang }: SidebarProps) {
       } catch {
         // Keep default empty state
       }
+    }
+
+    // Close mobile sidebar on hydration (for page reloads on mobile)
+    if (window.innerWidth < 1024) {
+      setIsMobileOpen(false);
     }
   }, [storage]);
 
@@ -55,30 +69,50 @@ export default function Sidebar({ lang }: SidebarProps) {
 
   useEffect(() => {
     if (isHydrated) {
+      storage.setBatched('sidebarOpenSections', JSON.stringify(openSections));
+    }
+  }, [openSections, isHydrated, storage]);
+
+  useEffect(() => {
+    if (isHydrated) {
       storage.setBatched('sidebarOpenCategories', JSON.stringify(openCategories));
     }
   }, [openCategories, isHydrated, storage]);
 
-  // Update current path on initial load and after Astro page transitions
+  // Update current path and handle mobile state after Astro page transitions
   useEffect(() => {
-    const updatePath = () => {
+    const updatePathAndMobileState = () => {
       setCurrentPath(window.location.pathname);
+
+      // Close mobile sidebar on navigation (important for mobile/tablet)
+      if (window.innerWidth < 1024) {
+        setIsMobileOpen(false);
+      }
     };
 
-    // Set initial path
-    updatePath();
+    // Set initial path and mobile state
+    updatePathAndMobileState();
 
     // Listen for Astro View Transitions
-    document.addEventListener('astro:page-load', updatePath);
-    document.addEventListener('astro:after-swap', updatePath);
+    document.addEventListener('astro:page-load', updatePathAndMobileState);
+    document.addEventListener('astro:after-swap', updatePathAndMobileState);
 
     // Also listen for popstate (browser back/forward)
-    window.addEventListener('popstate', updatePath);
+    window.addEventListener('popstate', updatePathAndMobileState);
+
+    // Listen for resize events to handle mobile/desktop transitions
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setIsMobileOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
 
     return () => {
-      document.removeEventListener('astro:page-load', updatePath);
-      document.removeEventListener('astro:after-swap', updatePath);
-      window.removeEventListener('popstate', updatePath);
+      document.removeEventListener('astro:page-load', updatePathAndMobileState);
+      document.removeEventListener('astro:after-swap', updatePathAndMobileState);
+      window.removeEventListener('popstate', updatePathAndMobileState);
+      window.removeEventListener('resize', handleResize);
     };
   }, [lang]);
 
@@ -92,11 +126,11 @@ export default function Sidebar({ lang }: SidebarProps) {
   }, []);
 
   // Close mobile sidebar on link click
-  const closeMobileSidebar = () => {
-    if (isHydrated && window.innerWidth < 1024) {
-      setIsMobileOpen(false);
-    }
-  };
+  const closeMobileSidebar = useCallback(() => {
+    // Always close mobile sidebar regardless of hydration state
+    // to ensure it works immediately after page navigation
+    setIsMobileOpen(false);
+  }, []);
 
   // Collapse all sections and go to home
   const handleLogoClick = () => {
@@ -106,15 +140,50 @@ export default function Sidebar({ lang }: SidebarProps) {
   };
 
   const toggleSection = (section: string) => {
-    setOpenSections(prev =>
-      prev.includes(section) ? prev.filter(s => s !== section) : [...prev, section]
-    );
+    setOpenSections(prev => {
+      const newSections = prev.includes(section)
+        ? prev.filter(s => s !== section)
+        : [...prev, section];
+
+      // Immediately save to prevent state loss during navigation
+      try {
+        localStorage.setItem('sidebarOpenSections', JSON.stringify(newSections));
+      } catch (error) {
+        // Silently fail if localStorage is not available
+      }
+
+      return newSections;
+    });
   };
 
+  // Fallback: Ensure at least one section is open on desktop
+  const ensureSectionOpen = useCallback(() => {
+    if (window.innerWidth >= 1024 && openSections.length === 0) {
+      const defaultSections = ['achievements'];
+      setOpenSections(defaultSections);
+      try {
+        localStorage.setItem('sidebarOpenSections', JSON.stringify(defaultSections));
+      } catch (error) {
+        // Silently fail if localStorage is not available
+      }
+    }
+  }, [openSections]);
+
   const toggleCategory = (category: string) => {
-    setOpenCategories(prev =>
-      prev.includes(category) ? prev.filter(cat => cat !== category) : [...prev, category]
-    );
+    setOpenCategories(prev => {
+      const newCategories = prev.includes(category)
+        ? prev.filter(cat => cat !== category)
+        : [...prev, category];
+
+      // Immediately save to prevent state loss during navigation
+      try {
+        localStorage.setItem('sidebarOpenCategories', JSON.stringify(newCategories));
+      } catch (error) {
+        // Silently fail if localStorage is not available
+      }
+
+      return newCategories;
+    });
   };
 
   const certificationsByCategory = groupCertificationsByCategory(certifications);
