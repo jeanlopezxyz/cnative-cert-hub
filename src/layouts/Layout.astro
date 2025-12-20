@@ -178,15 +178,10 @@ const hreflangUrls = {
 
     <!--
       View Transitions Theme Handler
-      data-astro-rerun ensures it runs on each navigation
-      window flag prevents duplicate listeners since window persists in View Transitions
+      Uses astro:page-load which fires AFTER the transition completes
     -->
     <script is:inline data-astro-rerun>
       (function() {
-        // Only set up listener once
-        if (window.__themeSwapListenerReady) return;
-        window.__themeSwapListenerReady = true;
-
         function getTheme() {
           try {
             var t = localStorage.getItem('theme');
@@ -195,13 +190,17 @@ const hreflangUrls = {
           return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         }
 
-        // CRITICAL: Apply theme to NEW document BEFORE swap
-        // This listener persists because document object persists in View Transitions
-        document.addEventListener('astro:before-swap', function(e) {
+        function applyTheme() {
           var theme = getTheme();
-          e.newDocument.documentElement.classList.remove('dark', 'light');
-          e.newDocument.documentElement.classList.add(theme);
-        });
+          document.documentElement.classList.remove('dark', 'light');
+          document.documentElement.classList.add(theme);
+        }
+
+        // Apply immediately
+        applyTheme();
+
+        // Also apply on page load event (after View Transitions)
+        document.addEventListener('astro:page-load', applyTheme);
       })();
     </script>
 
