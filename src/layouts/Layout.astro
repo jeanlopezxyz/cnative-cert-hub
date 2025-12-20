@@ -59,19 +59,17 @@ const hreflangUrls = {
 <html lang={lang}>
   <head>
     <meta charset="UTF-8" />
-    <!-- Theme initialization - MUST be first script, runs on every navigation -->
+    <!-- Theme initialization - runs on every navigation via data-astro-rerun -->
     <script is:inline data-astro-rerun>
       (function() {
-        // Immediately set theme from localStorage or system preference
         var theme;
-        try {
-          theme = localStorage.getItem('theme');
-        } catch(e) {}
+        try { theme = localStorage.getItem('theme'); } catch(e) {}
         if (theme !== 'dark' && theme !== 'light') {
           theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         }
-        // Apply theme immediately
-        document.documentElement.classList.toggle('dark', theme === 'dark');
+        // Apply theme - remove both classes first, then add the correct one
+        document.documentElement.classList.remove('dark', 'light');
+        document.documentElement.classList.add(theme);
       })();
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -179,12 +177,15 @@ const hreflangUrls = {
     </style>
 
     <!--
-      View Transitions Theme Handler
-      MUST have data-astro-rerun to re-attach listeners after each navigation
+      View Transitions Theme Handler - NO data-astro-rerun
+      Runs once on initial load, sets up persistent astro:before-swap listener
     -->
-    <script is:inline data-astro-rerun>
+    <script is:inline>
       (function() {
-        // Helper to get theme from localStorage
+        // Only set up listener once
+        if (window.__themeSwapListenerReady) return;
+        window.__themeSwapListenerReady = true;
+
         function getTheme() {
           try {
             var t = localStorage.getItem('theme');
@@ -193,19 +194,12 @@ const hreflangUrls = {
           return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         }
 
-        // Helper to apply theme
-        function applyTheme(doc) {
-          var theme = getTheme();
-          doc.documentElement.classList.remove('dark', 'light');
-          doc.documentElement.classList.add(theme);
-        }
-
-        // Apply theme to current document immediately
-        applyTheme(document);
-
-        // Listen for View Transition swap - apply to NEW document before it's shown
+        // CRITICAL: Apply theme to NEW document BEFORE swap
+        // This listener persists because document object persists in View Transitions
         document.addEventListener('astro:before-swap', function(e) {
-          applyTheme(e.newDocument);
+          var theme = getTheme();
+          e.newDocument.documentElement.classList.remove('dark', 'light');
+          e.newDocument.documentElement.classList.add(theme);
         });
       })();
     </script>
