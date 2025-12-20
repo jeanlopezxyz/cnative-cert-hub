@@ -179,11 +179,10 @@ const hreflangUrls = {
     </style>
 
     <!--
-      View Transitions Theme Handler
-      Uses classList.toggle to add/remove 'dark' class without affecting other classes
-      This prevents theme reset during language navigation
+      View Transitions Theme Handler - MUST run on every navigation
+      Uses data-astro-rerun to ensure listeners are always active
     -->
-    <script is:inline>
+    <script is:inline data-astro-rerun>
       // Helper function to get current theme from localStorage or system preference
       function getThemePreference() {
         var theme;
@@ -196,26 +195,28 @@ const hreflangUrls = {
         return theme;
       }
 
-      // CRITICAL: Apply theme to NEW document BEFORE it replaces the current one
-      // Using classList.toggle to only affect the 'dark' class, not replace all classes
-      document.addEventListener('astro:before-swap', function(event) {
-        var theme = getThemePreference();
-        // Toggle dark class on the incoming document's html element
-        event.newDocument.documentElement.classList.toggle('dark', theme === 'dark');
-      });
+      // Only register listeners once per document using a flag
+      if (!window.__themeListenersRegistered) {
+        window.__themeListenersRegistered = true;
 
-      // Fallback: Also apply on page load for initial render and edge cases
-      document.addEventListener('astro:page-load', function() {
-        var theme = getThemePreference();
-        // Toggle dark class based on theme preference
-        document.documentElement.classList.toggle('dark', theme === 'dark');
-      });
+        // CRITICAL: Apply theme to NEW document BEFORE it replaces the current one
+        document.addEventListener('astro:before-swap', function(event) {
+          var theme = getThemePreference();
+          event.newDocument.documentElement.classList.toggle('dark', theme === 'dark');
+        });
 
-      // Additional handler for after-swap to ensure theme persists
-      document.addEventListener('astro:after-swap', function() {
-        var theme = getThemePreference();
-        document.documentElement.classList.toggle('dark', theme === 'dark');
-      });
+        // Fallback: Also apply on page load for initial render and edge cases
+        document.addEventListener('astro:page-load', function() {
+          var theme = getThemePreference();
+          document.documentElement.classList.toggle('dark', theme === 'dark');
+        });
+
+        // Additional handler for after-swap to ensure theme persists
+        document.addEventListener('astro:after-swap', function() {
+          var theme = getThemePreference();
+          document.documentElement.classList.toggle('dark', theme === 'dark');
+        });
+      }
     </script>
 
     <!-- Structured Data - JSON-LD -->
