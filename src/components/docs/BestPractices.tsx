@@ -1,9 +1,9 @@
 /**
  * Best Practices Page Component
- * Displays Kubernetes best practices with interactive checklist, priority levels, and code examples
+ * Displays Kubernetes best practices with priority levels and code examples
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import type { Language } from '../../types';
 import { useTranslations } from '../../i18n/utils';
 
@@ -2743,21 +2743,7 @@ export default function BestPractices({ lang }: BestPracticesProps) {
   const [activeSubCategory, setActiveSubCategory] = useState<SubCategoryType>('operations');
   const [expandedPractices, setExpandedPractices] = useState<string[]>([]);
   const [expandedCode, setExpandedCode] = useState<string[]>([]);
-  const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
   const [expandedDetails, setExpandedDetails] = useState<string[]>([]);
-
-  // Load checked items from localStorage
-  useEffect(() => {
-    const saved = localStorage.getItem('bestPracticesChecked');
-    if (saved) {
-      setCheckedItems(JSON.parse(saved));
-    }
-  }, []);
-
-  // Save checked items to localStorage
-  useEffect(() => {
-    localStorage.setItem('bestPracticesChecked', JSON.stringify(checkedItems));
-  }, [checkedItems]);
 
   const togglePractice = (practiceKey: string) => {
     setExpandedPractices(prev =>
@@ -2769,10 +2755,6 @@ export default function BestPractices({ lang }: BestPracticesProps) {
     setExpandedCode(prev =>
       prev.includes(itemId) ? prev.filter(i => i !== itemId) : [...prev, itemId]
     );
-  };
-
-  const toggleCheck = (itemId: string) => {
-    setCheckedItems(prev => ({ ...prev, [itemId]: !prev[itemId] }));
   };
 
   const toggleDetails = (itemId: string) => {
@@ -2844,9 +2826,6 @@ export default function BestPractices({ lang }: BestPracticesProps) {
         <div className="flex flex-wrap gap-2 p-2 bg-neutral-100 dark:bg-neutral-800 rounded-xl">
           {currentSubCategories.map(subcat => {
             const isActive = activeSubCategory === subcat.id;
-            const subcatItems = subcat.practices.flatMap(p => p.items);
-            const subcatChecked = subcatItems.filter(i => checkedItems[i.id]).length;
-            const subcatTotal = subcatItems.length;
 
             return (
               <button
@@ -2862,13 +2841,6 @@ export default function BestPractices({ lang }: BestPracticesProps) {
                   {subcat.icon}
                 </svg>
                 <span>{t(subcat.labelKey)}</span>
-                <span className={`text-xs px-1.5 py-0.5 rounded-full ${
-                  isActive
-                    ? 'bg-primary-100 dark:bg-primary-900/50 text-primary-600 dark:text-primary-400'
-                    : 'bg-neutral-200 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-400'
-                }`}>
-                  {subcatChecked}/{subcatTotal}
-                </span>
               </button>
             );
           })}
@@ -2890,9 +2862,6 @@ export default function BestPractices({ lang }: BestPracticesProps) {
         <div className="space-y-6">
           {currentTab.practices.map((practice) => {
             const isExpanded = expandedPractices.includes(practice.id);
-            const practiceChecked = practice.items.filter(i => checkedItems[i.id]).length;
-            const practiceTotal = practice.items.length;
-            const practiceProgress = Math.round((practiceChecked / practiceTotal) * 100);
 
             return (
               <div
@@ -2915,18 +2884,6 @@ export default function BestPractices({ lang }: BestPracticesProps) {
                         <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-0.5">
                           {t(practice.descKey)}
                         </p>
-                        {/* Progress bar */}
-                        <div className="mt-2 flex items-center gap-3">
-                          <div className="flex-1 h-1.5 bg-neutral-200 dark:bg-neutral-700 rounded-full overflow-hidden max-w-xs">
-                            <div
-                              className="h-full bg-emerald-500 rounded-full transition-all duration-300"
-                              style={{ width: `${practiceProgress}%` }}
-                            />
-                          </div>
-                          <span className="text-xs font-medium text-neutral-500 dark:text-neutral-400">
-                            {practiceChecked}/{practiceTotal}
-                          </span>
-                        </div>
                       </div>
                     </div>
                     <div className="p-2 rounded-lg bg-white/60 dark:bg-neutral-900/40">
@@ -2946,7 +2903,6 @@ export default function BestPractices({ lang }: BestPracticesProps) {
                   <div className="border-t border-neutral-200 dark:border-neutral-700 bg-white/60 dark:bg-neutral-900/30 p-4">
                     <div className="space-y-3">
                       {practice.items.map((item) => {
-                        const isChecked = checkedItems[item.id];
                         const isCodeExpanded = expandedCode.includes(item.id);
                         const isDetailsExpanded = expandedDetails.includes(item.id);
                         const priorityConfig = PRIORITY_CONFIG[item.priority];
@@ -2955,33 +2911,13 @@ export default function BestPractices({ lang }: BestPracticesProps) {
                         return (
                           <div
                             key={item.id}
-                            className={`rounded-xl border transition-all duration-200 ${
-                              isChecked
-                                ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
-                                : 'bg-white dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700'
-                            }`}
+                            className="rounded-xl border transition-all duration-200 bg-white dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700"
                           >
                             <div className="p-4">
                               <div className="flex items-start gap-3">
-                                {/* Checkbox */}
-                                <button
-                                  onClick={() => toggleCheck(item.id)}
-                                  className={`flex-shrink-0 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all ${
-                                    isChecked
-                                      ? 'bg-green-500 border-green-500 text-white'
-                                      : 'border-neutral-300 dark:border-neutral-600 hover:border-primary-400'
-                                  }`}
-                                >
-                                  {isChecked && (
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                                    </svg>
-                                  )}
-                                </button>
-
                                 <div className="flex-1 min-w-0">
                                   <div className="flex items-start justify-between gap-3">
-                                    <p className={`text-sm leading-relaxed ${isChecked ? 'text-neutral-500 line-through' : 'text-neutral-700 dark:text-neutral-300'}`}>
+                                    <p className="text-sm leading-relaxed text-neutral-700 dark:text-neutral-300">
                                       {t(item.titleKey)}
                                     </p>
                                     {/* Priority badge */}
