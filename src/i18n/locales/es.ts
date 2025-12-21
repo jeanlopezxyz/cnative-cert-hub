@@ -822,7 +822,7 @@ export const es = {
   'bestPractices.tab.containerization': 'Contenedores',
   'bestPractices.tab.development': 'Desarrollo',
   'bestPractices.tab.accesscontrol': 'Control de Acceso',
-  'bestPractices.tab.networking': 'Redes',
+  'bestPractices.tab.networkpolicies': 'Políticas de Red',
   'bestPractices.tab.observability': 'Observabilidad',
   'bestPractices.tab.storage': 'Almacenamiento',
   'bestPractices.tab.gitops': 'GitOps & CI/CD',

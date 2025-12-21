@@ -820,7 +820,7 @@ export const en = {
   'bestPractices.tab.containerization': 'Containerization',
   'bestPractices.tab.development': 'Development',
   'bestPractices.tab.accesscontrol': 'Access Control',
-  'bestPractices.tab.networking': 'Networking',
+  'bestPractices.tab.networkpolicies': 'Network Policies',
   'bestPractices.tab.observability': 'Observability',
   'bestPractices.tab.storage': 'Storage & Backup',
   'bestPractices.tab.gitops': 'GitOps & CI/CD',
