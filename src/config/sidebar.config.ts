@@ -83,6 +83,12 @@ export const DOCUMENTATION_ITEMS = [
     href: 'docs',
     icon: 'book',
   },
+  {
+    id: 'best-practices',
+    translationKey: 'sidebar.bestPractices',
+    href: 'best-practices',
+    icon: 'check-badge',
+  },
 ];
 
 export const QUICK_LINKS_ITEMS = [
@@ -95,11 +101,6 @@ export const QUICK_LINKS_ITEMS = [
     id: 'curriculum',
     translationKey: 'sidebar.curriculum',
     href: EXTERNAL_URLS.githubCNCF,
-  },
-  {
-    id: 'docs',
-    translationKey: 'sidebar.docs',
-    href: EXTERNAL_URLS.kubernetes.docs,
   },
 ];
 
