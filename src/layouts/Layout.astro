@@ -269,8 +269,8 @@ const hreflangUrls = {
       class={`fixed top-0 z-50 bg-neutral-100 dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800 transition-all duration-300 left-0 right-0 ${showSidebar ? 'lg:left-[280px]' : ''}`}
     >
       <div class="h-16 px-4 flex items-center">
-        {/* Left: Mobile Menu Button */}
-        <div class="flex-shrink-0">
+        {/* Left: Mobile Menu Button + Logo (mobile only) */}
+        <div class="flex items-center gap-2 flex-shrink-0">
           {showSidebar && (
             <button
               id="mobile-menu-btn"
@@ -282,6 +282,20 @@ const hreflangUrls = {
               </svg>
             </button>
           )}
+
+          {/* Logo - visible on mobile only (hidden on lg when sidebar shows logo) */}
+          <a href={`${baseUrl}${lang === 'en' ? '' : lang + '/'}`} class="lg:hidden flex items-center gap-2">
+            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-primary-600 flex items-center justify-center flex-shrink-0">
+              <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+              </svg>
+            </div>
+            <div class="flex">
+              <span class="text-base sm:text-lg font-bold text-neutral-900 dark:text-white">CNative</span>
+              <span class="text-base sm:text-lg font-bold text-primary-600">Cert</span>
+              <span class="text-base sm:text-lg font-bold text-neutral-900 dark:text-white">Hub</span>
+            </div>
+          </a>
         </div>
 
         {/* Center: Search Bar - Always centered */}

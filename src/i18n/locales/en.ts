@@ -517,6 +517,9 @@ export const en = {
   'aria.toggleSection': 'Toggle %s section',
   'aria.toggleCategory': 'Toggle %s category',
   'search.placeholder': 'Search certifications',
+  'search.results': 'Results',
+  'search.navigate': 'Navigate',
+  'search.select': 'Select',
 
   // Error Boundary
   'error.somethingWentWrong': 'Something went wrong',

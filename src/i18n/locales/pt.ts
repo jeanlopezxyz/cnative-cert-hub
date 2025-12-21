@@ -644,6 +644,9 @@ export const pt = {
   'aria.toggleSection': 'Alternar seção %s',
   'aria.toggleCategory': 'Alternar categoria %s',
   'search.placeholder': 'Pesquisar certificações',
+  'search.results': 'Resultados',
+  'search.navigate': 'Navegar',
+  'search.select': 'Selecionar',
 
   // Error Boundary
   'error.somethingWentWrong': 'Algo deu errado',

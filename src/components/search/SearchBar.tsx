@@ -34,6 +34,8 @@ export default function SearchBar({ lang }: SearchBarProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const desktopInputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const suggestionsRef = useRef<HTMLDivElement>(null);
+  const prevQueryRef = useRef<string>('');
 
   // Fix autoCapitalize attribute on mount
   useEffect(() => {
@@ -253,11 +255,25 @@ export default function SearchBar({ lang }: SearchBarProps) {
       } else {
         setSuggestions([]);
       }
-      setFocusedIndex(-1);
+      // Only reset focusedIndex when query actually changes
+      if (prevQueryRef.current !== query) {
+        setFocusedIndex(-1);
+        prevQueryRef.current = query;
+      }
     }, 150); // Small debounce for real-time feel
 
     return () => clearTimeout(timeoutId);
   }, [query, generateSuggestions]);
+
+  // Scroll focused suggestion into view
+  useEffect(() => {
+    if (focusedIndex >= 0 && suggestionsRef.current) {
+      const focusedElement = suggestionsRef.current.children[focusedIndex] as HTMLElement;
+      if (focusedElement) {
+        focusedElement.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }
+    }
+  }, [focusedIndex]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value;
@@ -281,29 +297,44 @@ export default function SearchBar({ lang }: SearchBarProps) {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Escape always closes the search
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      setIsFocused(false);
+      setSuggestions([]);
+      setFocusedIndex(-1);
+      setIsExpanded(false);
+      setQuery('');
+      inputRef.current?.blur();
+      desktopInputRef.current?.blur();
+      return;
+    }
+
     if (suggestions.length === 0) return;
 
     switch (e.key) {
       case 'ArrowDown':
         e.preventDefault();
-        setFocusedIndex(prev => (prev < suggestions.length - 1 ? prev + 1 : 0));
+        e.stopPropagation();
+        setFocusedIndex(prev => {
+          const next = prev < suggestions.length - 1 ? prev + 1 : 0;
+          return next;
+        });
         break;
       case 'ArrowUp':
         e.preventDefault();
-        setFocusedIndex(prev => (prev > 0 ? prev - 1 : suggestions.length - 1));
+        e.stopPropagation();
+        setFocusedIndex(prev => {
+          const next = prev > 0 ? prev - 1 : suggestions.length - 1;
+          return next;
+        });
         break;
       case 'Enter':
         e.preventDefault();
         if (focusedIndex >= 0 && suggestions[focusedIndex]) {
           window.location.pathname = suggestions[focusedIndex].url;
         }
-        break;
-      case 'Escape':
-        setIsFocused(false);
-        setSuggestions([]);
-        setFocusedIndex(-1);
-        inputRef.current?.blur();
         break;
     }
   };
@@ -462,78 +493,101 @@ export default function SearchBar({ lang }: SearchBarProps) {
           />
         </div>
 
-        {/* Search Suggestions - WowDash Style */}
+        {/* Search Suggestions - Modern Card Style */}
         {(isFocused || suggestions.length > 0) && suggestions.length > 0 && (
-          <div className={`${isExpanded ? 'fixed top-16 left-2 right-2 mt-2' : 'absolute left-0 right-0 top-full mt-2'} bg-white dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-neutral-700 shadow-lg overflow-hidden z-50`}>
-          <div className="p-2 max-h-80 overflow-y-auto" style={{ listStyle: 'none' }}>
-            {suggestions.map((suggestion, index) => (
-              <div
-                key={`${suggestion.type}-${suggestion.id}`}
-                onClick={() => handleSuggestionClick(suggestion)}
-                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleSuggestionClick(suggestion); }}
-                role="button"
-                tabIndex={0}
-                className={`w-full text-left px-3 py-2.5 rounded-lg transition-all duration-200 group cursor-pointer ${
-                  index === focusedIndex
-                    ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400'
-                    : 'hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-700 dark:text-neutral-300'
-                }`}
-              >
-                <div className="flex items-start gap-3">
-                  {/* Certification Icon */}
-                  <div className={`mt-0.5 flex-shrink-0 ${
-                    index === focusedIndex
-                      ? 'text-primary-600 dark:text-primary-400'
-                      : 'text-neutral-400 dark:text-neutral-500 group-hover:text-primary-500'
-                  }`}>
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                    </svg>
-                  </div>
+          <div className={`${isExpanded ? 'fixed top-16 left-3 right-3 mt-3' : 'absolute left-0 right-0 top-full mt-3'} bg-white dark:bg-neutral-800 rounded-xl border border-neutral-200 dark:border-neutral-700 shadow-xl shadow-neutral-200/50 dark:shadow-black/30 overflow-hidden z-50`}>
+            {/* Header */}
+            <div className="px-4 py-2.5 bg-neutral-50 dark:bg-neutral-900/50 border-b border-neutral-200 dark:border-neutral-700">
+              <p className="text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wide">
+                {t('search.results')} ({suggestions.length})
+              </p>
+            </div>
 
-                  <div className="flex-1 min-w-0">
-                    {/* Title */}
-                    <div className={`text-sm font-medium ${
+            <div ref={suggestionsRef} className="p-2 max-h-80 overflow-y-auto" style={{ listStyle: 'none' }}>
+              {suggestions.map((suggestion, index) => (
+                <div
+                  key={`${suggestion.type}-${suggestion.id}`}
+                  onClick={() => handleSuggestionClick(suggestion)}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleSuggestionClick(suggestion); }}
+                  role="button"
+                  tabIndex={0}
+                  className={`w-full text-left px-3 py-3 rounded-lg transition-all duration-200 group cursor-pointer mb-1 last:mb-0 ${
+                    index === focusedIndex
+                      ? 'bg-primary-50 dark:bg-primary-900/30 border border-primary-200 dark:border-primary-800'
+                      : 'hover:bg-neutral-50 dark:hover:bg-neutral-700/50 border border-transparent'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    {/* Certification Icon Badge */}
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
                       index === focusedIndex
-                        ? 'text-primary-600 dark:text-primary-400'
-                        : 'text-neutral-900 dark:text-neutral-100 group-hover:text-primary-600 dark:group-hover:text-primary-400'
-                    }`}>
-                      {highlightMatch(suggestion.title, query)}
+                        ? 'bg-primary-100 dark:bg-primary-900/50 text-primary-600 dark:text-primary-400'
+                        : 'bg-neutral-100 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-400 group-hover:bg-primary-50 dark:group-hover:bg-primary-900/30 group-hover:text-primary-500'
+                    } transition-colors`}>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                      </svg>
                     </div>
 
-                    {/* Tags/Meta info */}
-                    {(suggestion.level || suggestion.category) && (
-                      <div className="flex items-center gap-1.5 mt-1 flex-wrap">
-                        {suggestion.level && (
-                          <span className="px-2 py-0.5 text-xs font-medium bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 rounded">
-                            {t(`certifications.level.${suggestion.level}`)}
-                          </span>
-                        )}
-                        {suggestion.category && (
-                          <span className="px-2 py-0.5 text-xs font-medium bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 rounded">
-                            {suggestion.category}
-                          </span>
-                        )}
+                    <div className="flex-1 min-w-0">
+                      {/* Title */}
+                      <div className={`text-sm font-semibold truncate ${
+                        index === focusedIndex
+                          ? 'text-primary-700 dark:text-primary-300'
+                          : 'text-neutral-800 dark:text-neutral-100 group-hover:text-primary-600 dark:group-hover:text-primary-400'
+                      }`}>
+                        {highlightMatch(suggestion.title, query)}
                       </div>
-                    )}
-                  </div>
 
-                  {/* Arrow icon */}
-                  <div className={`mt-0.5 ${
-                    index === focusedIndex
-                      ? 'text-primary-500 opacity-100'
-                      : 'text-neutral-400 opacity-0 group-hover:opacity-100'
-                  } transition-opacity duration-200`}>
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                    </svg>
+                      {/* Tags/Meta info */}
+                      {(suggestion.level || suggestion.category) && (
+                        <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
+                          {suggestion.level && (
+                            <span className={`px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide rounded-full ${
+                              suggestion.level === 'entry'
+                                ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400'
+                                : suggestion.level === 'intermediate'
+                                  ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400'
+                                  : 'bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-400'
+                            }`}>
+                              {t(`certifications.level.${suggestion.level}`)}
+                            </span>
+                          )}
+                          {suggestion.category && (
+                            <span className="px-2 py-0.5 text-[10px] font-medium bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-400 rounded-full">
+                              {suggestion.category}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Arrow icon */}
+                    <div className={`flex-shrink-0 ${
+                      index === focusedIndex
+                        ? 'text-primary-500 opacity-100'
+                        : 'text-neutral-400 opacity-0 group-hover:opacity-100'
+                    } transition-all duration-200`}>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                      </svg>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+
+            {/* Footer hint */}
+            <div className="px-4 py-2 bg-neutral-50 dark:bg-neutral-900/50 border-t border-neutral-200 dark:border-neutral-700">
+              <p className="text-[10px] text-neutral-400 dark:text-neutral-500 flex items-center gap-2">
+                <kbd className="px-1.5 py-0.5 bg-neutral-200 dark:bg-neutral-700 rounded text-neutral-600 dark:text-neutral-400 font-mono">↑↓</kbd>
+                <span>{t('search.navigate')}</span>
+                <kbd className="px-1.5 py-0.5 bg-neutral-200 dark:bg-neutral-700 rounded text-neutral-600 dark:text-neutral-400 font-mono">↵</kbd>
+                <span>{t('search.select')}</span>
+              </p>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
         {/* Backdrop for mobile */}
         {isFocused && suggestions.length > 0 && !isExpanded && (
