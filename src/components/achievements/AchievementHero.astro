@@ -81,6 +81,8 @@ const colors = getColors();
             {(secondaryCtaText && secondaryCtaHref) && (
               <a
                 href={secondaryCtaHref}
+                target="_blank"
+                rel="noopener noreferrer"
                 class={`inline-flex items-center justify-center gap-2 px-6 py-3 ${colors.badgeBg} ${colors.badgeText} font-semibold rounded-xl transition-all duration-200 hover:opacity-80`}
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -97,8 +99,8 @@ const colors = getColors();
       <div class={`${colors.countBg} ${colors.countText} px-5 py-4 rounded-xl flex flex-col items-center justify-center flex-shrink-0 min-w-[100px]`}>
         <span class="text-3xl sm:text-4xl font-bold">{certCount}</span>
         <div class="text-center">
-          <div class="text-xs opacity-90">{certCountLabel}</div>
-          <div class="text-xs font-semibold">{certRequiredLabel}</div>
+          <div class="text-xs font-bold">{certCountLabel}</div>
+          <div class="text-xs font-bold">{certRequiredLabel}</div>
         </div>
       </div>
     </div>
