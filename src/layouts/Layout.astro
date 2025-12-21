@@ -265,6 +265,7 @@ const hreflangUrls = {
     
     <!-- WowDash-style Header -->
     <header
+      transition:persist={`header-${lang}`}
       class={`fixed top-0 z-50 bg-neutral-100 dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800 transition-all duration-300 left-0 right-0 ${showSidebar ? 'lg:left-[280px]' : ''}`}
     >
       <div class="h-16 px-4 flex items-center">
@@ -339,7 +340,7 @@ const hreflangUrls = {
     
     <div class="min-h-screen">
       {showSidebar && (
-        <div transition:persist="sidebar">
+        <div transition:persist={`sidebar-${lang}`}>
           <Sidebar client:only="react" lang={lang} />
         </div>
       )}
@@ -353,7 +354,7 @@ const hreflangUrls = {
           <slot />
         </main>
         
-        <footer class={`relative bg-neutral-100 dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 ${compactFooter ? 'mt-0' : 'mt-20'}`} id="footer">
+        <footer transition:persist={`footer-${lang}`} class={`relative bg-neutral-100 dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 ${compactFooter ? 'mt-0' : 'mt-20'}`} id="footer">
           <div class="w-full px-4 sm:px-6 lg:px-8 py-8">
             <div class="flex flex-col md:flex-row items-center justify-between gap-6">
               {/* Logo and Description */}
