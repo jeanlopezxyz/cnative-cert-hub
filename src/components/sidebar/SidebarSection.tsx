@@ -8,7 +8,7 @@ interface SidebarSectionProps {
 }
 
 /**
- * WowDash-style sidebar section with expand/collapse
+ * Modern sidebar section with expand/collapse - optimized for mobile
  */
 export default function SidebarSection({
   title,
@@ -26,10 +26,10 @@ export default function SidebarSection({
         <button
           onClick={onToggle}
           className={`
-            w-full flex items-center justify-center p-3 rounded-lg
+            w-full flex items-center justify-center p-3 rounded-xl
             transition-all duration-200
             ${isOpen
-              ? 'bg-primary-600 text-white'
+              ? 'bg-primary-600 text-white shadow-md shadow-primary-600/25'
               : 'text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-primary-600'
             }
           `}
@@ -44,15 +44,15 @@ export default function SidebarSection({
   }
 
   return (
-    <div className="mb-2">
+    <div className="mb-1">
       {/* Section Header */}
       <button
         onClick={onToggle}
         className={`
-          w-full flex items-center justify-between px-3 py-3 rounded-lg
+          w-full flex items-center justify-between px-3 py-2.5 lg:py-3 rounded-xl
           transition-all duration-200 group
           ${isOpen
-            ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400'
+            ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300'
             : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800'
           }
         `}
@@ -60,23 +60,37 @@ export default function SidebarSection({
         aria-label={`Toggle ${title} section`}
       >
         <div className="flex items-center gap-3">
-          <span className={`transition-colors ${isOpen ? 'text-primary-600 dark:text-primary-400' : 'text-neutral-500 group-hover:text-primary-600 dark:group-hover:text-primary-400'}`}>
+          <span className={`
+            w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200
+            ${isOpen
+              ? 'bg-primary-100 dark:bg-primary-800/50 text-primary-600 dark:text-primary-400'
+              : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-500 group-hover:bg-primary-50 dark:group-hover:bg-primary-900/30 group-hover:text-primary-600 dark:group-hover:text-primary-400'
+            }
+          `}>
             {icon}
           </span>
-          <span className="font-medium text-sm">
+          <span className="font-semibold text-sm">
             {title}
           </span>
         </div>
 
         {/* Chevron Arrow */}
-        <svg
-          className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-        </svg>
+        <div className={`
+          w-6 h-6 rounded-md flex items-center justify-center transition-all duration-200
+          ${isOpen
+            ? 'bg-primary-100 dark:bg-primary-800/50'
+            : 'bg-transparent group-hover:bg-neutral-200 dark:group-hover:bg-neutral-700'
+          }
+        `}>
+          <svg
+            className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
       </button>
 
       {/* Section Content - Using grid for smooth animation that handles dynamic content */}
@@ -87,7 +101,7 @@ export default function SidebarSection({
         `}
       >
         <div className="overflow-hidden">
-          <div className="pt-2 pl-4 space-y-1">
+          <div className="pt-1.5 pl-3 lg:pl-4 space-y-0.5">
             {children}
           </div>
         </div>

@@ -14,7 +14,7 @@ interface CertificationCategoryProps {
 }
 
 /**
- * WowDash-style certification category dropdown
+ * Modern certification category dropdown - optimized for mobile
  */
 export default function CertificationCategory({
   categoryKey: _categoryKey,
@@ -44,28 +44,31 @@ export default function CertificationCategory({
       <button
         onClick={onToggle}
         className={`
-          w-full flex items-center justify-between px-3 py-2 rounded-lg
+          w-full flex items-center justify-between px-3 py-2.5 rounded-lg
           text-sm font-medium transition-all duration-200 group
           ${isOpen || hasActiveChild
-            ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400'
-            : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-primary-600'
+            ? 'bg-neutral-100 dark:bg-neutral-800 text-primary-600 dark:text-primary-400'
+            : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 hover:text-primary-600'
           }
         `}
         aria-expanded={isOpen}
         aria-label={`Toggle ${categoryName} category`}
       >
-        <div className="flex items-center gap-2">
-          <span className={`w-1.5 h-1.5 rounded-full ${isOpen || hasActiveChild ? 'bg-primary-500' : 'bg-neutral-400'}`} />
+        <div className="flex items-center gap-2.5">
+          <span className={`
+            w-2 h-2 rounded-full transition-colors
+            ${isOpen || hasActiveChild ? 'bg-primary-500' : 'bg-neutral-300 dark:bg-neutral-600 group-hover:bg-primary-400'}
+          `} />
           <span>{t(categoryName) || categoryName}</span>
         </div>
 
         <div className="flex items-center gap-2">
           {/* Count Badge */}
           <span className={`
-            text-xs px-1.5 py-0.5 rounded-md
+            text-[11px] font-semibold min-w-[20px] text-center px-1.5 py-0.5 rounded-full
             ${isOpen || hasActiveChild
-              ? 'bg-primary-100 dark:bg-primary-900/40 text-primary-600 dark:text-primary-400'
-              : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-500'
+              ? 'bg-primary-100 dark:bg-primary-900/50 text-primary-600 dark:text-primary-400'
+              : 'bg-neutral-200 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-400'
             }
           `}>
             {certifications.length}
@@ -73,7 +76,7 @@ export default function CertificationCategory({
 
           {/* Chevron */}
           <svg
-            className={`w-3.5 h-3.5 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+            className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -91,7 +94,7 @@ export default function CertificationCategory({
         `}
       >
         <div className="overflow-hidden">
-          <div className="pt-1 pl-4 space-y-0.5">
+          <div className="pt-1 pl-3 lg:pl-4 space-y-0.5">
             {certifications.map((cert) => {
               const certHref = `${basePath}/certifications/${cert.id}`;
               const isActive = currentPath === certHref;
@@ -102,16 +105,16 @@ export default function CertificationCategory({
                   href={certHref}
                   onClick={onLinkClick}
                   className={`
-                    flex items-center gap-2 px-3 py-2 rounded-lg text-sm
+                    flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm
                     transition-all duration-200
                     ${isActive
-                      ? 'bg-primary-600 text-white font-medium shadow-sm shadow-primary-600/30'
-                      : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-primary-600 dark:hover:text-primary-400'
+                      ? 'bg-primary-600 text-white font-medium shadow-md shadow-primary-600/25'
+                      : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 hover:text-primary-600 dark:hover:text-primary-400'
                     }
                   `}
                 >
-                  <span className={`w-1 h-1 rounded-full ${isActive ? 'bg-white' : 'bg-neutral-400'}`} />
-                  <span className="flex-1">{cert.acronym}</span>
+                  <span className={`w-1.5 h-1.5 rounded-full transition-colors ${isActive ? 'bg-white' : 'bg-neutral-400 dark:bg-neutral-500'}`} />
+                  <span className="flex-1 font-medium">{cert.acronym}</span>
                   {cert.isNew && (
                     <span className={`
                       text-[10px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider
