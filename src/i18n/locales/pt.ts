@@ -84,6 +84,8 @@ export const pt = {
   'achievements.kubestronaut.step3Desc': 'Complete sua certificação',
   'achievements.kubestronaut.ctaText': 'Pronto para começar?',
   'achievements.kubestronaut.ctaButton': 'Começar com KCNA',
+  'achievements.kubestronaut.heroCta': 'Comece Sua Jornada',
+  'achievements.kubestronaut.heroCtaSecondary': 'Programa Oficial',
   'achievements.golden.requirements': 'Requisitos do Programa',
   'achievements.golden.benefits': 'Benefícios do Programa',
   'achievements.golden.how': 'Caminho para Golden Kubestronaut',
@@ -124,6 +126,8 @@ export const pt = {
   'achievements.golden.howStep3Desc': 'Complete a certificação LFCS',
   'achievements.golden.ctaText': 'Pronto para começar?',
   'achievements.golden.ctaButton': 'Começar com KCNA',
+  'achievements.golden.heroCta': 'Comece Sua Jornada',
+  'achievements.golden.heroCtaSecondary': 'Programa Oficial',
   'achievements.kubestronaut.requiresCka': 'Requer CKA',
   'certifications.lfcs.name': 'Administrador de Sistema Certificado Linux Foundation',
 

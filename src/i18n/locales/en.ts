@@ -78,6 +78,8 @@ export const en = {
   'achievements.kubestronaut.step3Desc': 'Complete your certification',
   'achievements.kubestronaut.ctaText': 'Ready to start?',
   'achievements.kubestronaut.ctaButton': 'Start with KCNA',
+  'achievements.kubestronaut.heroCta': 'Start Your Journey',
+  'achievements.kubestronaut.heroCtaSecondary': 'Official Program',
   'achievements.golden.title': 'Golden Kubestronaut',
   'achievements.golden.description':
     'Complete certification program covering all 15 CNCF and Linux Foundation certifications',
@@ -128,6 +130,8 @@ export const en = {
   'achievements.golden.howStep3Desc': 'Complete the LFCS certification',
   'achievements.golden.ctaText': 'Ready to start?',
   'achievements.golden.ctaButton': 'Start with KCNA',
+  'achievements.golden.heroCta': 'Start Your Journey',
+  'achievements.golden.heroCtaSecondary': 'Official Program',
   'achievements.kubestronaut.requiresCka': 'Requires CKA',
   'certifications.lfcs.name': 'Linux Foundation Certified System Administrator',
 
