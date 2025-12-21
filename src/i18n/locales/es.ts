@@ -354,6 +354,8 @@ export const es = {
   'certification.minutes': 'minutos',
   'certification.domains': 'Dominios del Examen',
   'certification.overview': 'Información General',
+  'certification.tapToChange': 'Toca para cambiar sección',
+  'certification.selectSection': 'Seleccionar sección',
   'certification.studyResources': 'Recursos de Estudio',
   'certification.studyPath': 'Ruta de Estudio',
   'certification.examTips': 'Consejos para el Examen',

@@ -353,6 +353,8 @@ export const pt = {
   'certification.minutes': 'minutos',
   'certification.domains': 'Domínios do Exame',
   'certification.overview': 'Visão Geral',
+  'certification.tapToChange': 'Toque para mudar seção',
+  'certification.selectSection': 'Selecionar seção',
   'certification.studyResources': 'Recursos de Estudo',
   'certification.studyPath': 'Caminho de Estudo',
   'certification.examTips': 'Dicas para o Exame',

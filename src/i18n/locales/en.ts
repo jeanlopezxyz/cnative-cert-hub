@@ -358,6 +358,8 @@ export const en = {
   'certification.minutes': 'minutes',
   'certification.domains': 'Exam Domains',
   'certification.overview': 'Overview',
+  'certification.tapToChange': 'Tap to change section',
+  'certification.selectSection': 'Select section',
   'certification.studyResources': 'Study Resources',
   'certification.studyPath': 'Study Path',
   'certification.examTips': 'Exam Tips',
