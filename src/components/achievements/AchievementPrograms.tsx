@@ -38,8 +38,8 @@ export default function AchievementPrograms({ lang }: AchievementProgramsProps) 
   return (
     <section id="achievements" className="pt-4 pb-6 sm:pt-6 sm:pb-8 scroll-section">
       <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-8 2xl:px-12 3xl:px-16">
-        {/* Card Container - WowDash Style with Gradient Background */}
-        <div className="bg-gradient-to-br from-primary-50 via-white to-cyan-50 dark:from-neutral-800 dark:via-neutral-800 dark:to-primary-900/20 rounded-xl border border-neutral-200 dark:border-neutral-700 p-5 sm:p-6 shadow-sm">
+        {/* Card Container - WowDash Style */}
+        <div className="bg-primary-50 dark:bg-neutral-800 rounded-xl border border-neutral-200 dark:border-neutral-700 p-5 sm:p-6 shadow-sm">
           {/* Section Header */}
           <div className="mb-6">
             <h2 className="text-xl sm:text-2xl font-bold mb-2 text-neutral-900 dark:text-white">
