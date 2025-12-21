@@ -1,4 +1,4 @@
-import { useTranslations, translateCertificationValue } from '../../i18n/utils';
+import { useTranslations } from '../../i18n/utils';
 import { buildCertificationUrl, getLevelColors } from '../../utils';
 import type { Certification, Language } from '../../types';
 import { useFadeInUpStagger } from '../../hooks/useStaggeredAnimation';
@@ -44,36 +44,12 @@ export default function CertificationCard({
             {cert.name}
           </p>
 
-          {/* Meta Info */}
-          <div className="flex flex-wrap gap-2 mb-4">
+          {/* Level badge */}
+          <div className="mb-4">
             <span className={`text-xs px-2.5 py-1 rounded-md font-medium ${colors.text} bg-white/60 dark:bg-neutral-900/40`}>
               {t(`certifications.level.${cert.level}`)}
             </span>
-            <span className="text-xs px-2.5 py-1 rounded-md font-medium text-neutral-600 dark:text-neutral-400 bg-white/60 dark:bg-neutral-900/40">
-              {cert.duration} min
-            </span>
-            {cert.type === 'performance' && (
-              <span className="text-xs px-2.5 py-1 rounded-md font-medium text-purple-600 dark:text-purple-400 bg-white/60 dark:bg-neutral-900/40">
-                Hands-on
-              </span>
-            )}
           </div>
-
-          {/* Achievement badges */}
-          {cert.requiredFor && cert.requiredFor.length > 0 && (
-            <div className="mb-4">
-              <div className="flex flex-wrap gap-1.5">
-                {cert.requiredFor.map((badge: string) => (
-                  <span
-                    key={badge}
-                    className="text-xs px-2 py-0.5 rounded bg-white/80 dark:bg-neutral-900/60 text-neutral-700 dark:text-neutral-300 font-medium"
-                  >
-                    {translateCertificationValue(badge, lang)}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
 
           {/* Read More Link */}
           <span className={`btn ${colors.text} hover:underline px-0 py-0 mt-auto inline-flex items-center gap-2 text-sm font-medium`}>
