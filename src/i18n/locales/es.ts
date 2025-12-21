@@ -741,6 +741,10 @@ export const es = {
   'quiz.takeAnother': 'Tomar Otro Cuestionario',
   'quiz.printResults': 'Imprimir Resultados',
   'quiz.comingSoon': '¡Las preguntas de práctica para esta certificación están llegando pronto!',
+  'quiz.studyModeDesc': 'Ver respuestas inmediatamente y aprender mientras avanzas',
+  'quiz.examModeDesc': 'Simular condiciones reales de examen',
+  'quiz.recommended': 'Recomendado',
+  'quiz.explanation': 'Explicación',
   'quiz.checkBackLater': 'Vuelve más tarde para preguntas de práctica interactivas.',
 
   // Etiquetas de pestañas

@@ -732,6 +732,10 @@ export const pt = {
   'quiz.takeAnother': 'Fazer Outro Questionário',
   'quiz.printResults': 'Imprimir Resultados',
   'quiz.comingSoon': 'Questões de prática para esta certificação estão chegando em breve!',
+  'quiz.studyModeDesc': 'Ver respostas imediatamente e aprender enquanto avança',
+  'quiz.examModeDesc': 'Simular condições reais de exame',
+  'quiz.recommended': 'Recomendado',
+  'quiz.explanation': 'Explicação',
   'quiz.checkBackLater': 'Volte mais tarde para questões de prática interativas.',
 
   // Rótulos de abas

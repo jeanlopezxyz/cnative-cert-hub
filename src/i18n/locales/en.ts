@@ -739,6 +739,10 @@ export const en = {
   'quiz.takeAnother': 'Take Another Quiz',
   'quiz.printResults': 'Print Results',
   'quiz.comingSoon': 'Practice questions for this certification are coming soon!',
+  'quiz.studyModeDesc': 'See answers immediately and learn as you go',
+  'quiz.examModeDesc': 'Simulate real exam conditions',
+  'quiz.recommended': 'Recommended',
+  'quiz.explanation': 'Explanation',
   'quiz.checkBackLater': 'Check back later for interactive practice questions.',
 
   // Tab labels
