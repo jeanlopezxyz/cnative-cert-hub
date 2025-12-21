@@ -19,47 +19,41 @@ interface SidebarProps {
   lang: keyof typeof ui;
 }
 
+// Helper to read from localStorage safely
+function getStoredValue<T>(key: string, defaultValue: T): T {
+  if (typeof window === 'undefined') return defaultValue;
+  try {
+    const saved = localStorage.getItem(key);
+    if (saved) return JSON.parse(saved);
+  } catch {}
+  return defaultValue;
+}
+
 export default function Sidebar({ lang }: SidebarProps) {
   const t = useTranslations(lang);
   const storage = useOptimizedStorage();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [currentPath, setCurrentPath] = useState('');
-  const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(false);
+  // Initialize directly from localStorage to prevent flash
+  const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(() =>
+    getStoredValue('sidebarCollapsed', 'false') === 'true'
+  );
   const [isHydrated, setIsHydrated] = useState(false);
-  const [openSections, setOpenSections] = useState<string[]>(['achievements']);
-  const [openCategories, setOpenCategories] = useState<string[]>([]);
+  const [openSections, setOpenSections] = useState<string[]>(() =>
+    getStoredValue('sidebarOpenSections', ['achievements'])
+  );
+  const [openCategories, setOpenCategories] = useState<string[]>(() =>
+    getStoredValue('sidebarOpenCategories', [])
+  );
 
-  // Restore state after hydration
+  // Mark as hydrated
   useEffect(() => {
     setIsHydrated(true);
-    const savedCollapsed = storage.getItem('sidebarCollapsed');
-    if (savedCollapsed === 'true') {
-      setIsDesktopCollapsed(true);
-    }
-
-    const savedSections = storage.getItem('sidebarOpenSections');
-    if (savedSections) {
-      try {
-        setOpenSections(JSON.parse(savedSections));
-      } catch {
-        // Keep default state
-      }
-    }
-
-    const savedCategories = storage.getItem('sidebarOpenCategories');
-    if (savedCategories) {
-      try {
-        setOpenCategories(JSON.parse(savedCategories));
-      } catch {
-        // Keep default empty state
-      }
-    }
-
     // Close mobile sidebar on hydration (for page reloads on mobile)
     if (window.innerWidth < 1024) {
       setIsMobileOpen(false);
     }
-  }, [storage]);
+  }, []);
 
   // Save states
   useEffect(() => {
