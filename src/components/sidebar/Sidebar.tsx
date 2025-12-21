@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslations } from '../../i18n/utils';
 import { certifications } from '../../data/certifications';
 import { APP_CONFIG } from '../../constants';
@@ -18,172 +18,112 @@ interface SidebarProps {
   lang: keyof typeof ui;
 }
 
-// Helper to read from localStorage safely
+// Default sections to show expanded on first visit
+const DEFAULT_OPEN_SECTIONS = ['certifications'];
+
+// Helper to read from localStorage safely (only on user interaction, not initial render)
 function getStoredValue<T>(key: string, defaultValue: T): T {
   if (typeof window === 'undefined') return defaultValue;
   try {
     const saved = localStorage.getItem(key);
-    if (saved) return JSON.parse(saved);
+    if (saved !== null) return JSON.parse(saved);
   } catch {}
   return defaultValue;
 }
 
+// Helper to save to localStorage safely
+function saveToStorage(key: string, value: unknown): void {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch {}
+}
+
 export default function Sidebar({ lang }: SidebarProps) {
   const t = useTranslations(lang);
+  const isFirstRender = useRef(true);
+
+  // Initialize state - use defaults on first render, localStorage only affects subsequent interactions
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [currentPath, setCurrentPath] = useState('');
-  // Initialize directly from localStorage to prevent flash
-  const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(() =>
-    getStoredValue('sidebarCollapsed', false) === true
+  const [currentPath, setCurrentPath] = useState(() =>
+    typeof window !== 'undefined' ? window.location.pathname : ''
   );
-  const [isHydrated, setIsHydrated] = useState(false);
+  const [isDesktopCollapsed] = useState(() =>
+    getStoredValue('sidebarCollapsed', false)
+  );
   const [openSections, setOpenSections] = useState<string[]>(() =>
-    getStoredValue('sidebarOpenSections', ['achievements'])
+    getStoredValue('sidebarOpenSections', DEFAULT_OPEN_SECTIONS)
   );
   const [openCategories, setOpenCategories] = useState<string[]>(() =>
     getStoredValue('sidebarOpenCategories', [])
   );
 
-  // Mark as hydrated
+  // Update current path on navigation (single effect for all path-related updates)
   useEffect(() => {
-    setIsHydrated(true);
-    // Close mobile sidebar on hydration (for page reloads on mobile)
-    if (window.innerWidth < 1024) {
-      setIsMobileOpen(false);
-    }
-  }, []);
-
-  // Save states immediately (no batching) to persist during View Transitions
-  useEffect(() => {
-    if (isHydrated) {
-      try {
-        localStorage.setItem('sidebarCollapsed', JSON.stringify(isDesktopCollapsed));
-      } catch {}
-    }
-  }, [isDesktopCollapsed, isHydrated]);
-
-  useEffect(() => {
-    if (isHydrated) {
-      try {
-        localStorage.setItem('sidebarOpenSections', JSON.stringify(openSections));
-      } catch {}
-    }
-  }, [openSections, isHydrated]);
-
-  useEffect(() => {
-    if (isHydrated) {
-      try {
-        localStorage.setItem('sidebarOpenCategories', JSON.stringify(openCategories));
-      } catch {}
-    }
-  }, [openCategories, isHydrated]);
-
-  // Update current path and handle mobile state after Astro page transitions
-  useEffect(() => {
-    const updatePathAndMobileState = () => {
+    const updatePath = () => {
       setCurrentPath(window.location.pathname);
-
-      // Close mobile sidebar on navigation (important for mobile/tablet)
+      // Close mobile sidebar on navigation
       if (window.innerWidth < 1024) {
         setIsMobileOpen(false);
       }
     };
 
-    // Set initial path and mobile state
-    updatePathAndMobileState();
+    // Mark first render complete
+    isFirstRender.current = false;
 
-    // Listen for Astro View Transitions
-    document.addEventListener('astro:page-load', updatePathAndMobileState);
-    document.addEventListener('astro:after-swap', updatePathAndMobileState);
-
-    // Also listen for popstate (browser back/forward)
-    window.addEventListener('popstate', updatePathAndMobileState);
-
-    // Listen for resize events to handle mobile/desktop transitions
-    const handleResize = () => {
-      if (window.innerWidth >= 1024) {
-        setIsMobileOpen(false);
-      }
-    };
-    window.addEventListener('resize', handleResize);
+    // Listen for Astro View Transitions and browser navigation
+    document.addEventListener('astro:page-load', updatePath);
+    document.addEventListener('astro:after-swap', updatePath);
+    window.addEventListener('popstate', updatePath);
 
     return () => {
-      document.removeEventListener('astro:page-load', updatePathAndMobileState);
-      document.removeEventListener('astro:after-swap', updatePathAndMobileState);
-      window.removeEventListener('popstate', updatePathAndMobileState);
-      window.removeEventListener('resize', handleResize);
+      document.removeEventListener('astro:page-load', updatePath);
+      document.removeEventListener('astro:after-swap', updatePath);
+      window.removeEventListener('popstate', updatePath);
     };
-  }, [lang]);
+  }, []);
 
   // Listen for mobile sidebar toggle from header
   useEffect(() => {
-    const handleToggle = () => {
-      setIsMobileOpen(prev => !prev);
-    };
+    const handleToggle = () => setIsMobileOpen(prev => !prev);
     window.addEventListener('toggle-mobile-sidebar', handleToggle);
     return () => window.removeEventListener('toggle-mobile-sidebar', handleToggle);
   }, []);
 
   // Close mobile sidebar on link click
   const closeMobileSidebar = useCallback(() => {
-    // Always close mobile sidebar regardless of hydration state
-    // to ensure it works immediately after page navigation
     setIsMobileOpen(false);
   }, []);
 
   // Collapse all sections and go to home
   const handleLogoClick = () => {
-    setOpenSections([]);
-    setOpenCategories([]);
+    const emptySections: string[] = [];
+    const emptyCategories: string[] = [];
+    setOpenSections(emptySections);
+    setOpenCategories(emptyCategories);
+    saveToStorage('sidebarOpenSections', emptySections);
+    saveToStorage('sidebarOpenCategories', emptyCategories);
     closeMobileSidebar();
   };
 
-  const toggleSection = (section: string) => {
+  const toggleSection = useCallback((section: string) => {
     setOpenSections(prev => {
       const newSections = prev.includes(section)
         ? prev.filter(s => s !== section)
         : [...prev, section];
-
-      // Immediately save to prevent state loss during navigation
-      try {
-        localStorage.setItem('sidebarOpenSections', JSON.stringify(newSections));
-      } catch (error) {
-        // Silently fail if localStorage is not available
-      }
-
+      saveToStorage('sidebarOpenSections', newSections);
       return newSections;
     });
-  };
+  }, []);
 
-  // Fallback: Ensure at least one section is open on desktop
-  const ensureSectionOpen = useCallback(() => {
-    if (window.innerWidth >= 1024 && openSections.length === 0) {
-      const defaultSections = ['achievements'];
-      setOpenSections(defaultSections);
-      try {
-        localStorage.setItem('sidebarOpenSections', JSON.stringify(defaultSections));
-      } catch (error) {
-        // Silently fail if localStorage is not available
-      }
-    }
-  }, [openSections]);
-
-  const toggleCategory = (category: string) => {
+  const toggleCategory = useCallback((category: string) => {
     setOpenCategories(prev => {
       const newCategories = prev.includes(category)
         ? prev.filter(cat => cat !== category)
         : [...prev, category];
-
-      // Immediately save to prevent state loss during navigation
-      try {
-        localStorage.setItem('sidebarOpenCategories', JSON.stringify(newCategories));
-      } catch (error) {
-        // Silently fail if localStorage is not available
-      }
-
+      saveToStorage('sidebarOpenCategories', newCategories);
       return newCategories;
     });
-  };
+  }, []);
 
   const certificationsByCategory = groupCertificationsByCategory(certifications);
 

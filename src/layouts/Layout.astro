@@ -339,7 +339,9 @@ const hreflangUrls = {
     
     <div class="min-h-screen">
       {showSidebar && (
-        <Sidebar client:only="react" lang={lang} />
+        <div transition:persist="sidebar">
+          <Sidebar client:only="react" lang={lang} />
+        </div>
       )}
 
       <div
