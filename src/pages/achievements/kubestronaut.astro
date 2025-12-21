@@ -44,7 +44,7 @@ const steps = [
       certCount={5}
       certCountLabel={t('certifications.card.certifications')}
       certRequiredLabel={t('certifications.card.required')}
-      gradientClass="bg-gradient-to-br from-cyan-500 via-blue-500 to-indigo-600 dark:from-[#242145] dark:via-[#1A1735] dark:to-[#130F25]"
+      gradientClass="bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 dark:from-blue-900 dark:via-blue-800 dark:to-blue-900"
       particleStyle="cosmic"
       ctaText={t('achievements.kubestronaut.heroCta')}
       ctaHref={`${basePath}/certifications/kcna`}
@@ -52,9 +52,9 @@ const steps = [
       secondaryCtaHref="https://www.cncf.io/training/kubestronaut/"
     />
 
-    <!-- Certification Path - WowDash Style -->
+    <!-- Certification Path -->
     <div class="mb-6 sm:mb-8">
-      <h2 class="text-xl sm:text-2xl font-bold mb-4 text-violet-600 dark:text-violet-400">
+      <h2 class="text-xl sm:text-2xl font-bold mb-4 text-neutral-800 dark:text-neutral-100">
         {t('achievements.kubestronaut.requiredCerts')}
       </h2>
 
@@ -71,11 +71,11 @@ const steps = [
 
     <!-- Info Cards Grid - WowDash Style -->
     <div class="grid md:grid-cols-2 gap-4 sm:gap-6 mb-8">
-      <!-- Requirements Card - WowDash cyan style -->
-      <div class="card rounded-xl overflow-hidden border-0 bg-cyan-50 dark:bg-cyan-600/20">
+      <!-- Requirements Card - Blue style -->
+      <div class="card rounded-xl overflow-hidden border-0 bg-blue-50 dark:bg-blue-900/20">
         <div class="card-body p-5 sm:p-6">
           <div class="flex items-center gap-3 mb-4">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 inline-flex items-center justify-center bg-cyan-600 text-white rounded-xl">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 inline-flex items-center justify-center bg-blue-600 text-white rounded-xl">
               <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fill-rule="evenodd"
@@ -83,13 +83,13 @@ const steps = [
                   clip-rule="evenodd"></path>
               </svg>
             </div>
-            <h3 class="text-lg sm:text-xl font-bold text-cyan-600 dark:text-cyan-400">
+            <h3 class="text-lg sm:text-xl font-bold text-blue-600 dark:text-blue-400">
               {t('achievements.kubestronaut.requirements')}
             </h3>
           </div>
           <div class="space-y-3">
             <div class="flex items-start gap-3 p-3 bg-white/60 dark:bg-neutral-800/40 rounded-lg">
-              <div class="w-6 h-6 flex-shrink-0 inline-flex items-center justify-center bg-cyan-600 text-white rounded-full mt-0.5">
+              <div class="w-6 h-6 flex-shrink-0 inline-flex items-center justify-center bg-blue-600 text-white rounded-full mt-0.5">
                 <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                 </svg>
@@ -97,7 +97,7 @@ const steps = [
               <span class="text-neutral-700 dark:text-neutral-200 text-sm leading-relaxed">{t('achievements.kubestronaut.req1')}</span>
             </div>
             <div class="flex items-start gap-3 p-3 bg-white/60 dark:bg-neutral-800/40 rounded-lg">
-              <div class="w-6 h-6 flex-shrink-0 inline-flex items-center justify-center bg-cyan-600 text-white rounded-full mt-0.5">
+              <div class="w-6 h-6 flex-shrink-0 inline-flex items-center justify-center bg-blue-600 text-white rounded-full mt-0.5">
                 <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                 </svg>
@@ -105,7 +105,7 @@ const steps = [
               <span class="text-neutral-700 dark:text-neutral-200 text-sm leading-relaxed">{t('achievements.kubestronaut.req2')}</span>
             </div>
             <div class="flex items-start gap-3 p-3 bg-white/60 dark:bg-neutral-800/40 rounded-lg">
-              <div class="w-6 h-6 flex-shrink-0 inline-flex items-center justify-center bg-cyan-600 text-white rounded-full mt-0.5">
+              <div class="w-6 h-6 flex-shrink-0 inline-flex items-center justify-center bg-blue-600 text-white rounded-full mt-0.5">
                 <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                 </svg>

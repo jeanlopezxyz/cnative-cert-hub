@@ -25,6 +25,7 @@ export const es = {
   'hero.cta.certifications': 'Explorar Certificaciones',
   'hero.cta.start': 'Comenzar a Aprender',
   'hero.cta.explore': 'Recursos de Estudio',
+  'hero.cta.official': 'Sitio Oficial',
   'hero.stats.badge': '16 Certificaciones Reconocidas Globalmente',
   'hero.stats.certifications': 'Certificaciones',
   'hero.stats.languages': 'Idiomas',
@@ -41,8 +42,8 @@ export const es = {
   'stats.community': 'Comunidad Activa',
 
   // Achievements
-  'achievements.title': 'Programas de Logros',
-  'achievements.programs.title': 'Programas de Logros',
+  'achievements.title': 'Rutas de Certificación',
+  'achievements.programs.title': 'Rutas de Certificación',
   'achievements.programs.subtitle':
     'Rutas de certificación estructuradas para profesionales que desarrollan experiencia en el ecosistema cloud native',
   'achievements.kubestronaut.title': 'Kubestronaut',
@@ -84,7 +85,7 @@ export const es = {
   'achievements.kubestronaut.step3Desc': 'Completa tu certificación',
   'achievements.kubestronaut.ctaText': '¿Listo para comenzar?',
   'achievements.kubestronaut.ctaButton': 'Comenzar con KCNA',
-  'achievements.kubestronaut.heroCta': 'Comenzar Tu Camino',
+  'achievements.kubestronaut.heroCta': 'Comienza tu camino',
   'achievements.kubestronaut.heroCtaSecondary': 'Programa Oficial',
   'achievements.golden.requirements': 'Requisitos del Programa',
   'achievements.golden.benefits': 'Beneficios del Programa',
@@ -127,7 +128,7 @@ export const es = {
   'achievements.golden.howStep3Desc': 'Completa la certificación LFCS',
   'achievements.golden.ctaText': '¿Listo para comenzar?',
   'achievements.golden.ctaButton': 'Comenzar con KCNA',
-  'achievements.golden.heroCta': 'Comenzar Tu Camino',
+  'achievements.golden.heroCta': 'Comienza tu camino',
   'achievements.golden.heroCtaSecondary': 'Programa Oficial',
   'achievements.kubestronaut.requiresCka': 'Requiere CKA',
   'certifications.lfcs.name': 'Administrador de Sistemas Certificado de Linux Foundation',
@@ -142,10 +143,28 @@ export const es = {
 
   // Upcoming Certifications
   'certifications.upcoming.title': 'Próximas Certificaciones',
-  'certifications.upcoming.subtitle': 'Nuevas certificaciones que llegarán al ecosistema CNCF',
-  'certifications.upcoming.ckne': 'CKNE (Certified Kubernetes Network Engineer)',
-  'certifications.upcoming.ckneDesc': 'Certificación de nivel intermedio para redes en Kubernetes y plataformas cloud native.',
+  'certifications.upcoming.subtitle': 'Nuevas certificaciones y programas que llegarán al ecosistema CNCF y Linux Foundation. Mantente actualizado sobre los últimos desarrollos.',
   'certifications.upcoming.expected': 'Esperado',
+  'certifications.upcoming.statusAvailable': 'Disponible Ahora',
+  'certifications.upcoming.statusDevelopment': 'En Desarrollo',
+  'certifications.upcoming.keyFeatures': 'Características Principales',
+  'certifications.upcoming.officialPage': 'Página Oficial',
+  'certifications.upcoming.announcement': 'Anuncio',
+  'certifications.upcoming.stayUpdated': 'Mantente Actualizado',
+  'certifications.upcoming.stayUpdatedDesc': 'Visita la página oficial de certificaciones CNCF para obtener las últimas noticias sobre nuevas certificaciones, actualizaciones de exámenes y recursos de aprendizaje.',
+  'certifications.upcoming.visitCncf': 'Visitar Certificaciones CNCF',
+  // CKNE
+  'certifications.upcoming.ckne': 'Certified Kubernetes Network Engineer',
+  'certifications.upcoming.ckneDesc': 'Un examen basado en rendimiento de nivel intermedio diseñado para validar la experiencia en redes de Kubernetes y plataformas cloud native. Esta certificación cubre múltiples proyectos de networking manteniéndose neutral respecto a proveedores.',
+  'certifications.upcoming.ckneHighlight1': 'Cubre Cilium, Istio, Calico, Flannel y otros plugins CNI',
+  'certifications.upcoming.ckneHighlight2': 'Equivalente cloud-native a CCNA, liderado por la comunidad y neutral',
+  'certifications.upcoming.ckneHighlight3': 'Examen basado en rendimiento que evalúa habilidades reales de networking',
+  // CODE
+  'certifications.upcoming.code': 'Certified Open Source Developer for Enterprise',
+  'certifications.upcoming.codeDesc': 'Una certificación diseñada para proporcionar a los desarrolladores empresariales capacitación esencial en código abierto. Aprende las mejores prácticas para contribuir a proyectos de código abierto en entornos empresariales.',
+  'certifications.upcoming.codeHighlight1': 'Iniciativa conjunta entre Linux Foundation, TODO y Open Source Initiative',
+  'certifications.upcoming.codeHighlight2': 'Mejores prácticas para contribuir a proyectos de código abierto',
+  'certifications.upcoming.codeHighlight3': '12 meses y 2 intentos para completar la certificación',
 
   // Certification Card
   'certifications.card.domains': 'Dominios',

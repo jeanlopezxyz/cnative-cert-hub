@@ -84,7 +84,7 @@ const CategoryIcons = {
   ),
 };
 
-// Main categories structure
+// Main categories structure - ordered by operational flow
 const MAIN_CATEGORIES: MainCategoryConfig[] = [
   {
     id: 'cluster',
@@ -92,13 +92,6 @@ const MAIN_CATEGORIES: MainCategoryConfig[] = [
     icon: CategoryIcons.cluster,
     color: 'from-blue-500 to-blue-600',
     subcategories: ['operations', 'highavailability', 'multitenancy'],
-  },
-  {
-    id: 'security',
-    labelKey: 'bestPractices.category.security',
-    icon: CategoryIcons.security,
-    color: 'from-red-500 to-red-600',
-    subcategories: ['security', 'devsecops', 'compliance'],
   },
   {
     id: 'workloads',
@@ -113,6 +106,13 @@ const MAIN_CATEGORIES: MainCategoryConfig[] = [
     icon: CategoryIcons.networking,
     color: 'from-cyan-500 to-cyan-600',
     subcategories: ['networking', 'servicemesh'],
+  },
+  {
+    id: 'security',
+    labelKey: 'bestPractices.category.security',
+    icon: CategoryIcons.security,
+    color: 'from-red-500 to-red-600',
+    subcategories: ['security', 'devsecops', 'compliance'],
   },
   {
     id: 'data',
@@ -2807,17 +2807,13 @@ export default function BestPractices({ lang }: BestPracticesProps) {
   return (
     <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-8 2xl:px-12 3xl:px-16 py-6 sm:py-8">
       {/* Header Section */}
-      <div className="mb-6 sm:mb-8">
-        <div className="card rounded-xl overflow-hidden border-0 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 dark:from-emerald-500/20 dark:to-teal-500/20 border border-emerald-200/50 dark:border-emerald-500/20">
-          <div className="card-body p-5 sm:p-6 lg:p-8">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-emerald-600 dark:text-emerald-400 mb-1">
-              {t('bestPractices.title')}
-            </h1>
-            <p className="text-base sm:text-lg text-neutral-600 dark:text-neutral-300">
-              {t('bestPractices.subtitle')}
-            </p>
-          </div>
-        </div>
+      <div className="mb-6">
+        <h1 className="text-xl font-semibold text-neutral-900 dark:text-white mb-1">
+          {t('bestPractices.title')}
+        </h1>
+        <p className="text-sm text-neutral-500 dark:text-neutral-400">
+          {t('bestPractices.subtitle')}
+        </p>
       </div>
 
       {/* Main Categories - Horizontal Pills */}
@@ -2907,8 +2903,8 @@ export default function BestPractices({ lang }: BestPracticesProps) {
                   className="w-full p-4 text-left transition-all duration-300"
                   onClick={() => togglePractice(practice.id)}
                 >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex items-start gap-3 flex-1">
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3 flex-1">
                       <div className={`w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-700/50 flex items-center justify-center flex-shrink-0 ${practice.color}`}>
                         {practice.icon}
                       </div>
@@ -2984,16 +2980,16 @@ export default function BestPractices({ lang }: BestPracticesProps) {
                                 </button>
 
                                 <div className="flex-1 min-w-0">
-                                  <div className="flex flex-wrap items-center gap-2 mb-1">
+                                  <div className="flex items-start justify-between gap-3">
+                                    <p className={`text-sm leading-relaxed ${isChecked ? 'text-neutral-500 line-through' : 'text-neutral-700 dark:text-neutral-300'}`}>
+                                      {t(item.titleKey)}
+                                    </p>
                                     {/* Priority badge */}
-                                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${priorityConfig.color}`}>
+                                    <span className={`flex-shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${priorityConfig.color}`}>
                                       <span className={`w-1.5 h-1.5 rounded-full ${priorityConfig.dot}`} />
                                       {getPriorityLabel(item.priority)}
                                     </span>
                                   </div>
-                                  <p className={`text-sm leading-relaxed ${isChecked ? 'text-neutral-500 line-through' : 'text-neutral-700 dark:text-neutral-300'}`}>
-                                    {t(item.titleKey)}
-                                  </p>
 
                                   {/* Action buttons */}
                                   <div className="mt-2 flex flex-wrap gap-2">

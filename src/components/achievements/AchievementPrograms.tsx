@@ -20,65 +20,64 @@ export default function AchievementPrograms({ lang }: AchievementProgramsProps) 
       title: t('achievements.kubestronaut.title'),
       description: t('achievements.kubestronaut.description'),
       href: `${basePath}${langPath}/achievements/kubestronaut`,
-      bgColor: 'bg-white dark:bg-neutral-800',
-      textColor: 'text-cyan-600 dark:text-cyan-400',
-      subtextColor: 'text-neutral-600 dark:text-neutral-400',
+      bgColor: 'bg-blue-50 dark:bg-blue-900/30',
+      iconBg: 'bg-blue-600',
+      textColor: 'text-blue-600 dark:text-blue-400',
+      subtextColor: 'text-neutral-600 dark:text-neutral-300',
     },
     {
       id: 'golden',
       title: t('achievements.golden.title'),
       description: t('achievements.golden.description'),
       href: `${basePath}${langPath}/achievements/golden-kubestronaut`,
-      bgColor: 'bg-white dark:bg-neutral-800',
+      bgColor: 'bg-amber-50 dark:bg-amber-900/30',
+      iconBg: 'bg-amber-500',
       textColor: 'text-amber-600 dark:text-amber-400',
-      subtextColor: 'text-neutral-600 dark:text-neutral-400',
+      subtextColor: 'text-neutral-600 dark:text-neutral-300',
     },
   ];
 
   return (
     <section id="achievements" className="pt-4 pb-6 sm:pt-6 sm:pb-8 scroll-section">
       <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-8 2xl:px-12 3xl:px-16">
-        {/* Card Container - WowDash Style */}
-        <div className="bg-cyan-50 dark:bg-cyan-900/30 rounded-xl p-5 sm:p-6">
-          {/* Section Header */}
-          <div className="mb-6">
-            <h2 className="text-xl sm:text-2xl font-bold mb-2 text-cyan-600 dark:text-cyan-400">
-              {t('achievements.programs.title')}
-            </h2>
-            <p className="text-sm text-cyan-600/80 dark:text-cyan-400/80">
-              {t('achievements.programs.subtitle')}
-            </p>
-          </div>
+        {/* Section Header - Same style as CertificationGrid */}
+        <div className="text-center mb-8">
+          <h2 className="text-xl sm:text-2xl font-bold mb-2 text-neutral-900 dark:text-white">
+            {t('achievements.programs.title')}
+          </h2>
+          <p className="text-sm text-neutral-600 dark:text-neutral-400 max-w-3xl mx-auto">
+            {t('achievements.programs.subtitle')}
+          </p>
+        </div>
 
-          {/* Programs Grid - WowDash Style */}
-          <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
-            {programs.map((program) => (
-              <a
-                key={program.id}
-                href={program.href}
-                className={`group relative ${program.bgColor} rounded-xl p-5 flex overflow-hidden transition-all duration-200 hover:scale-[1.02]`}
-              >
-                <div className="flex flex-col w-full relative z-10">
-                  <h3 className={`text-lg font-bold mb-1 ${program.textColor}`}>
-                    {program.title}
-                  </h3>
-                  <p className={`text-sm leading-relaxed ${program.subtextColor}`}>
-                    {program.description}
-                  </p>
+        {/* Programs Grid */}
+        <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
+          {programs.map((program) => (
+            <a
+              key={program.id}
+              href={program.href}
+              className={`group relative ${program.bgColor} rounded-xl p-5 flex overflow-hidden transition-all duration-200 hover:scale-[1.02]`}
+            >
+              <div className="flex flex-col w-full relative z-10">
+                <h3 className={`text-lg font-bold mb-1 ${program.textColor}`}>
+                  {program.title}
+                </h3>
+                <p className={`text-sm leading-relaxed ${program.subtextColor}`}>
+                  {program.description}
+                </p>
 
-                  {/* Button */}
-                  <div className="mt-3">
-                    <span className={`inline-flex items-center gap-1.5 text-sm font-medium ${program.textColor}`}>
-                      {t('certifications.card.viewDetails')}
-                      <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </span>
-                  </div>
+                {/* Button */}
+                <div className="mt-3">
+                  <span className={`inline-flex items-center gap-1.5 text-sm font-medium ${program.textColor}`}>
+                    {t('certifications.card.viewDetails')}
+                    <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </span>
                 </div>
-              </a>
-            ))}
-          </div>
+              </div>
+            </a>
+          ))}
         </div>
       </div>
     </section>

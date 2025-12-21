@@ -25,6 +25,7 @@ export const pt = {
   'hero.cta.certifications': 'Explorar Certificações',
   'hero.cta.start': 'Começar a Aprender',
   'hero.cta.explore': 'Recursos de Estudo',
+  'hero.cta.official': 'Site Oficial',
   'hero.stats.badge': '16 Certificações Reconhecidas Globalmente',
   'hero.stats.certifications': 'Certificações',
   'hero.stats.languages': 'Idiomas',
@@ -41,8 +42,8 @@ export const pt = {
   'stats.community': 'Comunidade Ativa',
 
   // Achievements
-  'achievements.title': 'Programas de Conquistas',
-  'achievements.programs.title': 'Programas de Conquistas',
+  'achievements.title': 'Rotas de Certificação',
+  'achievements.programs.title': 'Rotas de Certificação',
   'achievements.programs.subtitle':
     'Trilhas de certificação estruturadas para profissionais que desenvolvem experiência no ecossistema cloud native',
   'achievements.kubestronaut.title': 'Kubestronaut',
@@ -141,10 +142,28 @@ export const pt = {
 
   // Upcoming Certifications
   'certifications.upcoming.title': 'Próximas Certificações',
-  'certifications.upcoming.subtitle': 'Novas certificações chegando ao ecossistema CNCF',
-  'certifications.upcoming.ckne': 'CKNE (Certified Kubernetes Network Engineer)',
-  'certifications.upcoming.ckneDesc': 'Certificação de nível intermediário para redes em Kubernetes e plataformas cloud native.',
+  'certifications.upcoming.subtitle': 'Novas certificações e programas chegando ao ecossistema CNCF e Linux Foundation. Fique atualizado sobre os últimos desenvolvimentos.',
   'certifications.upcoming.expected': 'Previsto',
+  'certifications.upcoming.statusAvailable': 'Disponível Agora',
+  'certifications.upcoming.statusDevelopment': 'Em Desenvolvimento',
+  'certifications.upcoming.keyFeatures': 'Principais Características',
+  'certifications.upcoming.officialPage': 'Página Oficial',
+  'certifications.upcoming.announcement': 'Anúncio',
+  'certifications.upcoming.stayUpdated': 'Fique Atualizado',
+  'certifications.upcoming.stayUpdatedDesc': 'Visite a página oficial de certificações CNCF para obter as últimas notícias sobre novas certificações, atualizações de exames e recursos de aprendizagem.',
+  'certifications.upcoming.visitCncf': 'Visitar Certificações CNCF',
+  // CKNE
+  'certifications.upcoming.ckne': 'Certified Kubernetes Network Engineer',
+  'certifications.upcoming.ckneDesc': 'Um exame baseado em desempenho de nível intermediário projetado para validar expertise em redes de Kubernetes e plataformas cloud native. Esta certificação cobre múltiplos projetos de networking mantendo-se neutro em relação a fornecedores.',
+  'certifications.upcoming.ckneHighlight1': 'Cobre Cilium, Istio, Calico, Flannel e outros plugins CNI',
+  'certifications.upcoming.ckneHighlight2': 'Equivalente cloud-native ao CCNA, liderado pela comunidade e neutro',
+  'certifications.upcoming.ckneHighlight3': 'Exame baseado em desempenho testando habilidades reais de networking',
+  // CODE
+  'certifications.upcoming.code': 'Certified Open Source Developer for Enterprise',
+  'certifications.upcoming.codeDesc': 'Uma certificação projetada para fornecer aos desenvolvedores empresariais treinamento essencial em código aberto. Aprenda as melhores práticas para contribuir com projetos de código aberto em ambientes empresariais.',
+  'certifications.upcoming.codeHighlight1': 'Iniciativa conjunta entre Linux Foundation, TODO e Open Source Initiative',
+  'certifications.upcoming.codeHighlight2': 'Melhores práticas para contribuir com projetos de código aberto',
+  'certifications.upcoming.codeHighlight3': '12 meses e 2 tentativas para completar a certificação',
 
   // Certification Card
   'certifications.card.domains': 'Domínios',

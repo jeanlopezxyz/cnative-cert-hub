@@ -22,26 +22,26 @@ export default function CertificationFilter({
     {
       value: 'all',
       label: t('certifications.filter.all'),
-      activeClasses: 'bg-gradient-to-r from-slate-600 to-slate-700 text-white shadow-lg shadow-slate-500/25',
-      inactiveClasses: 'bg-slate-100 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700',
+      activeClasses: 'bg-neutral-700 dark:bg-neutral-600 text-white shadow-lg shadow-neutral-500/25',
+      inactiveClasses: 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700',
     },
     {
       value: 'entry',
       label: t('certifications.filter.entry'),
-      activeClasses: 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg shadow-emerald-500/25',
-      inactiveClasses: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-200 dark:hover:bg-emerald-800/40',
+      activeClasses: 'bg-emerald-600 text-white shadow-lg shadow-emerald-500/25',
+      inactiveClasses: 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-800/40',
     },
     {
       value: 'intermediate',
       label: t('certifications.filter.intermediate'),
-      activeClasses: 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg shadow-primary-500/25',
-      inactiveClasses: 'bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 hover:bg-primary-200 dark:hover:bg-primary-800/40',
+      activeClasses: 'bg-blue-600 text-white shadow-lg shadow-blue-500/25',
+      inactiveClasses: 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-800/40',
     },
     {
       value: 'advanced',
       label: t('certifications.filter.advanced'),
-      activeClasses: 'bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-lg shadow-purple-500/25',
-      inactiveClasses: 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 hover:bg-purple-200 dark:hover:bg-purple-800/40',
+      activeClasses: 'bg-violet-600 text-white shadow-lg shadow-violet-500/25',
+      inactiveClasses: 'bg-violet-50 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 hover:bg-violet-100 dark:hover:bg-violet-800/40',
     },
   ];
 

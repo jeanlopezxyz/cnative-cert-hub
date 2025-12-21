@@ -202,7 +202,7 @@ export default function ProjectDocs({ lang }: ProjectDocProps) {
   );
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8 py-8">
+    <div className="px-4 sm:px-6 lg:px-8 py-8 min-h-[calc(100vh-200px)] flex flex-col">
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-xl font-semibold text-neutral-900 dark:text-white mb-1">
@@ -262,13 +262,16 @@ export default function ProjectDocs({ lang }: ProjectDocProps) {
         ))}
       </div>
 
+      {/* Spacer to push button down */}
+      <div className="flex-grow" />
+
       {/* CNCF Landscape Link */}
-      <div className="mt-8 text-center">
+      <div className="mt-12 pt-8 border-t border-neutral-200 dark:border-neutral-700 text-center">
         <a
           href="https://landscape.cncf.io/"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25 group"
+          className="inline-flex items-center gap-3 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl transition-all duration-300 hover:shadow-lg group"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
