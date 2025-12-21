@@ -195,12 +195,6 @@ export const kcsaResources: CertificationResources = {
       isPaid: false,
     },
     {
-      title: 'KCSA Exam Curriculum',
-      url: 'https://github.com/cncf/curriculum/blob/master/KCSA_Curriculum.pdf',
-      description: 'Official KCSA exam curriculum',
-      isPaid: false,
-    },
-    {
       title: 'Pod Security Standards',
       url: 'https://kubernetes.io/docs/concepts/security/pod-security-standards/',
       description: 'Understanding pod security policies',
@@ -213,9 +207,9 @@ export const kcsaResources: CertificationResources = {
       isPaid: false,
     },
     {
-      title: 'Cloud Native Glossary',
-      url: 'https://glossary.cncf.io/',
-      description: 'Cloud Native terminology including security terms',
+      title: 'Kubernetes RBAC Authorization',
+      url: 'https://kubernetes.io/docs/reference/access-authn-authz/rbac/',
+      description: 'Role-Based Access Control in Kubernetes',
       isPaid: false,
     },
   ],

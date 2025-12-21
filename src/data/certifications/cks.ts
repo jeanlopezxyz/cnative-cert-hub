@@ -1,4 +1,5 @@
 import type { Certification } from '../../types';
+import { cksResources } from '../resources/cks';
 
 export const cks: Certification = {
   id: 'cks',
@@ -93,43 +94,5 @@ export const cks: Certification = {
       ],
     },
   ],
-  resources: {
-    official: 'https://www.cncf.io/training/certification/cks/',
-    github: [
-      'https://github.com/walidshaari/Certified-Kubernetes-Security-Specialist',
-      'https://github.com/kodekloudhub/certified-kubernetes-security-specialist-cks-course',
-      'https://github.com/moabukar/CKS-Exercises-Certified-Kubernetes-Security-Specialist',
-      'https://github.com/bmuschko/cks-crash-course',
-      'https://github.com/techiescamp/cks-certification-guide',
-      'https://github.com/snigdhasambitak/cks',
-    ],
-    practice: [
-      'https://killer.sh', // Official simulator (included with exam)
-      'https://kodekloud.com/courses/certified-kubernetes-security-specialist-cks/',
-      'https://killercoda.com/killer-shell-cks',
-      'https://skillcertpro.com/product/certified-kubernetes-security-specialist-cks-exam-questions/',
-    ],
-    courses: [
-      {
-        title: 'Introduction to Kubernetes (LFS158)',
-        url: 'https://www.edx.org/learn/kubernetes/the-linux-foundation-introduction-to-kubernetes',
-        author: 'The Linux Foundation',
-        description: 'Foundational course covering Kubernetes basics and architecture',
-        isPaid: false,
-        duration: '16 hours',
-        difficulty: 'beginner',
-        rating: 4.8,
-      },
-      {
-        title: 'Kubernetes Security Essentials (LFS260)',
-        url: 'https://training.linuxfoundation.org/training/kubernetes-security-essentials-lfs260/',
-        author: 'The Linux Foundation',
-        description: 'Comprehensive paid course specifically designed for CKS preparation',
-        isPaid: true,
-        duration: '40 hours',
-        difficulty: 'advanced',
-        rating: 4.8,
-      },
-    ],
-  },
+  resources: cksResources,
 };

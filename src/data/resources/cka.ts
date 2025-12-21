@@ -165,12 +165,6 @@ export const ckaResources: CertificationResources = {
       isPaid: false,
     },
     {
-      title: 'CKA Exam Curriculum',
-      url: 'https://github.com/cncf/curriculum/blob/master/CKA_Curriculum.pdf',
-      description: 'Official CKA exam curriculum and objectives',
-      isPaid: false,
-    },
-    {
       title: 'kubectl Cheat Sheet',
       url: 'https://kubernetes.io/docs/reference/kubectl/cheatsheet/',
       description: 'Essential kubectl commands - bookmarkable during exam',
@@ -180,6 +174,12 @@ export const ckaResources: CertificationResources = {
       title: 'Kubernetes Tasks',
       url: 'https://kubernetes.io/docs/tasks/',
       description: 'Step-by-step guides for common Kubernetes operations',
+      isPaid: false,
+    },
+    {
+      title: 'Kubernetes Concepts',
+      url: 'https://kubernetes.io/docs/concepts/',
+      description: 'Core Kubernetes concepts and architecture',
       isPaid: false,
     },
   ],

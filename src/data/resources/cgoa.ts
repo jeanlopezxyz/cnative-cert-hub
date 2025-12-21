@@ -176,12 +176,6 @@ export const cgoaResources: CertificationResources = {
       isPaid: false,
     },
     {
-      title: 'CGOA Exam Curriculum',
-      url: 'https://github.com/cncf/curriculum/blob/master/CGOA_Curriculum.pdf',
-      description: 'Official CGOA exam curriculum',
-      isPaid: false,
-    },
-    {
       title: 'Argo CD Documentation',
       url: 'https://argo-cd.readthedocs.io/',
       description: 'Official Argo CD documentation',
@@ -191,6 +185,12 @@ export const cgoaResources: CertificationResources = {
       title: 'Flux Documentation',
       url: 'https://fluxcd.io/docs/',
       description: 'Official Flux CD documentation',
+      isPaid: false,
+    },
+    {
+      title: 'Argo Rollouts Documentation',
+      url: 'https://argo-rollouts.readthedocs.io/',
+      description: 'Progressive delivery with Argo Rollouts',
       isPaid: false,
     },
   ],

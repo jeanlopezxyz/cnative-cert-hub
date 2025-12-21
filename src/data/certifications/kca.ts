@@ -1,4 +1,5 @@
 import type { Certification } from '../../types';
+import { kcaResources } from '../resources/kca';
 
 export const kca: Certification = {
   id: 'kca',
@@ -93,122 +94,7 @@ export const kca: Certification = {
       ],
     },
   ],
-  resources: {
-    official: 'https://www.cncf.io/training/certification/kca/',
-    github: [
-      'https://github.com/kyverno/kyverno',
-      'https://github.com/kyverno/policies',
-      'https://github.com/kyverno/policy-reporter',
-      'https://github.com/cncf/curriculum',
-    ],
-    practice: [
-      'https://kyverno.io/docs/',
-      'https://killercoda.com/kyverno',
-      'https://kyverno.io/docs/introduction/',
-    ],
-    books: [
-      {
-        title: 'Kubernetes Security and Observability',
-        url: 'https://www.oreilly.com/library/view/kubernetes-security-and/9781098107093/',
-        author: 'Brendan Creane, Amit Gupta',
-        description: 'A holistic approach to securing, monitoring, and troubleshooting',
-        isPaid: true,
-        format: 'ebook',
-        year: 2023,
-        difficulty: 'intermediate',
-      },
-    ],
-    courses: [
-      {
-        title: 'Introduction to Kubernetes (LFS158)',
-        url: 'https://www.edx.org/learn/kubernetes/the-linux-foundation-introduction-to-kubernetes',
-        author: 'The Linux Foundation',
-        description: 'Essential Kubernetes foundation for policy management and security',
-        isPaid: false,
-        duration: '16 hours',
-        difficulty: 'beginner',
-        rating: 4.8,
-      },
-      {
-        title: 'Kyverno Fundamentals',
-        url: 'https://kyverno.io/docs/introduction/',
-        author: 'Kyverno Community',
-        description: 'Official Kyverno documentation and tutorials',
-        isPaid: false,
-        duration: '3 hours',
-        difficulty: 'beginner',
-        rating: 4.7,
-      },
-    ],
-    videos: [
-      {
-        title: 'Kyverno Policy as Code',
-        url: 'https://www.youtube.com/watch?v=Bo8KhWhNY6g',
-        author: 'CNCF',
-        description: 'Introduction to policy as code with Kyverno',
-        isPaid: false,
-        duration: '45 minutes',
-        difficulty: 'beginner',
-      },
-      {
-        title: 'Kubernetes Security with Kyverno',
-        url: 'https://www.youtube.com/watch?v=Mukbfbr2b_k',
-        author: 'DevOps Toolkit',
-        description: 'Comprehensive Kyverno security policies tutorial',
-        isPaid: false,
-        duration: '1 hour',
-        difficulty: 'intermediate',
-      },
-    ],
-    documentation: [
-      {
-        title: 'Kyverno Official Documentation',
-        url: 'https://kyverno.io/docs/',
-        description: 'Complete Kyverno documentation and policy examples',
-        isPaid: false,
-      },
-      {
-        title: 'Kyverno Policy Library',
-        url: 'https://kyverno.io/policies/',
-        description: 'Community-maintained policy examples and templates',
-        isPaid: false,
-      },
-      {
-        title: 'Kyverno CLI Guide',
-        url: 'https://kyverno.io/docs/kyverno-cli/',
-        description: 'Command-line interface documentation',
-        isPaid: false,
-      },
-    ],
-    communities: [
-      {
-        title: 'Kyverno Community Slack',
-        url: 'https://slack.k8s.io/',
-        description: 'Kyverno community channel on Kubernetes Slack',
-        isPaid: false,
-      },
-      {
-        title: 'Kyverno GitHub Discussions',
-        url: 'https://github.com/kyverno/kyverno/discussions',
-        description: 'Community discussions and Q&A for Kyverno',
-        isPaid: false,
-      },
-    ],
-    tools: [
-      {
-        title: 'Kyverno CLI',
-        url: 'https://kyverno.io/docs/kyverno-cli/',
-        description: 'Command-line tool for testing and applying policies',
-        isPaid: false,
-      },
-      {
-        title: 'Policy Reporter',
-        url: 'https://github.com/kyverno/policy-reporter',
-        description: 'Monitoring and alerting for policy violations',
-        isPaid: false,
-      },
-    ],
-  },
+  resources: kcaResources,
   studyTimeWeeks: 4,
   passingScore: 75,
   validity: 3,

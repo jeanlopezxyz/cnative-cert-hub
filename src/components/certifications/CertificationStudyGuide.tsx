@@ -78,16 +78,6 @@ export default function CertificationStudyGuide({
           url: certification.resources.official,
           description: t('certification.resource.officialDesc'),
         },
-        {
-          title: t('certification.resource.cncfLandscape'),
-          url: 'https://landscape.cncf.io/',
-          description: t('certification.resource.cncfLandscapeDesc'),
-        },
-        {
-          title: t('certification.resource.cloudNativeGlossary'),
-          url: 'https://glossary.cncf.io/',
-          description: t('certification.resource.cloudNativeGlossaryDesc'),
-        },
       ],
     },
     {

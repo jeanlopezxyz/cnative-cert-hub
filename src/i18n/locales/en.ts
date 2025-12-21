@@ -213,6 +213,7 @@ export const en = {
   'sidebar.docs': 'Documentation',
   'sidebar.discounts': 'Monthly Discounts',
   'sidebar.bestPractices': 'Best Practices',
+  'sidebar.upcoming': 'Upcoming Certifications',
   'sidebar.new': 'New',
 
   // Sidebar Tips
@@ -763,14 +764,14 @@ export const en = {
   'docs.subtitle': 'Official documentation for CNCF and cloud native projects covered in the certifications',
   'docs.intro': 'Access the official documentation for each project to deepen your knowledge and prepare for certifications.',
   'docs.visitDocs': 'Visit Documentation',
-  'docs.category.kubernetes': 'Kubernetes',
+  'docs.category.kubernetes': 'Orchestration',
   'docs.category.gitops': 'GitOps',
   'docs.category.networking': 'Networking',
   'docs.category.observability': 'Observability',
-  'docs.category.platform': 'Platform Engineering',
+  'docs.category.platform': 'Platform',
   'docs.category.security': 'Security',
   'docs.category.serviceMesh': 'Service Mesh',
-  'docs.category.linux': 'Linux',
+  'docs.category.linux': 'OS',
   'docs.kubernetes.desc': 'Production-grade container orchestration - the foundation of cloud native computing',
   'docs.prometheus.desc': 'Monitoring system and time series database for metrics and alerting',
   'docs.opentelemetry.desc': 'Observability framework for traces, metrics, and logs',
@@ -800,6 +801,14 @@ export const en = {
   'bestPractices.tab.observability': 'Observability',
   'bestPractices.tab.storage': 'Storage & Backup',
   'bestPractices.tab.gitops': 'GitOps & CI/CD',
+
+  // Best Practices Main Categories
+  'bestPractices.category.cluster': 'Cluster',
+  'bestPractices.category.security': 'Security',
+  'bestPractices.category.workloads': 'Workloads',
+  'bestPractices.category.networking': 'Networking',
+  'bestPractices.category.data': 'Data',
+  'bestPractices.category.deployment': 'Deployment',
 
   // Containerization Tab
   'bestPractices.containers.images.title': 'Container Images',
@@ -1119,19 +1128,19 @@ export const en = {
 
   // DevSecOps Tab
   'bestPractices.tab.devsecops': 'DevSecOps',
-  'bestPractices.devsecops.scanning.title': 'Shift-Left Security',
-  'bestPractices.devsecops.scanning.desc': 'Integrate security scanning early in the development pipeline',
-  'bestPractices.devsecops.scanning.item1': 'Scan container images for vulnerabilities in CI/CD with Trivy',
-  'bestPractices.devsecops.scanning.item2': 'Validate Kubernetes manifests and IaC before deployment',
-  'bestPractices.devsecops.scanning.item3': 'Run SAST tools (Semgrep, CodeQL) on every pull request',
-  'bestPractices.devsecops.scanning.item4': 'Detect secrets in code with Gitleaks or TruffleHog',
+  'bestPractices.devsecops.scanning.title': 'Runtime Security & Scanning',
+  'bestPractices.devsecops.scanning.desc': 'Detect vulnerabilities and threats in your running cluster',
+  'bestPractices.devsecops.scanning.item1': 'Scan running container images in your cluster with Trivy',
+  'bestPractices.devsecops.scanning.item2': 'Configure Falco rules for runtime threat detection',
+  'bestPractices.devsecops.scanning.item3': 'Audit cluster security with kube-bench (CIS Benchmark)',
+  'bestPractices.devsecops.scanning.item4': 'Validate manifests with kubeconform and kube-score before applying',
 
-  'bestPractices.devsecops.supplychain.title': 'Supply Chain Security',
-  'bestPractices.devsecops.supplychain.desc': 'Secure the software supply chain from source to deployment',
-  'bestPractices.devsecops.supplychain.item1': 'Generate SBOM (Software Bill of Materials) for all images',
-  'bestPractices.devsecops.supplychain.item2': 'Sign container images with Cosign and verify at deployment',
-  'bestPractices.devsecops.supplychain.item3': 'Implement SLSA provenance for build attestation',
-  'bestPractices.devsecops.supplychain.item4': 'Automate dependency updates with Dependabot or Renovate',
+  'bestPractices.devsecops.supplychain.title': 'Image Security in Kubernetes',
+  'bestPractices.devsecops.supplychain.desc': 'Control which container images can run in your cluster',
+  'bestPractices.devsecops.supplychain.item1': 'Verify image signatures at admission time with Kyverno',
+  'bestPractices.devsecops.supplychain.item2': 'Restrict deployments to approved container registries only',
+  'bestPractices.devsecops.supplychain.item3': 'Require image digests instead of mutable tags',
+  'bestPractices.devsecops.supplychain.item4': 'Use Sigstore Policy Controller for signature verification',
 
   'bestPractices.devsecops.admission.title': 'Admission Control',
   'bestPractices.devsecops.admission.desc': 'Enforce security policies at deployment time',

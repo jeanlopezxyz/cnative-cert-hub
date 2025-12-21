@@ -89,6 +89,12 @@ export const DOCUMENTATION_ITEMS = [
     href: 'best-practices',
     icon: 'check-badge',
   },
+  {
+    id: 'upcoming',
+    translationKey: 'sidebar.upcoming',
+    href: 'upcoming',
+    icon: 'clock',
+  },
 ];
 
 export const QUICK_LINKS_ITEMS = [

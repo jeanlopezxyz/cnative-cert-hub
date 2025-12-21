@@ -1,4 +1,5 @@
 import type { Certification } from '../../types';
+import { lfcsResources } from '../resources/lfcs';
 
 export const lfcs: Certification = {
   id: 'lfcs',
@@ -94,15 +95,7 @@ export const lfcs: Certification = {
       ],
     },
   ],
-  resources: {
-    official:
-      'https://training.linuxfoundation.org/certification/linux-foundation-certified-sysadmin-lfcs/',
-    github: ['https://github.com/Bes0n/LFCS', 'https://github.com/walidshaari/LFCS'],
-    practice: [
-      'https://killer.sh',
-      'https://kodekloud.com/courses/linux-foundation-certified-system-administrator-lfcs/',
-    ],
-  },
+  resources: lfcsResources,
   studyTimeWeeks: 8,
   passingScore: 66,
   validity: 3,

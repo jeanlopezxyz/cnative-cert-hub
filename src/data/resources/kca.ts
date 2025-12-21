@@ -135,13 +135,7 @@ export const kcaResources: CertificationResources = {
       isPaid: false,
     },
     {
-      title: 'KCA Exam Curriculum',
-      url: 'https://github.com/cncf/curriculum/blob/master/KCA_Curriculum.pdf',
-      description: 'Official KCA exam curriculum',
-      isPaid: false,
-    },
-    {
-      title: 'Kyverno Policies',
+      title: 'Kyverno Policies Library',
       url: 'https://kyverno.io/policies/',
       description: 'Sample Kyverno policies library',
       isPaid: false,
@@ -150,6 +144,12 @@ export const kcaResources: CertificationResources = {
       title: 'Kyverno Writing Policies',
       url: 'https://kyverno.io/docs/writing-policies/',
       description: 'Guide to writing Kyverno policies',
+      isPaid: false,
+    },
+    {
+      title: 'Kyverno CLI Documentation',
+      url: 'https://kyverno.io/docs/kyverno-cli/',
+      description: 'Kyverno CLI usage and commands',
       isPaid: false,
     },
   ],

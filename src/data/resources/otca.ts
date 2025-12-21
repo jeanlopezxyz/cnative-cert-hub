@@ -146,12 +146,6 @@ export const otcaResources: CertificationResources = {
       isPaid: false,
     },
     {
-      title: 'OTCA Exam Curriculum',
-      url: 'https://github.com/cncf/curriculum/blob/master/OTCA_Curriculum.pdf',
-      description: 'Official OTCA exam curriculum',
-      isPaid: false,
-    },
-    {
       title: 'OpenTelemetry Specification',
       url: 'https://opentelemetry.io/docs/specs/',
       description: 'OpenTelemetry specification documentation',
@@ -161,6 +155,12 @@ export const otcaResources: CertificationResources = {
       title: 'OpenTelemetry Collector',
       url: 'https://opentelemetry.io/docs/collector/',
       description: 'OpenTelemetry Collector documentation',
+      isPaid: false,
+    },
+    {
+      title: 'OpenTelemetry Instrumentation',
+      url: 'https://opentelemetry.io/docs/instrumentation/',
+      description: 'Language-specific instrumentation guides',
       isPaid: false,
     },
   ],

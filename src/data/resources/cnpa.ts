@@ -144,12 +144,6 @@ export const cnpaResources: CertificationResources = {
       isPaid: false,
     },
     {
-      title: 'CNPA Exam Curriculum',
-      url: 'https://github.com/cncf/curriculum/blob/master/CNPA_Curriculum.pdf',
-      description: 'Official CNPA exam curriculum',
-      isPaid: false,
-    },
-    {
       title: 'Platform Engineering Maturity Model',
       url: 'https://tag-app-delivery.cncf.io/wgs/platforms/maturity-model/',
       description: 'Platform engineering maturity assessment',
@@ -159,6 +153,12 @@ export const cnpaResources: CertificationResources = {
       title: 'Kubernetes Documentation',
       url: 'https://kubernetes.io/docs/',
       description: 'Kubernetes documentation for platform engineers',
+      isPaid: false,
+    },
+    {
+      title: 'Platform Engineering Resources',
+      url: 'https://platformengineering.org/resources',
+      description: 'Community resources for platform engineers',
       isPaid: false,
     },
   ],

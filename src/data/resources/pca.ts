@@ -136,12 +136,6 @@ export const pcaResources: CertificationResources = {
       isPaid: false,
     },
     {
-      title: 'PCA Exam Curriculum',
-      url: 'https://github.com/cncf/curriculum/blob/master/PCA_Curriculum.pdf',
-      description: 'Official PCA exam curriculum',
-      isPaid: false,
-    },
-    {
       title: 'PromQL Documentation',
       url: 'https://prometheus.io/docs/prometheus/latest/querying/basics/',
       description: 'PromQL query language documentation',
@@ -151,6 +145,12 @@ export const pcaResources: CertificationResources = {
       title: 'Alertmanager Documentation',
       url: 'https://prometheus.io/docs/alerting/latest/alertmanager/',
       description: 'Prometheus Alertmanager documentation',
+      isPaid: false,
+    },
+    {
+      title: 'Prometheus Best Practices',
+      url: 'https://prometheus.io/docs/practices/',
+      description: 'Instrumentation and naming best practices',
       isPaid: false,
     },
   ],

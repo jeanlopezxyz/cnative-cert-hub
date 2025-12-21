@@ -147,12 +147,6 @@ export const capaResources: CertificationResources = {
       isPaid: false,
     },
     {
-      title: 'CAPA Exam Curriculum',
-      url: 'https://github.com/cncf/curriculum/blob/master/CAPA_Curriculum.pdf',
-      description: 'Official CAPA exam curriculum',
-      isPaid: false,
-    },
-    {
       title: 'Argo Workflows Documentation',
       url: 'https://argo-workflows.readthedocs.io/',
       description: 'Official Argo Workflows documentation',

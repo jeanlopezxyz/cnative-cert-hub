@@ -146,12 +146,6 @@ export const ccaResources: CertificationResources = {
       isPaid: false,
     },
     {
-      title: 'CCA Exam Curriculum',
-      url: 'https://github.com/cncf/curriculum/blob/master/CCA_Curriculum.pdf',
-      description: 'Official CCA exam curriculum',
-      isPaid: false,
-    },
-    {
       title: 'Cilium Network Policies',
       url: 'https://docs.cilium.io/en/stable/security/',
       description: 'Cilium network policy documentation',
@@ -161,6 +155,12 @@ export const ccaResources: CertificationResources = {
       title: 'Hubble Documentation',
       url: 'https://docs.cilium.io/en/stable/gettingstarted/hubble/',
       description: 'Cilium observability with Hubble',
+      isPaid: false,
+    },
+    {
+      title: 'Cilium Getting Started',
+      url: 'https://docs.cilium.io/en/stable/gettingstarted/',
+      description: 'Getting started with Cilium installation and configuration',
       isPaid: false,
     },
   ],

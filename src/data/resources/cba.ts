@@ -125,12 +125,6 @@ export const cbaResources: CertificationResources = {
       isPaid: false,
     },
     {
-      title: 'CBA Exam Curriculum',
-      url: 'https://github.com/cncf/curriculum/blob/master/CBA_Curriculum.pdf',
-      description: 'Official CBA exam curriculum',
-      isPaid: false,
-    },
-    {
       title: 'Backstage Software Catalog',
       url: 'https://backstage.io/docs/features/software-catalog/',
       description: 'Understanding the software catalog',
@@ -140,6 +134,12 @@ export const cbaResources: CertificationResources = {
       title: 'Backstage Plugins',
       url: 'https://backstage.io/docs/plugins/',
       description: 'Backstage plugin documentation',
+      isPaid: false,
+    },
+    {
+      title: 'Backstage Software Templates',
+      url: 'https://backstage.io/docs/features/software-templates/',
+      description: 'Creating and using software templates',
       isPaid: false,
     },
   ],

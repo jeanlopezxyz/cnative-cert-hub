@@ -1,4 +1,5 @@
 import type { Certification } from '../../types';
+import { pcaResources } from '../resources/pca';
 
 export const pca: Certification = {
   id: 'pca',
@@ -81,35 +82,7 @@ export const pca: Certification = {
       ],
     },
   ],
-  resources: {
-    official: 'https://www.cncf.io/training/certification/pca/',
-    github: [
-      'https://github.com/prometheus/prometheus',
-    ],
-    practice: ['https://kodekloud.com/courses/prometheus-certified-associate-pca/'],
-    courses: [
-      {
-        title: 'Introduction to Kubernetes (LFS158)',
-        url: 'https://www.edx.org/learn/kubernetes/the-linux-foundation-introduction-to-kubernetes',
-        author: 'The Linux Foundation',
-        description: 'Essential Kubernetes foundation for monitoring and observability',
-        isPaid: false,
-        duration: '16 hours',
-        difficulty: 'beginner',
-        rating: 4.8,
-      },
-      {
-        title: 'Monitoring Systems and Services with Prometheus (LFS241)',
-        url: 'https://training.linuxfoundation.org/training/monitoring-systems-and-services-with-prometheus-lfs241/',
-        author: 'The Linux Foundation',
-        description: 'Comprehensive paid course specifically designed for PCA preparation',
-        isPaid: true,
-        duration: '25 hours',
-        difficulty: 'intermediate',
-        rating: 4.8,
-      },
-    ],
-  },
+  resources: pcaResources,
   studyTimeWeeks: 4,
   passingScore: 75,
   validity: 3,

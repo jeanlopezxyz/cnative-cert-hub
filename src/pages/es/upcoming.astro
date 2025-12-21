@@ -1,0 +1,48 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<Layout title={t('certifications.upcoming.title')} lang={lang} showSidebar={true}>
+  <div class="w-full px-4 sm:px-6 lg:px-8 xl:px-8 2xl:px-12 3xl:px-16 py-6 sm:py-8">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-2xl sm:text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">
+        {t('certifications.upcoming.title')}
+      </h1>
+      <p class="text-neutral-600 dark:text-neutral-400">
+        {t('certifications.upcoming.subtitle')}
+      </p>
+    </div>
+
+    <!-- Upcoming Certifications List -->
+    <div class="space-y-6">
+      <!-- CKNE Card -->
+      <div class="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-6">
+        <div class="flex flex-col sm:flex-row sm:items-start gap-4">
+          <div class="w-14 h-14 flex-shrink-0 inline-flex items-center justify-center bg-purple-600 text-white rounded-xl">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.14 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"></path>
+            </svg>
+          </div>
+          <div class="flex-1">
+            <div class="flex flex-wrap items-center gap-3 mb-3">
+              <h2 class="text-xl font-bold text-purple-600 dark:text-purple-400">
+                {t('certifications.upcoming.ckne')}
+              </h2>
+              <span class="px-3 py-1 bg-purple-100 dark:bg-purple-600/30 text-purple-600 dark:text-purple-400 text-sm font-semibold rounded-lg">
+                {t('certifications.upcoming.expected')} 2026
+              </span>
+            </div>
+            <p class="text-neutral-600 dark:text-neutral-300 leading-relaxed">
+              {t('certifications.upcoming.ckneDesc')}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>

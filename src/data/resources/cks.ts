@@ -205,12 +205,6 @@ export const cksResources: CertificationResources = {
       isPaid: false,
     },
     {
-      title: 'CKS Exam Curriculum',
-      url: 'https://github.com/cncf/curriculum/blob/master/CKS_Curriculum.pdf',
-      description: 'Official CKS exam curriculum and objectives',
-      isPaid: false,
-    },
-    {
       title: 'Pod Security Standards',
       url: 'https://kubernetes.io/docs/concepts/security/pod-security-standards/',
       description: 'Pod security standards and policies',
@@ -226,6 +220,12 @@ export const cksResources: CertificationResources = {
       title: 'RBAC Authorization',
       url: 'https://kubernetes.io/docs/reference/access-authn-authz/rbac/',
       description: 'Role-based access control in Kubernetes',
+      isPaid: false,
+    },
+    {
+      title: 'Secrets Management',
+      url: 'https://kubernetes.io/docs/concepts/configuration/secret/',
+      description: 'Managing secrets in Kubernetes',
       isPaid: false,
     },
   ],

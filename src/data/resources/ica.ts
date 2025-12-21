@@ -156,12 +156,6 @@ export const icaResources: CertificationResources = {
       isPaid: false,
     },
     {
-      title: 'ICA Exam Curriculum',
-      url: 'https://github.com/cncf/curriculum/blob/master/ICA_Curriculum.pdf',
-      description: 'Official ICA exam curriculum',
-      isPaid: false,
-    },
-    {
       title: 'Istio Setup Guide',
       url: 'https://istio.io/latest/docs/setup/',
       description: 'Istio installation and setup documentation',
@@ -171,6 +165,12 @@ export const icaResources: CertificationResources = {
       title: 'Traffic Management',
       url: 'https://istio.io/latest/docs/concepts/traffic-management/',
       description: 'Istio traffic management concepts',
+      isPaid: false,
+    },
+    {
+      title: 'Istio Security',
+      url: 'https://istio.io/latest/docs/concepts/security/',
+      description: 'Istio security features and mTLS',
       isPaid: false,
     },
   ],

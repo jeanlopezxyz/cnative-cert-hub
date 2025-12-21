@@ -1,0 +1,3088 @@
+/**
+ * Best Practices Page Component
+ * Displays Kubernetes best practices with interactive checklist, priority levels, and code examples
+ */
+
+import React, { useState, useEffect } from 'react';
+import type { Language } from '../../types';
+import { useTranslations } from '../../i18n/utils';
+
+interface BestPracticesProps {
+  lang: Language;
+}
+
+type MainCategoryType = 'cluster' | 'security' | 'workloads' | 'networking' | 'data' | 'deployment';
+type SubCategoryType = 'containerization' | 'development' | 'security' | 'networking' | 'observability' | 'storage' | 'gitops' | 'highavailability' | 'costoptimization' | 'servicemesh' | 'operations' | 'multitenancy' | 'stateful' | 'compliance' | 'devsecops';
+type Priority = 'critical' | 'important' | 'recommended';
+
+interface BestPracticeItem {
+  id: string;
+  titleKey: string;
+  priority: Priority;
+  whyItMattersKey?: string;
+  commonMistakeKey?: string;
+  codeExample?: string;
+}
+
+interface BestPractice {
+  id: string;
+  titleKey: string;
+  descKey: string;
+  icon: React.ReactNode;
+  color: string;
+  bgColor: string;
+  iconBg: string;
+  items: BestPracticeItem[];
+}
+
+interface SubCategoryConfig {
+  id: SubCategoryType;
+  labelKey: string;
+  icon: React.ReactNode;
+  practices: BestPractice[];
+}
+
+interface MainCategoryConfig {
+  id: MainCategoryType;
+  labelKey: string;
+  icon: React.ReactNode;
+  color: string;
+  subcategories: SubCategoryType[];
+}
+
+// Category Icons as SVG components
+const CategoryIcons = {
+  cluster: (
+    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 14.25h13.5m-13.5 0a3 3 0 01-3-3m3 3a3 3 0 100 6h13.5a3 3 0 100-6m-16.5-3a3 3 0 013-3h13.5a3 3 0 013 3m-19.5 0a4.5 4.5 0 01.9-2.7L5.737 5.1a3.375 3.375 0 012.7-1.35h7.126c1.062 0 2.062.5 2.7 1.35l2.587 3.45a4.5 4.5 0 01.9 2.7m0 0a3 3 0 01-3 3m0 3h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008zm-3 6h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008z" />
+    </svg>
+  ),
+  security: (
+    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+    </svg>
+  ),
+  workloads: (
+    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M6.429 9.75L2.25 12l4.179 2.25m0-4.5l5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0l4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0l-5.571 3-5.571-3" />
+    </svg>
+  ),
+  networking: (
+    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
+    </svg>
+  ),
+  data: (
+    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
+    </svg>
+  ),
+  deployment: (
+    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3 8.689c0-.864.933-1.406 1.683-.977l7.108 4.061a1.125 1.125 0 010 1.954l-7.108 4.061A1.125 1.125 0 013 16.811V8.69zM12.75 8.689c0-.864.933-1.406 1.683-.977l7.108 4.061a1.125 1.125 0 010 1.954l-7.108 4.061a1.125 1.125 0 01-1.683-.977V8.69z" />
+    </svg>
+  ),
+};
+
+// Main categories structure
+const MAIN_CATEGORIES: MainCategoryConfig[] = [
+  {
+    id: 'cluster',
+    labelKey: 'bestPractices.category.cluster',
+    icon: CategoryIcons.cluster,
+    color: 'from-blue-500 to-blue-600',
+    subcategories: ['operations', 'highavailability', 'multitenancy'],
+  },
+  {
+    id: 'security',
+    labelKey: 'bestPractices.category.security',
+    icon: CategoryIcons.security,
+    color: 'from-red-500 to-red-600',
+    subcategories: ['security', 'devsecops', 'compliance'],
+  },
+  {
+    id: 'workloads',
+    labelKey: 'bestPractices.category.workloads',
+    icon: CategoryIcons.workloads,
+    color: 'from-purple-500 to-purple-600',
+    subcategories: ['containerization', 'development', 'stateful'],
+  },
+  {
+    id: 'networking',
+    labelKey: 'bestPractices.category.networking',
+    icon: CategoryIcons.networking,
+    color: 'from-cyan-500 to-cyan-600',
+    subcategories: ['networking', 'servicemesh'],
+  },
+  {
+    id: 'data',
+    labelKey: 'bestPractices.category.data',
+    icon: CategoryIcons.data,
+    color: 'from-emerald-500 to-emerald-600',
+    subcategories: ['storage', 'observability'],
+  },
+  {
+    id: 'deployment',
+    labelKey: 'bestPractices.category.deployment',
+    icon: CategoryIcons.deployment,
+    color: 'from-amber-500 to-amber-600',
+    subcategories: ['gitops', 'costoptimization'],
+  },
+];
+
+// Legacy TabConfig for backwards compatibility with existing data
+interface TabConfig {
+  id: SubCategoryType;
+  labelKey: string;
+  icon: React.ReactNode;
+  practices: BestPractice[];
+}
+
+const PRIORITY_CONFIG = {
+  critical: {
+    label: 'Critical',
+    labelEs: 'Crítico',
+    labelPt: 'Crítico',
+    color: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300',
+    dot: 'bg-red-500',
+  },
+  important: {
+    label: 'Important',
+    labelEs: 'Importante',
+    labelPt: 'Importante',
+    color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
+    dot: 'bg-amber-500',
+  },
+  recommended: {
+    label: 'Recommended',
+    labelEs: 'Recomendado',
+    labelPt: 'Recomendado',
+    color: 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300',
+    dot: 'bg-green-500',
+  },
+};
+
+
+const TABS_CONFIG: TabConfig[] = [
+  {
+    id: 'containerization',
+    labelKey: 'bestPractices.tab.containerization',
+    icon: (
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+    ),
+    practices: [
+      {
+        id: 'containers-images',
+        titleKey: 'bestPractices.containers.images.title',
+        descKey: 'bestPractices.containers.images.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        ),
+        color: 'text-blue-600 dark:text-blue-400',
+        bgColor: 'bg-blue-50 dark:bg-blue-600/20',
+        iconBg: 'bg-blue-600',
+        items: [
+          { id: 'img-1', titleKey: 'bestPractices.containers.images.item1', priority: 'important', codeExample: `# Multi-stage build example
+FROM node:18 AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+FROM node:18-alpine
+WORKDIR /app
+COPY --from=builder /app/dist ./dist
+CMD ["node", "dist/index.js"]` },
+          { id: 'img-2', titleKey: 'bestPractices.containers.images.item2', priority: 'critical', codeExample: `# Good - specific tag
+image: nginx:1.25.3
+
+# Bad - avoid latest
+image: nginx:latest` },
+          { id: 'img-3', titleKey: 'bestPractices.containers.images.item3', priority: 'critical', codeExample: `# Scan with Trivy
+trivy image myapp:1.0.0
+
+# Scan in CI/CD pipeline
+trivy image --exit-code 1 --severity HIGH,CRITICAL myapp:1.0.0` },
+          { id: 'img-4', titleKey: 'bestPractices.containers.images.item4', priority: 'recommended', codeExample: `# Use distroless base image
+FROM gcr.io/distroless/nodejs:18
+
+# Or minimal Alpine
+FROM alpine:3.18` },
+          { id: 'img-5', titleKey: 'bestPractices.containers.images.item5', priority: 'recommended', codeExample: `# Sign image with Cosign
+cosign sign --key cosign.key myregistry/myapp:1.0.0
+
+# Verify signature
+cosign verify --key cosign.pub myregistry/myapp:1.0.0` },
+        ],
+      },
+      {
+        id: 'containers-runtime',
+        titleKey: 'bestPractices.containers.runtime.title',
+        descKey: 'bestPractices.containers.runtime.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+          </svg>
+        ),
+        color: 'text-teal-600 dark:text-teal-400',
+        bgColor: 'bg-teal-50 dark:bg-teal-600/20',
+        iconBg: 'bg-teal-600',
+        items: [
+          { id: 'rt-1', titleKey: 'bestPractices.containers.runtime.item1', priority: 'critical', codeExample: `securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000` },
+          { id: 'rt-2', titleKey: 'bestPractices.containers.runtime.item2', priority: 'important', codeExample: `securityContext:
+  readOnlyRootFilesystem: true
+# Mount writable volumes for temp files
+volumes:
+  - name: tmp
+    emptyDir: {}` },
+          { id: 'rt-3', titleKey: 'bestPractices.containers.runtime.item3', priority: 'critical', codeExample: `securityContext:
+  capabilities:
+    drop:
+      - ALL
+    add:
+      - NET_BIND_SERVICE  # Only if needed` },
+          { id: 'rt-4', titleKey: 'bestPractices.containers.runtime.item4', priority: 'recommended', codeExample: `securityContext:
+  seccompProfile:
+    type: RuntimeDefault
+# Or use AppArmor
+metadata:
+  annotations:
+    container.apparmor.security.beta.kubernetes.io/myapp: runtime/default` },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'development',
+    labelKey: 'bestPractices.tab.development',
+    icon: (
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+    ),
+    practices: [
+      {
+        id: 'dev-applications',
+        titleKey: 'bestPractices.dev.applications.title',
+        descKey: 'bestPractices.dev.applications.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+        ),
+        color: 'text-violet-600 dark:text-violet-400',
+        bgColor: 'bg-violet-50 dark:bg-violet-600/20',
+        iconBg: 'bg-violet-600',
+        items: [
+          { id: 'app-1', titleKey: 'bestPractices.dev.applications.item1', priority: 'critical', codeExample: `livenessProbe:
+  httpGet:
+    path: /healthz
+    port: 8080
+  initialDelaySeconds: 10
+  periodSeconds: 5
+
+readinessProbe:
+  httpGet:
+    path: /ready
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 3
+
+startupProbe:
+  httpGet:
+    path: /healthz
+    port: 8080
+  failureThreshold: 30
+  periodSeconds: 10` },
+          { id: 'app-2', titleKey: 'bestPractices.dev.applications.item2', priority: 'important', codeExample: `# Handle SIGTERM in your application
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received, shutting down...');
+  server.close(() => {
+    process.exit(0);
+  });
+});
+
+# Pod configuration
+spec:
+  terminationGracePeriodSeconds: 30` },
+          { id: 'app-3', titleKey: 'bestPractices.dev.applications.item3', priority: 'recommended' },
+          { id: 'app-4', titleKey: 'bestPractices.dev.applications.item4', priority: 'important', codeExample: `env:
+  - name: DATABASE_URL
+    valueFrom:
+      secretKeyRef:
+        name: db-secret
+        key: url
+  - name: LOG_LEVEL
+    valueFrom:
+      configMapKeyRef:
+        name: app-config
+        key: log_level` },
+          { id: 'app-5', titleKey: 'bestPractices.dev.applications.item5', priority: 'recommended' },
+        ],
+      },
+      {
+        id: 'dev-resources',
+        titleKey: 'bestPractices.dev.resources.title',
+        descKey: 'bestPractices.dev.resources.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+        ),
+        color: 'text-cyan-600 dark:text-cyan-400',
+        bgColor: 'bg-cyan-50 dark:bg-cyan-600/20',
+        iconBg: 'bg-cyan-600',
+        items: [
+          { id: 'res-1', titleKey: 'bestPractices.dev.resources.item1', priority: 'critical', codeExample: `resources:
+  requests:
+    memory: "128Mi"
+    cpu: "100m"
+  limits:
+    memory: "256Mi"
+    cpu: "500m"` },
+          { id: 'res-2', titleKey: 'bestPractices.dev.resources.item2', priority: 'important', codeExample: `apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: myapp-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: myapp
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70` },
+          { id: 'res-3', titleKey: 'bestPractices.dev.resources.item3', priority: 'important', codeExample: `apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: namespace-quota
+spec:
+  hard:
+    requests.cpu: "4"
+    requests.memory: 8Gi
+    limits.cpu: "8"
+    limits.memory: 16Gi
+    pods: "20"` },
+          { id: 'res-4', titleKey: 'bestPractices.dev.resources.item4', priority: 'recommended', codeExample: `apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: myapp-pdb
+spec:
+  minAvailable: 2  # or use maxUnavailable
+  selector:
+    matchLabels:
+      app: myapp` },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'security',
+    labelKey: 'bestPractices.tab.security',
+    icon: (
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+    ),
+    practices: [
+      {
+        id: 'sec-cluster',
+        titleKey: 'bestPractices.security.cluster.title',
+        descKey: 'bestPractices.security.cluster.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+        ),
+        color: 'text-red-600 dark:text-red-400',
+        bgColor: 'bg-red-50 dark:bg-red-600/20',
+        iconBg: 'bg-red-600',
+        items: [
+          { id: 'sec-1', titleKey: 'bestPractices.security.cluster.item1', priority: 'critical', codeExample: `apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-reader
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: read-pods
+subjects:
+  - kind: ServiceAccount
+    name: myapp-sa
+roleRef:
+  kind: Role
+  name: pod-reader
+  apiGroup: rbac.authorization.k8s.io` },
+          { id: 'sec-2', titleKey: 'bestPractices.security.cluster.item2', priority: 'critical' },
+          { id: 'sec-3', titleKey: 'bestPractices.security.cluster.item3', priority: 'important', codeExample: `# Enable audit logging in API server
+--audit-log-path=/var/log/kubernetes/audit.log
+--audit-log-maxage=30
+--audit-log-maxbackup=10
+--audit-log-maxsize=100
+--audit-policy-file=/etc/kubernetes/audit-policy.yaml` },
+          { id: 'sec-4', titleKey: 'bestPractices.security.cluster.item4', priority: 'critical' },
+          { id: 'sec-5', titleKey: 'bestPractices.security.cluster.item5', priority: 'important', codeExample: `# Kyverno policy example
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-labels
+spec:
+  validationFailureAction: Enforce
+  rules:
+    - name: check-team-label
+      match:
+        resources:
+          kinds:
+            - Pod
+      validate:
+        message: "Label 'team' is required"
+        pattern:
+          metadata:
+            labels:
+              team: "?*"` },
+        ],
+      },
+      {
+        id: 'sec-workloads',
+        titleKey: 'bestPractices.security.workloads.title',
+        descKey: 'bestPractices.security.workloads.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.618 5.984A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016zM12 9v2m0 4h.01" />
+          </svg>
+        ),
+        color: 'text-orange-600 dark:text-orange-400',
+        bgColor: 'bg-orange-50 dark:bg-orange-600/20',
+        iconBg: 'bg-orange-600',
+        items: [
+          { id: 'wl-1', titleKey: 'bestPractices.security.workloads.item1', priority: 'critical', codeExample: `apiVersion: v1
+kind: Namespace
+metadata:
+  name: restricted-ns
+  labels:
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/warn: restricted` },
+          { id: 'wl-2', titleKey: 'bestPractices.security.workloads.item2', priority: 'critical', codeExample: `securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000` },
+          { id: 'wl-3', titleKey: 'bestPractices.security.workloads.item3', priority: 'important', codeExample: `securityContext:
+  readOnlyRootFilesystem: true` },
+          { id: 'wl-4', titleKey: 'bestPractices.security.workloads.item4', priority: 'critical', codeExample: `securityContext:
+  capabilities:
+    drop:
+      - ALL` },
+          { id: 'wl-5', titleKey: 'bestPractices.security.workloads.item5', priority: 'important', codeExample: `apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: myapp-sa
+automountServiceAccountToken: false` },
+        ],
+      },
+      {
+        id: 'sec-secrets',
+        titleKey: 'bestPractices.security.secrets.title',
+        descKey: 'bestPractices.security.secrets.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+          </svg>
+        ),
+        color: 'text-amber-600 dark:text-amber-400',
+        bgColor: 'bg-amber-50 dark:bg-amber-600/20',
+        iconBg: 'bg-amber-600',
+        items: [
+          { id: 'scr-1', titleKey: 'bestPractices.security.secrets.item1', priority: 'critical', codeExample: `# Enable encryption at rest
+apiVersion: apiserver.config.k8s.io/v1
+kind: EncryptionConfiguration
+resources:
+  - resources:
+      - secrets
+    providers:
+      - aescbc:
+          keys:
+            - name: key1
+              secret: <base64-encoded-key>
+      - identity: {}` },
+          { id: 'scr-2', titleKey: 'bestPractices.security.secrets.item2', priority: 'important', codeExample: `# External Secrets Operator example
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: my-secret
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: vault-backend
+    kind: SecretStore
+  target:
+    name: my-secret
+  data:
+    - secretKey: password
+      remoteRef:
+        key: secret/myapp
+        property: password` },
+          { id: 'scr-3', titleKey: 'bestPractices.security.secrets.item3', priority: 'important' },
+          { id: 'scr-4', titleKey: 'bestPractices.security.secrets.item4', priority: 'critical' },
+        ],
+      },
+      {
+        id: 'sec-tls',
+        titleKey: 'bestPractices.security.tls.title',
+        descKey: 'bestPractices.security.tls.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+          </svg>
+        ),
+        color: 'text-cyan-600 dark:text-cyan-400',
+        bgColor: 'bg-cyan-50 dark:bg-cyan-600/20',
+        iconBg: 'bg-cyan-600',
+        items: [
+          { id: 'tls-1', titleKey: 'bestPractices.security.tls.item1', priority: 'critical', codeExample: `# Install cert-manager
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.0/cert-manager.yaml
+
+# Create ClusterIssuer for Let's Encrypt
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: admin@example.com
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    solvers:
+      - http01:
+          ingress:
+            class: nginx` },
+          { id: 'tls-2', titleKey: 'bestPractices.security.tls.item2', priority: 'critical', codeExample: `# Check certificate expiration
+kubeadm certs check-expiration
+
+# Renew all certificates
+kubeadm certs renew all
+
+# Restart control plane after renewal
+systemctl restart kubelet` },
+          { id: 'tls-3', titleKey: 'bestPractices.security.tls.item3', priority: 'important', codeExample: `# Certificate for application with cert-manager
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: myapp-tls
+  namespace: myapp
+spec:
+  secretName: myapp-tls-secret
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+    - myapp.example.com
+    - www.myapp.example.com` },
+          { id: 'tls-4', titleKey: 'bestPractices.security.tls.item4', priority: 'important', codeExample: `# Istio PeerAuthentication for mTLS
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: default
+  namespace: istio-system
+spec:
+  mtls:
+    mode: STRICT` },
+          { id: 'tls-5', titleKey: 'bestPractices.security.tls.item5', priority: 'recommended' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'networking',
+    labelKey: 'bestPractices.tab.networking',
+    icon: (
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
+    ),
+    practices: [
+      {
+        id: 'net-policies',
+        titleKey: 'bestPractices.networking.policies.title',
+        descKey: 'bestPractices.networking.policies.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4" />
+          </svg>
+        ),
+        color: 'text-purple-600 dark:text-purple-400',
+        bgColor: 'bg-purple-50 dark:bg-purple-600/20',
+        iconBg: 'bg-purple-600',
+        items: [
+          { id: 'np-1', titleKey: 'bestPractices.networking.policies.item1', priority: 'critical', codeExample: `apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress` },
+          { id: 'np-2', titleKey: 'bestPractices.networking.policies.item2', priority: 'critical', codeExample: `apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-frontend-to-backend
+spec:
+  podSelector:
+    matchLabels:
+      app: backend
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: frontend
+      ports:
+        - port: 8080` },
+          { id: 'np-3', titleKey: 'bestPractices.networking.policies.item3', priority: 'important' },
+          { id: 'np-4', titleKey: 'bestPractices.networking.policies.item4', priority: 'recommended' },
+        ],
+      },
+      {
+        id: 'net-ingress',
+        titleKey: 'bestPractices.networking.ingress.title',
+        descKey: 'bestPractices.networking.ingress.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        ),
+        color: 'text-pink-600 dark:text-pink-400',
+        bgColor: 'bg-pink-50 dark:bg-pink-600/20',
+        iconBg: 'bg-pink-600',
+        items: [
+          { id: 'ing-1', titleKey: 'bestPractices.networking.ingress.item1', priority: 'critical', codeExample: `# Gateway API - Modern approach (recommended)
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: main-gateway
+spec:
+  gatewayClassName: cilium  # or istio, nginx, etc.
+  listeners:
+    - name: https
+      port: 443
+      protocol: HTTPS
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: myapp-tls
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: myapp-route
+spec:
+  parentRefs:
+    - name: main-gateway
+  hostnames:
+    - myapp.example.com
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: myapp
+          port: 80` },
+          { id: 'ing-2', titleKey: 'bestPractices.networking.ingress.item2', priority: 'important', codeExample: `# Legacy Ingress (still supported)
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: myapp-ingress
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - myapp.example.com
+      secretName: myapp-tls
+  rules:
+    - host: myapp.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: myapp
+                port:
+                  number: 80` },
+          { id: 'ing-3', titleKey: 'bestPractices.networking.ingress.item3', priority: 'critical' },
+          { id: 'ing-4', titleKey: 'bestPractices.networking.ingress.item4', priority: 'recommended', codeExample: `# Gateway API rate limiting with policy
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: BackendTrafficPolicy
+metadata:
+  name: rate-limit-policy
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: myapp-route
+  rateLimit:
+    local:
+      requests: 100
+      unit: second` },
+          { id: 'ing-5', titleKey: 'bestPractices.networking.ingress.item5', priority: 'recommended' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'observability',
+    labelKey: 'bestPractices.tab.observability',
+    icon: (
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+    ),
+    practices: [
+      {
+        id: 'obs-metrics',
+        titleKey: 'bestPractices.observability.metrics.title',
+        descKey: 'bestPractices.observability.metrics.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+          </svg>
+        ),
+        color: 'text-orange-600 dark:text-orange-400',
+        bgColor: 'bg-orange-50 dark:bg-orange-600/20',
+        iconBg: 'bg-orange-600',
+        items: [
+          { id: 'met-1', titleKey: 'bestPractices.observability.metrics.item1', priority: 'important', codeExample: `# ServiceMonitor for Prometheus Operator
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: myapp-monitor
+spec:
+  selector:
+    matchLabels:
+      app: myapp
+  endpoints:
+    - port: metrics
+      interval: 30s
+      path: /metrics` },
+          { id: 'met-2', titleKey: 'bestPractices.observability.metrics.item2', priority: 'recommended' },
+          { id: 'met-3', titleKey: 'bestPractices.observability.metrics.item3', priority: 'important', codeExample: `# PrometheusRule for alerting
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: myapp-alerts
+spec:
+  groups:
+    - name: myapp
+      rules:
+        - alert: HighErrorRate
+          expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.1
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: High error rate detected` },
+          { id: 'met-4', titleKey: 'bestPractices.observability.metrics.item4', priority: 'recommended' },
+        ],
+      },
+      {
+        id: 'obs-logging',
+        titleKey: 'bestPractices.observability.logging.title',
+        descKey: 'bestPractices.observability.logging.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        ),
+        color: 'text-emerald-600 dark:text-emerald-400',
+        bgColor: 'bg-emerald-50 dark:bg-emerald-600/20',
+        iconBg: 'bg-emerald-600',
+        items: [
+          { id: 'log-1', titleKey: 'bestPractices.observability.logging.item1', priority: 'important' },
+          { id: 'log-2', titleKey: 'bestPractices.observability.logging.item2', priority: 'important', codeExample: `// Structured JSON logging
+{
+  "timestamp": "2024-01-15T10:30:00Z",
+  "level": "info",
+  "message": "Request processed",
+  "traceId": "abc123",
+  "userId": "user-456",
+  "duration_ms": 150
+}` },
+          { id: 'log-3', titleKey: 'bestPractices.observability.logging.item3', priority: 'recommended' },
+          { id: 'log-4', titleKey: 'bestPractices.observability.logging.item4', priority: 'recommended' },
+        ],
+      },
+      {
+        id: 'obs-external',
+        titleKey: 'bestPractices.observability.external.title',
+        descKey: 'bestPractices.observability.external.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
+          </svg>
+        ),
+        color: 'text-sky-600 dark:text-sky-400',
+        bgColor: 'bg-sky-50 dark:bg-sky-600/20',
+        iconBg: 'bg-sky-600',
+        items: [
+          { id: 'ext-1', titleKey: 'bestPractices.observability.external.item1', priority: 'critical', codeExample: `# Thanos sidecar for long-term metrics storage
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+spec:
+  template:
+    spec:
+      containers:
+        - name: prometheus
+          image: prom/prometheus:v2.45.0
+        - name: thanos-sidecar
+          image: quay.io/thanos/thanos:v0.32.0
+          args:
+            - sidecar
+            - --prometheus.url=http://localhost:9090
+            - --objstore.config-file=/etc/thanos/objstore.yaml` },
+          { id: 'ext-2', titleKey: 'bestPractices.observability.external.item2', priority: 'important', codeExample: `# Loki with S3 storage backend
+loki:
+  storage:
+    type: s3
+    s3:
+      endpoint: s3.amazonaws.com
+      bucketnames: my-loki-logs
+      region: us-east-1
+      access_key_id: \${AWS_ACCESS_KEY_ID}
+      secret_access_key: \${AWS_SECRET_ACCESS_KEY}
+  schema_config:
+    configs:
+      - from: 2024-01-01
+        store: tsdb
+        object_store: s3
+        schema: v13` },
+          { id: 'ext-3', titleKey: 'bestPractices.observability.external.item3', priority: 'important' },
+          { id: 'ext-4', titleKey: 'bestPractices.observability.external.item4', priority: 'recommended', codeExample: `# Prometheus remote_write to external storage
+global:
+  external_labels:
+    cluster: production
+
+remote_write:
+  - url: https://cortex.example.com/api/v1/push
+    queue_config:
+      max_samples_per_send: 10000
+      batch_send_deadline: 5s
+    write_relabel_configs:
+      - source_labels: [__name__]
+        regex: 'go_.*'
+        action: drop` },
+          { id: 'ext-5', titleKey: 'bestPractices.observability.external.item5', priority: 'recommended' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'storage',
+    labelKey: 'bestPractices.tab.storage',
+    icon: (
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
+    ),
+    practices: [
+      {
+        id: 'sto-volumes',
+        titleKey: 'bestPractices.storage.volumes.title',
+        descKey: 'bestPractices.storage.volumes.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+          </svg>
+        ),
+        color: 'text-green-600 dark:text-green-400',
+        bgColor: 'bg-green-50 dark:bg-green-600/20',
+        iconBg: 'bg-green-600',
+        items: [
+          { id: 'vol-1', titleKey: 'bestPractices.storage.volumes.item1', priority: 'important', codeExample: `apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: fast-ssd
+provisioner: kubernetes.io/gce-pd
+parameters:
+  type: pd-ssd
+reclaimPolicy: Retain
+allowVolumeExpansion: true` },
+          { id: 'vol-2', titleKey: 'bestPractices.storage.volumes.item2', priority: 'important', codeExample: `# RWO - ReadWriteOnce (single node)
+# RWX - ReadWriteMany (multiple nodes)
+# ROX - ReadOnlyMany (multiple nodes, read-only)
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi` },
+          { id: 'vol-3', titleKey: 'bestPractices.storage.volumes.item3', priority: 'recommended', codeExample: `apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshot
+metadata:
+  name: myapp-snapshot
+spec:
+  volumeSnapshotClassName: csi-snapclass
+  source:
+    persistentVolumeClaimName: myapp-pvc` },
+          { id: 'vol-4', titleKey: 'bestPractices.storage.volumes.item4', priority: 'recommended' },
+        ],
+      },
+      {
+        id: 'sto-backup',
+        titleKey: 'bestPractices.storage.backup.title',
+        descKey: 'bestPractices.storage.backup.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+          </svg>
+        ),
+        color: 'text-lime-600 dark:text-lime-400',
+        bgColor: 'bg-lime-50 dark:bg-lime-600/20',
+        iconBg: 'bg-lime-600',
+        items: [
+          { id: 'bak-1', titleKey: 'bestPractices.storage.backup.item1', priority: 'critical', codeExample: `# Backup etcd
+ETCDCTL_API=3 etcdctl snapshot save snapshot.db \\
+  --endpoints=https://127.0.0.1:2379 \\
+  --cacert=/etc/kubernetes/pki/etcd/ca.crt \\
+  --cert=/etc/kubernetes/pki/etcd/server.crt \\
+  --key=/etc/kubernetes/pki/etcd/server.key
+
+# Restore etcd
+ETCDCTL_API=3 etcdctl snapshot restore snapshot.db` },
+          { id: 'bak-2', titleKey: 'bestPractices.storage.backup.item2', priority: 'important', codeExample: `# Velero backup
+velero backup create mybackup \\
+  --include-namespaces myapp \\
+  --storage-location default
+
+# Schedule backups
+velero schedule create daily-backup \\
+  --schedule="0 2 * * *" \\
+  --include-namespaces myapp` },
+          { id: 'bak-3', titleKey: 'bestPractices.storage.backup.item3', priority: 'important' },
+          { id: 'bak-4', titleKey: 'bestPractices.storage.backup.item4', priority: 'recommended' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'gitops',
+    labelKey: 'bestPractices.tab.gitops',
+    icon: (
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+    ),
+    practices: [
+      {
+        id: 'git-workflow',
+        titleKey: 'bestPractices.gitops.workflow.title',
+        descKey: 'bestPractices.gitops.workflow.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+          </svg>
+        ),
+        color: 'text-orange-600 dark:text-orange-400',
+        bgColor: 'bg-orange-50 dark:bg-orange-600/20',
+        iconBg: 'bg-orange-600',
+        items: [
+          { id: 'gw-1', titleKey: 'bestPractices.gitops.workflow.item1', priority: 'critical' },
+          { id: 'gw-2', titleKey: 'bestPractices.gitops.workflow.item2', priority: 'important', codeExample: `# ArgoCD Application
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: myapp
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/org/myapp-manifests
+    targetRevision: HEAD
+    path: overlays/production
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: myapp
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true` },
+          { id: 'gw-3', titleKey: 'bestPractices.gitops.workflow.item3', priority: 'important' },
+          { id: 'gw-4', titleKey: 'bestPractices.gitops.workflow.item4', priority: 'recommended' },
+        ],
+      },
+      {
+        id: 'git-delivery',
+        titleKey: 'bestPractices.gitops.delivery.title',
+        descKey: 'bestPractices.gitops.delivery.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+          </svg>
+        ),
+        color: 'text-rose-600 dark:text-rose-400',
+        bgColor: 'bg-rose-50 dark:bg-rose-600/20',
+        iconBg: 'bg-rose-600',
+        items: [
+          { id: 'cd-1', titleKey: 'bestPractices.gitops.delivery.item1', priority: 'important' },
+          { id: 'cd-2', titleKey: 'bestPractices.gitops.delivery.item2', priority: 'recommended', codeExample: `# Argo Rollouts Canary
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: myapp
+spec:
+  replicas: 5
+  strategy:
+    canary:
+      steps:
+        - setWeight: 20
+        - pause: {duration: 5m}
+        - setWeight: 50
+        - pause: {duration: 5m}
+        - setWeight: 80
+        - pause: {duration: 5m}` },
+          { id: 'cd-3', titleKey: 'bestPractices.gitops.delivery.item3', priority: 'important' },
+          { id: 'cd-4', titleKey: 'bestPractices.gitops.delivery.item4', priority: 'recommended' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'highavailability',
+    labelKey: 'bestPractices.tab.highavailability',
+    icon: (
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+    ),
+    practices: [
+      {
+        id: 'ha-redundancy',
+        titleKey: 'bestPractices.ha.redundancy.title',
+        descKey: 'bestPractices.ha.redundancy.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+          </svg>
+        ),
+        color: 'text-indigo-600 dark:text-indigo-400',
+        bgColor: 'bg-indigo-50 dark:bg-indigo-600/20',
+        iconBg: 'bg-indigo-600',
+        items: [
+          { id: 'ha-1', titleKey: 'bestPractices.ha.redundancy.item1', priority: 'critical', codeExample: `# Minimum 3 replicas for high availability
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1` },
+          { id: 'ha-2', titleKey: 'bestPractices.ha.redundancy.item2', priority: 'critical', codeExample: `# Pod anti-affinity for zone distribution
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchLabels:
+            app: myapp
+        topologyKey: topology.kubernetes.io/zone` },
+          { id: 'ha-3', titleKey: 'bestPractices.ha.redundancy.item3', priority: 'important', codeExample: `# Spread across nodes
+topologySpreadConstraints:
+  - maxSkew: 1
+    topologyKey: kubernetes.io/hostname
+    whenUnsatisfiable: DoNotSchedule
+    labelSelector:
+      matchLabels:
+        app: myapp` },
+          { id: 'ha-4', titleKey: 'bestPractices.ha.redundancy.item4', priority: 'important', codeExample: `# Node affinity for specific node pools
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: node-type
+              operator: In
+              values:
+                - production` },
+          { id: 'ha-5', titleKey: 'bestPractices.ha.redundancy.item5', priority: 'recommended', codeExample: `# Priority class for critical workloads
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: high-priority
+value: 1000000
+globalDefault: false
+description: "Critical production workloads"` },
+        ],
+      },
+      {
+        id: 'ha-resilience',
+        titleKey: 'bestPractices.ha.resilience.title',
+        descKey: 'bestPractices.ha.resilience.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+          </svg>
+        ),
+        color: 'text-sky-600 dark:text-sky-400',
+        bgColor: 'bg-sky-50 dark:bg-sky-600/20',
+        iconBg: 'bg-sky-600',
+        items: [
+          { id: 'res-ha-1', titleKey: 'bestPractices.ha.resilience.item1', priority: 'critical', codeExample: `apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: myapp-pdb
+spec:
+  minAvailable: 2
+  # Or use: maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: myapp` },
+          { id: 'res-ha-2', titleKey: 'bestPractices.ha.resilience.item2', priority: 'important', codeExample: `# Graceful shutdown handling
+spec:
+  terminationGracePeriodSeconds: 60
+  containers:
+    - name: myapp
+      lifecycle:
+        preStop:
+          exec:
+            command: ["/bin/sh", "-c", "sleep 10"]` },
+          { id: 'res-ha-3', titleKey: 'bestPractices.ha.resilience.item3', priority: 'important', codeExample: `# Configure proper timeouts
+readinessProbe:
+  httpGet:
+    path: /ready
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 3` },
+          { id: 'res-ha-4', titleKey: 'bestPractices.ha.resilience.item4', priority: 'recommended' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'costoptimization',
+    labelKey: 'bestPractices.tab.costoptimization',
+    icon: (
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    ),
+    practices: [
+      {
+        id: 'cost-resources',
+        titleKey: 'bestPractices.cost.resources.title',
+        descKey: 'bestPractices.cost.resources.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+          </svg>
+        ),
+        color: 'text-emerald-600 dark:text-emerald-400',
+        bgColor: 'bg-emerald-50 dark:bg-emerald-600/20',
+        iconBg: 'bg-emerald-600',
+        items: [
+          { id: 'cost-1', titleKey: 'bestPractices.cost.resources.item1', priority: 'critical', codeExample: `# Right-size your resources based on actual usage
+resources:
+  requests:
+    memory: "256Mi"  # Based on p95 usage
+    cpu: "100m"      # Based on average usage
+  limits:
+    memory: "512Mi"  # 2x requests for burst
+    cpu: "500m"      # Allow burst capacity` },
+          { id: 'cost-2', titleKey: 'bestPractices.cost.resources.item2', priority: 'important', codeExample: `# Install metrics-server and use VPA recommendations
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: myapp-vpa
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: myapp
+  updatePolicy:
+    updateMode: "Off"  # Use "Auto" for automatic updates` },
+          { id: 'cost-3', titleKey: 'bestPractices.cost.resources.item3', priority: 'important', codeExample: `# Enforce resource limits per namespace
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: default-limits
+spec:
+  limits:
+    - default:
+        cpu: "500m"
+        memory: "256Mi"
+      defaultRequest:
+        cpu: "100m"
+        memory: "128Mi"
+      type: Container` },
+          { id: 'cost-4', titleKey: 'bestPractices.cost.resources.item4', priority: 'recommended', codeExample: `# Check resource usage
+kubectl top pods --all-namespaces
+kubectl top nodes
+
+# Find pods without resource limits
+kubectl get pods -A -o json | jq '.items[] | select(.spec.containers[].resources.limits == null) | .metadata.name'` },
+        ],
+      },
+      {
+        id: 'cost-scaling',
+        titleKey: 'bestPractices.cost.scaling.title',
+        descKey: 'bestPractices.cost.scaling.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z" />
+          </svg>
+        ),
+        color: 'text-yellow-600 dark:text-yellow-400',
+        bgColor: 'bg-yellow-50 dark:bg-yellow-600/20',
+        iconBg: 'bg-yellow-600',
+        items: [
+          { id: 'cost-5', titleKey: 'bestPractices.cost.scaling.item1', priority: 'important', codeExample: `# Cluster Autoscaler configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cluster-autoscaler-config
+data:
+  scale-down-delay-after-add: "10m"
+  scale-down-unneeded-time: "10m"
+  scale-down-utilization-threshold: "0.5"` },
+          { id: 'cost-6', titleKey: 'bestPractices.cost.scaling.item2', priority: 'important', codeExample: `# Use spot/preemptible nodes for non-critical workloads
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: cloud.google.com/gke-spot
+              operator: In
+              values:
+                - "true"
+tolerations:
+  - key: "cloud.google.com/gke-spot"
+    operator: "Equal"
+    value: "true"
+    effect: "NoSchedule"` },
+          { id: 'cost-7', titleKey: 'bestPractices.cost.scaling.item3', priority: 'recommended', codeExample: `# Scale to zero during off-hours with KEDA
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: myapp-scaler
+spec:
+  scaleTargetRef:
+    name: myapp
+  minReplicaCount: 0
+  maxReplicaCount: 10
+  triggers:
+    - type: cron
+      metadata:
+        timezone: America/New_York
+        start: "0 8 * * 1-5"
+        end: "0 18 * * 1-5"
+        desiredReplicas: "3"` },
+          { id: 'cost-8', titleKey: 'bestPractices.cost.scaling.item4', priority: 'recommended' },
+        ],
+      },
+      {
+        id: 'cost-cleanup',
+        titleKey: 'bestPractices.cost.cleanup.title',
+        descKey: 'bestPractices.cost.cleanup.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+          </svg>
+        ),
+        color: 'text-red-600 dark:text-red-400',
+        bgColor: 'bg-red-50 dark:bg-red-600/20',
+        iconBg: 'bg-red-600',
+        items: [
+          { id: 'cost-9', titleKey: 'bestPractices.cost.cleanup.item1', priority: 'important', codeExample: `# Find and delete orphaned PVCs
+kubectl get pvc --all-namespaces -o json | jq -r '.items[] | select(.status.phase == "Released") | .metadata.name'
+
+# Delete unused PVCs
+kubectl delete pvc <pvc-name> -n <namespace>` },
+          { id: 'cost-10', titleKey: 'bestPractices.cost.cleanup.item2', priority: 'important', codeExample: `# Set TTL for completed Jobs
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cleanup-job
+spec:
+  ttlSecondsAfterFinished: 3600  # Auto-delete after 1 hour
+  template:
+    spec:
+      containers:
+        - name: job
+          image: busybox
+          command: ["echo", "done"]
+      restartPolicy: Never` },
+          { id: 'cost-11', titleKey: 'bestPractices.cost.cleanup.item3', priority: 'recommended', codeExample: `# Clean up old ReplicaSets
+kubectl get rs --all-namespaces -o json | jq -r '.items[] | select(.spec.replicas == 0) | .metadata.name'
+
+# Set revision history limit in deployments
+spec:
+  revisionHistoryLimit: 3` },
+          { id: 'cost-12', titleKey: 'bestPractices.cost.cleanup.item4', priority: 'recommended' },
+        ],
+      },
+      {
+        id: 'cost-serverless',
+        titleKey: 'bestPractices.cost.serverless.title',
+        descKey: 'bestPractices.cost.serverless.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+          </svg>
+        ),
+        color: 'text-violet-600 dark:text-violet-400',
+        bgColor: 'bg-violet-50 dark:bg-violet-600/20',
+        iconBg: 'bg-violet-600',
+        items: [
+          { id: 'cost-13', titleKey: 'bestPractices.cost.serverless.item1', priority: 'critical', whyItMattersKey: 'bestPractices.cost.serverless.why1', codeExample: `# KEDA ScaledObject - Scale to zero
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: myapp-scaler
+spec:
+  scaleTargetRef:
+    name: myapp
+  minReplicaCount: 0    # Scale to zero!
+  maxReplicaCount: 100
+  cooldownPeriod: 300   # Wait 5 min before scaling down
+  triggers:
+    - type: prometheus
+      metadata:
+        serverAddress: http://prometheus:9090
+        metricName: http_requests_total
+        threshold: "100"
+        query: sum(rate(http_requests_total{app="myapp"}[2m]))` },
+          { id: 'cost-14', titleKey: 'bestPractices.cost.serverless.item2', priority: 'important', codeExample: `# KEDA with multiple triggers
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: worker-scaler
+spec:
+  scaleTargetRef:
+    name: worker
+  minReplicaCount: 0
+  triggers:
+    # Scale based on RabbitMQ queue length
+    - type: rabbitmq
+      metadata:
+        queueName: jobs
+        host: amqp://rabbitmq:5672
+        queueLength: "5"
+    # Or scale based on AWS SQS
+    - type: aws-sqs-queue
+      metadata:
+        queueURL: https://sqs.us-east-1.amazonaws.com/xxx/my-queue
+        queueLength: "10"` },
+          { id: 'cost-15', titleKey: 'bestPractices.cost.serverless.item3', priority: 'important', whyItMattersKey: 'bestPractices.cost.serverless.why3', codeExample: `# Knative Service - Serverless containers
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: my-service
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/min-scale: "0"
+        autoscaling.knative.dev/max-scale: "10"
+        autoscaling.knative.dev/target: "100"  # Concurrent requests per pod
+    spec:
+      containerConcurrency: 100
+      containers:
+        - image: myapp:latest
+          resources:
+            limits:
+              cpu: "1"
+              memory: "512Mi"` },
+          { id: 'cost-16', titleKey: 'bestPractices.cost.serverless.item4', priority: 'recommended', codeExample: `# KEDA Cron Scaler - Schedule-based scaling
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: business-hours-scaler
+spec:
+  scaleTargetRef:
+    name: api-server
+  triggers:
+    # Scale up during business hours
+    - type: cron
+      metadata:
+        timezone: America/New_York
+        start: "0 8 * * 1-5"   # 8 AM Mon-Fri
+        end: "0 18 * * 1-5"    # 6 PM Mon-Fri
+        desiredReplicas: "5"
+    # Minimal during off-hours
+    - type: cron
+      metadata:
+        timezone: America/New_York
+        start: "0 18 * * 1-5"
+        end: "0 8 * * 1-5"
+        desiredReplicas: "1"` },
+          { id: 'cost-17', titleKey: 'bestPractices.cost.serverless.item5', priority: 'recommended', commonMistakeKey: 'bestPractices.cost.serverless.mistake5', codeExample: `# OpenFaaS function definition
+version: 1.0
+provider:
+  name: openfaas
+functions:
+  process-image:
+    lang: python3
+    handler: ./handler
+    image: myregistry/process-image:latest
+    labels:
+      com.openfaas.scale.min: "0"
+      com.openfaas.scale.max: "20"
+      com.openfaas.scale.zero: "true"
+    environment:
+      write_timeout: 60s
+      read_timeout: 60s` },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'servicemesh',
+    labelKey: 'bestPractices.tab.servicemesh',
+    icon: (
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+    ),
+    practices: [
+      {
+        id: 'mesh-security',
+        titleKey: 'bestPractices.mesh.security.title',
+        descKey: 'bestPractices.mesh.security.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+          </svg>
+        ),
+        color: 'text-violet-600 dark:text-violet-400',
+        bgColor: 'bg-violet-50 dark:bg-violet-600/20',
+        iconBg: 'bg-violet-600',
+        items: [
+          { id: 'mesh-1', titleKey: 'bestPractices.mesh.security.item1', priority: 'critical', codeExample: `# Istio PeerAuthentication for mTLS
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: default
+  namespace: istio-system
+spec:
+  mtls:
+    mode: STRICT` },
+          { id: 'mesh-2', titleKey: 'bestPractices.mesh.security.item2', priority: 'critical', codeExample: `# Istio AuthorizationPolicy
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: frontend-to-backend
+  namespace: myapp
+spec:
+  selector:
+    matchLabels:
+      app: backend
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals: ["cluster.local/ns/myapp/sa/frontend"]
+      to:
+        - operation:
+            methods: ["GET", "POST"]` },
+          { id: 'mesh-3', titleKey: 'bestPractices.mesh.security.item3', priority: 'important' },
+          { id: 'mesh-4', titleKey: 'bestPractices.mesh.security.item4', priority: 'recommended', codeExample: `# RequestAuthentication for JWT validation
+apiVersion: security.istio.io/v1beta1
+kind: RequestAuthentication
+metadata:
+  name: jwt-auth
+spec:
+  selector:
+    matchLabels:
+      app: api-gateway
+  jwtRules:
+    - issuer: "https://auth.example.com"
+      jwksUri: "https://auth.example.com/.well-known/jwks.json"` },
+        ],
+      },
+      {
+        id: 'mesh-traffic',
+        titleKey: 'bestPractices.mesh.traffic.title',
+        descKey: 'bestPractices.mesh.traffic.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+          </svg>
+        ),
+        color: 'text-cyan-600 dark:text-cyan-400',
+        bgColor: 'bg-cyan-50 dark:bg-cyan-600/20',
+        iconBg: 'bg-cyan-600',
+        items: [
+          { id: 'mesh-5', titleKey: 'bestPractices.mesh.traffic.item1', priority: 'important', codeExample: `# Circuit breaker with Istio
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: backend-circuit-breaker
+spec:
+  host: backend
+  trafficPolicy:
+    connectionPool:
+      tcp:
+        maxConnections: 100
+      http:
+        h2UpgradePolicy: UPGRADE
+        http1MaxPendingRequests: 100
+        http2MaxRequests: 1000
+    outlierDetection:
+      consecutive5xxErrors: 5
+      interval: 30s
+      baseEjectionTime: 30s
+      maxEjectionPercent: 50` },
+          { id: 'mesh-6', titleKey: 'bestPractices.mesh.traffic.item2', priority: 'important', codeExample: `# Retry policy
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: backend-vs
+spec:
+  hosts:
+    - backend
+  http:
+    - route:
+        - destination:
+            host: backend
+      retries:
+        attempts: 3
+        perTryTimeout: 2s
+        retryOn: 5xx,reset,connect-failure` },
+          { id: 'mesh-7', titleKey: 'bestPractices.mesh.traffic.item3', priority: 'recommended', codeExample: `# Traffic splitting for canary
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: myapp-canary
+spec:
+  hosts:
+    - myapp
+  http:
+    - route:
+        - destination:
+            host: myapp
+            subset: stable
+          weight: 90
+        - destination:
+            host: myapp
+            subset: canary
+          weight: 10` },
+          { id: 'mesh-8', titleKey: 'bestPractices.mesh.traffic.item4', priority: 'recommended', codeExample: `# Request timeout
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: backend-timeout
+spec:
+  hosts:
+    - backend
+  http:
+    - route:
+        - destination:
+            host: backend
+      timeout: 10s` },
+        ],
+      },
+      {
+        id: 'mesh-observability',
+        titleKey: 'bestPractices.mesh.observability.title',
+        descKey: 'bestPractices.mesh.observability.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        ),
+        color: 'text-fuchsia-600 dark:text-fuchsia-400',
+        bgColor: 'bg-fuchsia-50 dark:bg-fuchsia-600/20',
+        iconBg: 'bg-fuchsia-600',
+        items: [
+          { id: 'mesh-9', titleKey: 'bestPractices.mesh.observability.item1', priority: 'important', codeExample: `# Enable distributed tracing with Jaeger
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+spec:
+  meshConfig:
+    enableTracing: true
+    defaultConfig:
+      tracing:
+        sampling: 100.0
+        zipkin:
+          address: jaeger-collector.istio-system:9411` },
+          { id: 'mesh-10', titleKey: 'bestPractices.mesh.observability.item2', priority: 'important' },
+          { id: 'mesh-11', titleKey: 'bestPractices.mesh.observability.item3', priority: 'recommended', codeExample: `# Kiali for service mesh visualization
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.20/samples/addons/kiali.yaml
+
+# Access Kiali dashboard
+istioctl dashboard kiali` },
+          { id: 'mesh-12', titleKey: 'bestPractices.mesh.observability.item4', priority: 'recommended' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'operations',
+    labelKey: 'bestPractices.tab.operations',
+    icon: (
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z" />
+    ),
+    practices: [
+      {
+        id: 'ops-upgrades',
+        titleKey: 'bestPractices.ops.upgrades.title',
+        descKey: 'bestPractices.ops.upgrades.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+          </svg>
+        ),
+        color: 'text-blue-600 dark:text-blue-400',
+        bgColor: 'bg-blue-50 dark:bg-blue-600/20',
+        iconBg: 'bg-blue-600',
+        items: [
+          { id: 'ops-1', titleKey: 'bestPractices.ops.upgrades.item1', priority: 'critical', codeExample: `# Check current version and available upgrades
+kubectl version
+kubeadm upgrade plan
+
+# Upgrade control plane (one node at a time)
+kubeadm upgrade apply v1.29.0
+
+# Upgrade kubelet and kubectl
+apt-get update && apt-get install -y kubelet=1.29.0-00 kubectl=1.29.0-00
+systemctl daemon-reload && systemctl restart kubelet` },
+          { id: 'ops-2', titleKey: 'bestPractices.ops.upgrades.item2', priority: 'critical', codeExample: `# Drain node before maintenance
+kubectl drain <node-name> --ignore-daemonsets --delete-emptydir-data
+
+# After maintenance, uncordon the node
+kubectl uncordon <node-name>` },
+          { id: 'ops-3', titleKey: 'bestPractices.ops.upgrades.item3', priority: 'important' },
+          { id: 'ops-4', titleKey: 'bestPractices.ops.upgrades.item4', priority: 'important', codeExample: `# Check deprecations before upgrade
+kubectl deprecations
+
+# Or use kubent (kube-no-trouble)
+kubent
+
+# Check API versions
+kubectl api-versions | grep -E "v1beta1|v1alpha1"` },
+        ],
+      },
+      {
+        id: 'ops-troubleshooting',
+        titleKey: 'bestPractices.ops.troubleshooting.title',
+        descKey: 'bestPractices.ops.troubleshooting.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+          </svg>
+        ),
+        color: 'text-amber-600 dark:text-amber-400',
+        bgColor: 'bg-amber-50 dark:bg-amber-600/20',
+        iconBg: 'bg-amber-600',
+        items: [
+          { id: 'ops-5', titleKey: 'bestPractices.ops.troubleshooting.item1', priority: 'important', codeExample: `# Debug running pod with ephemeral container
+kubectl debug -it <pod-name> --image=busybox --target=<container-name>
+
+# Debug node issues
+kubectl debug node/<node-name> -it --image=ubuntu` },
+          { id: 'ops-6', titleKey: 'bestPractices.ops.troubleshooting.item2', priority: 'important', codeExample: `# Check pod events
+kubectl describe pod <pod-name>
+
+# Get cluster events sorted by time
+kubectl get events --sort-by='.lastTimestamp'
+
+# Watch events in real-time
+kubectl get events -w` },
+          { id: 'ops-7', titleKey: 'bestPractices.ops.troubleshooting.item3', priority: 'recommended', codeExample: `# Check logs with follow and timestamps
+kubectl logs <pod-name> -f --timestamps
+
+# Logs from previous container instance
+kubectl logs <pod-name> --previous
+
+# Logs from specific container
+kubectl logs <pod-name> -c <container-name>
+
+# Logs from all pods with label
+kubectl logs -l app=myapp --all-containers` },
+          { id: 'ops-8', titleKey: 'bestPractices.ops.troubleshooting.item4', priority: 'recommended', codeExample: `# Check resource usage
+kubectl top pods --sort-by=memory
+kubectl top nodes
+
+# Check cluster health
+kubectl get componentstatuses
+kubectl get nodes -o wide` },
+        ],
+      },
+      {
+        id: 'ops-maintenance',
+        titleKey: 'bestPractices.ops.maintenance.title',
+        descKey: 'bestPractices.ops.maintenance.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        ),
+        color: 'text-slate-600 dark:text-slate-400',
+        bgColor: 'bg-slate-50 dark:bg-slate-600/20',
+        iconBg: 'bg-slate-600',
+        items: [
+          { id: 'ops-9', titleKey: 'bestPractices.ops.maintenance.item1', priority: 'critical', codeExample: `# Etcd backup (critical for disaster recovery)
+ETCDCTL_API=3 etcdctl snapshot save /backup/etcd-snapshot.db \\
+  --endpoints=https://127.0.0.1:2379 \\
+  --cacert=/etc/kubernetes/pki/etcd/ca.crt \\
+  --cert=/etc/kubernetes/pki/etcd/server.crt \\
+  --key=/etc/kubernetes/pki/etcd/server.key
+
+# Verify backup
+ETCDCTL_API=3 etcdctl snapshot status /backup/etcd-snapshot.db` },
+          { id: 'ops-10', titleKey: 'bestPractices.ops.maintenance.item2', priority: 'important', codeExample: `# Renew certificates before expiry
+kubeadm certs check-expiration
+kubeadm certs renew all
+
+# Restart control plane components after renewal
+systemctl restart kubelet` },
+          { id: 'ops-11', titleKey: 'bestPractices.ops.maintenance.item3', priority: 'important', codeExample: `# Compact and defrag etcd
+ETCDCTL_API=3 etcdctl compact $(ETCDCTL_API=3 etcdctl endpoint status --write-out="json" | jq -r '.[0].Status.header.revision')
+
+ETCDCTL_API=3 etcdctl defrag --endpoints=https://127.0.0.1:2379` },
+          { id: 'ops-12', titleKey: 'bestPractices.ops.maintenance.item4', priority: 'recommended' },
+        ],
+      },
+      {
+        id: 'ops-backup',
+        titleKey: 'bestPractices.ops.backup.title',
+        descKey: 'bestPractices.ops.backup.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.125l2.25 2.25m0 0l2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+          </svg>
+        ),
+        color: 'text-emerald-600 dark:text-emerald-400',
+        bgColor: 'bg-emerald-50 dark:bg-emerald-600/20',
+        iconBg: 'bg-emerald-600',
+        items: [
+          { id: 'ops-13', titleKey: 'bestPractices.ops.backup.item1', priority: 'critical', codeExample: `# Backup etcd snapshot
+ETCDCTL_API=3 etcdctl snapshot save /backup/etcd-$(date +%Y%m%d).db \\
+  --endpoints=https://127.0.0.1:2379 \\
+  --cacert=/etc/kubernetes/pki/etcd/ca.crt \\
+  --cert=/etc/kubernetes/pki/etcd/server.crt \\
+  --key=/etc/kubernetes/pki/etcd/server.key
+
+# Verify backup integrity
+ETCDCTL_API=3 etcdctl snapshot status /backup/etcd-$(date +%Y%m%d).db` },
+          { id: 'ops-14', titleKey: 'bestPractices.ops.backup.item2', priority: 'critical', codeExample: `# Install Velero with S3 backend
+velero install \\
+  --provider aws \\
+  --bucket my-backup-bucket \\
+  --secret-file ./credentials-velero \\
+  --backup-location-config region=us-east-1
+
+# Create backup of namespace
+velero backup create myapp-backup \\
+  --include-namespaces myapp \\
+  --storage-location default` },
+          { id: 'ops-15', titleKey: 'bestPractices.ops.backup.item3', priority: 'important', codeExample: `# Velero scheduled backup
+velero schedule create daily-backup \\
+  --schedule="0 2 * * *" \\
+  --include-namespaces production,staging \\
+  --ttl 720h
+
+# List scheduled backups
+velero schedule get` },
+          { id: 'ops-16', titleKey: 'bestPractices.ops.backup.item4', priority: 'important', codeExample: `# Test restore in a different namespace
+velero restore create --from-backup myapp-backup \\
+  --namespace-mappings myapp:myapp-restore-test
+
+# Verify restored resources
+kubectl get all -n myapp-restore-test` },
+          { id: 'ops-17', titleKey: 'bestPractices.ops.backup.item5', priority: 'recommended', codeExample: `# Backup to multiple locations (3-2-1 rule)
+# Primary: Cloud storage
+velero backup-location create primary \\
+  --provider aws --bucket primary-bucket
+
+# Secondary: Different region/provider
+velero backup-location create secondary \\
+  --provider gcp --bucket secondary-bucket
+
+# Create backup to both locations
+velero backup create full-backup \\
+  --storage-location primary,secondary` },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'multitenancy',
+    labelKey: 'bestPractices.tab.multitenancy',
+    icon: (
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+    ),
+    practices: [
+      {
+        id: 'tenant-isolation',
+        titleKey: 'bestPractices.tenant.isolation.title',
+        descKey: 'bestPractices.tenant.isolation.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+          </svg>
+        ),
+        color: 'text-indigo-600 dark:text-indigo-400',
+        bgColor: 'bg-indigo-50 dark:bg-indigo-600/20',
+        iconBg: 'bg-indigo-600',
+        items: [
+          { id: 'tenant-1', titleKey: 'bestPractices.tenant.isolation.item1', priority: 'critical', codeExample: `# Create isolated namespace per tenant
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tenant-alpha
+  labels:
+    tenant: alpha
+    environment: production` },
+          { id: 'tenant-2', titleKey: 'bestPractices.tenant.isolation.item2', priority: 'critical', codeExample: `# ResourceQuota per tenant
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: tenant-quota
+  namespace: tenant-alpha
+spec:
+  hard:
+    requests.cpu: "10"
+    requests.memory: 20Gi
+    limits.cpu: "20"
+    limits.memory: 40Gi
+    persistentvolumeclaims: "10"
+    pods: "50"` },
+          { id: 'tenant-3', titleKey: 'bestPractices.tenant.isolation.item3', priority: 'critical', codeExample: `# LimitRange for default limits
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: tenant-limits
+  namespace: tenant-alpha
+spec:
+  limits:
+    - default:
+        cpu: "500m"
+        memory: 512Mi
+      defaultRequest:
+        cpu: "100m"
+        memory: 128Mi
+      type: Container` },
+          { id: 'tenant-4', titleKey: 'bestPractices.tenant.isolation.item4', priority: 'important', codeExample: `# NetworkPolicy for tenant isolation
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-cross-tenant
+  namespace: tenant-alpha
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              tenant: alpha
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              tenant: alpha
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system` },
+        ],
+      },
+      {
+        id: 'tenant-hierarchy',
+        titleKey: 'bestPractices.tenant.hierarchy.title',
+        descKey: 'bestPractices.tenant.hierarchy.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+          </svg>
+        ),
+        color: 'text-purple-600 dark:text-purple-400',
+        bgColor: 'bg-purple-50 dark:bg-purple-600/20',
+        iconBg: 'bg-purple-600',
+        items: [
+          { id: 'tenant-5', titleKey: 'bestPractices.tenant.hierarchy.item1', priority: 'important', codeExample: `# Hierarchical Namespace Controller (HNC)
+# Install HNC
+kubectl apply -f https://github.com/kubernetes-sigs/hierarchical-namespaces/releases/latest/download/default.yaml
+
+# Create parent namespace
+kubectl create ns org-alpha
+
+# Create child namespace with inheritance
+kubectl hns create team-frontend -n org-alpha` },
+          { id: 'tenant-6', titleKey: 'bestPractices.tenant.hierarchy.item2', priority: 'important', codeExample: `# Propagate policies to child namespaces
+apiVersion: hnc.x-k8s.io/v1alpha2
+kind: HierarchyConfiguration
+metadata:
+  name: hierarchy
+  namespace: org-alpha
+spec:
+  children:
+    - team-frontend
+    - team-backend
+---
+# NetworkPolicy in parent propagates to children
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny
+  namespace: org-alpha
+  labels:
+    hnc.x-k8s.io/propagate: "true"` },
+          { id: 'tenant-7', titleKey: 'bestPractices.tenant.hierarchy.item3', priority: 'recommended', codeExample: `# vCluster for strong isolation
+# Install vCluster CLI
+curl -L -o vcluster https://github.com/loft-sh/vcluster/releases/latest/download/vcluster-linux-amd64
+chmod +x vcluster && sudo mv vcluster /usr/local/bin
+
+# Create virtual cluster for tenant
+vcluster create tenant-alpha --namespace host-tenant-alpha
+
+# Connect to virtual cluster
+vcluster connect tenant-alpha -n host-tenant-alpha` },
+          { id: 'tenant-8', titleKey: 'bestPractices.tenant.hierarchy.item4', priority: 'recommended', codeExample: `# RBAC for tenant admins
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: tenant-admin
+  namespace: tenant-alpha
+subjects:
+  - kind: Group
+    name: tenant-alpha-admins
+    apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: admin
+  apiGroup: rbac.authorization.k8s.io` },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'stateful',
+    labelKey: 'bestPractices.tab.stateful',
+    icon: (
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
+    ),
+    practices: [
+      {
+        id: 'stateful-operators',
+        titleKey: 'bestPractices.stateful.operators.title',
+        descKey: 'bestPractices.stateful.operators.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5.25 14.25h13.5m-13.5 0a3 3 0 01-3-3m3 3a3 3 0 100 6h13.5a3 3 0 100-6m-16.5-3a3 3 0 013-3h13.5a3 3 0 013 3m-19.5 0a4.5 4.5 0 01.9-2.7L5.737 5.1a3.375 3.375 0 012.7-1.35h7.126c1.062 0 2.062.5 2.7 1.35l2.587 3.45a4.5 4.5 0 01.9 2.7m0 0a3 3 0 01-3 3m0 3h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008zm-3 6h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008z" />
+          </svg>
+        ),
+        color: 'text-emerald-600 dark:text-emerald-400',
+        bgColor: 'bg-emerald-50 dark:bg-emerald-600/20',
+        iconBg: 'bg-emerald-600',
+        items: [
+          { id: 'stateful-1', titleKey: 'bestPractices.stateful.operators.item1', priority: 'critical', codeExample: `# CloudNativePG for PostgreSQL
+# Install operator
+kubectl apply -f https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.22/releases/cnpg-1.22.0.yaml
+
+# Create PostgreSQL cluster
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres-cluster
+spec:
+  instances: 3
+  storage:
+    size: 10Gi
+    storageClass: fast-ssd
+  backup:
+    barmanObjectStore:
+      destinationPath: s3://backups/postgres
+      s3Credentials:
+        accessKeyId:
+          name: s3-creds
+          key: ACCESS_KEY_ID
+        secretAccessKey:
+          name: s3-creds
+          key: SECRET_ACCESS_KEY` },
+          { id: 'stateful-2', titleKey: 'bestPractices.stateful.operators.item2', priority: 'important', codeExample: `# MongoDB Community Operator
+# Install operator
+helm repo add mongodb https://mongodb.github.io/helm-charts
+helm install mongodb-operator mongodb/community-operator
+
+# Create MongoDB ReplicaSet
+apiVersion: mongodbcommunity.mongodb.com/v1
+kind: MongoDBCommunity
+metadata:
+  name: mongodb-cluster
+spec:
+  members: 3
+  type: ReplicaSet
+  version: "6.0.5"
+  security:
+    authentication:
+      modes: ["SCRAM"]
+  users:
+    - name: admin
+      db: admin
+      passwordSecretRef:
+        name: mongodb-admin-password
+      roles:
+        - name: root
+          db: admin` },
+          { id: 'stateful-3', titleKey: 'bestPractices.stateful.operators.item3', priority: 'important', codeExample: `# Redis Operator (Spotahome)
+# Install operator
+helm repo add redis-operator https://spotahome.github.io/redis-operator
+helm install redis-operator redis-operator/redis-operator
+
+# Create Redis Failover cluster
+apiVersion: databases.spotahome.com/v1
+kind: RedisFailover
+metadata:
+  name: redis-cluster
+spec:
+  sentinel:
+    replicas: 3
+  redis:
+    replicas: 3
+    resources:
+      limits:
+        memory: 1Gi
+    storage:
+      persistentVolumeClaim:
+        spec:
+          accessModes: [ReadWriteOnce]
+          resources:
+            requests:
+              storage: 5Gi` },
+          { id: 'stateful-4', titleKey: 'bestPractices.stateful.operators.item4', priority: 'recommended' },
+        ],
+      },
+      {
+        id: 'stateful-sets',
+        titleKey: 'bestPractices.stateful.sets.title',
+        descKey: 'bestPractices.stateful.sets.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6.429 9.75L2.25 12l4.179 2.25m0-4.5l5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0l4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0l-5.571 3-5.571-3" />
+          </svg>
+        ),
+        color: 'text-cyan-600 dark:text-cyan-400',
+        bgColor: 'bg-cyan-50 dark:bg-cyan-600/20',
+        iconBg: 'bg-cyan-600',
+        items: [
+          { id: 'stateful-5', titleKey: 'bestPractices.stateful.sets.item1', priority: 'critical', codeExample: `apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: web
+spec:
+  serviceName: "web"
+  replicas: 3
+  podManagementPolicy: OrderedReady  # Sequential startup
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      partition: 0  # Update all pods
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+        - name: app
+          image: myapp:1.0
+          volumeMounts:
+            - name: data
+              mountPath: /data
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: fast-ssd
+        resources:
+          requests:
+            storage: 10Gi` },
+          { id: 'stateful-6', titleKey: 'bestPractices.stateful.sets.item2', priority: 'important', codeExample: `# Headless service for StatefulSet DNS
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+spec:
+  clusterIP: None  # Headless
+  selector:
+    app: web
+  ports:
+    - port: 80
+      name: http
+
+# Pods get stable DNS names:
+# web-0.web.namespace.svc.cluster.local
+# web-1.web.namespace.svc.cluster.local
+# web-2.web.namespace.svc.cluster.local` },
+          { id: 'stateful-7', titleKey: 'bestPractices.stateful.sets.item3', priority: 'important', codeExample: `# PodDisruptionBudget for StatefulSet
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: web-pdb
+spec:
+  minAvailable: 2  # Maintain quorum
+  selector:
+    matchLabels:
+      app: web` },
+          { id: 'stateful-8', titleKey: 'bestPractices.stateful.sets.item4', priority: 'recommended', codeExample: `# Anti-affinity for HA
+spec:
+  template:
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: web
+              topologyKey: kubernetes.io/hostname
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: web
+                topologyKey: topology.kubernetes.io/zone` },
+        ],
+      },
+      {
+        id: 'stateful-replication',
+        titleKey: 'bestPractices.stateful.replication.title',
+        descKey: 'bestPractices.stateful.replication.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+          </svg>
+        ),
+        color: 'text-orange-600 dark:text-orange-400',
+        bgColor: 'bg-orange-50 dark:bg-orange-600/20',
+        iconBg: 'bg-orange-600',
+        items: [
+          { id: 'stateful-9', titleKey: 'bestPractices.stateful.replication.item1', priority: 'critical', codeExample: `# PostgreSQL with synchronous replication
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres-ha
+spec:
+  instances: 3
+  postgresql:
+    parameters:
+      synchronous_commit: "on"
+  primaryUpdateStrategy: unsupervised
+  minSyncReplicas: 1
+  maxSyncReplicas: 2` },
+          { id: 'stateful-10', titleKey: 'bestPractices.stateful.replication.item2', priority: 'important', codeExample: `# Use storage with replication (Longhorn example)
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: longhorn-ha
+provisioner: driver.longhorn.io
+parameters:
+  numberOfReplicas: "3"
+  staleReplicaTimeout: "2880"
+  fromBackup: ""
+  dataLocality: "best-effort"
+reclaimPolicy: Delete
+volumeBindingMode: Immediate` },
+          { id: 'stateful-11', titleKey: 'bestPractices.stateful.replication.item3', priority: 'important', codeExample: `# VolumeSnapshot for point-in-time recovery
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshot
+metadata:
+  name: postgres-snapshot
+spec:
+  volumeSnapshotClassName: csi-snapclass
+  source:
+    persistentVolumeClaimName: data-postgres-0
+
+# Restore from snapshot
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: data-postgres-restored
+spec:
+  dataSource:
+    name: postgres-snapshot
+    kind: VolumeSnapshot
+    apiGroup: snapshot.storage.k8s.io
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 10Gi` },
+          { id: 'stateful-12', titleKey: 'bestPractices.stateful.replication.item4', priority: 'recommended' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'compliance',
+    labelKey: 'bestPractices.tab.compliance',
+    icon: (
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+    ),
+    practices: [
+      {
+        id: 'compliance-policy',
+        titleKey: 'bestPractices.compliance.policy.title',
+        descKey: 'bestPractices.compliance.policy.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+          </svg>
+        ),
+        color: 'text-blue-600 dark:text-blue-400',
+        bgColor: 'bg-blue-50 dark:bg-blue-600/20',
+        iconBg: 'bg-blue-600',
+        items: [
+          { id: 'compliance-1', titleKey: 'bestPractices.compliance.policy.item1', priority: 'critical', codeExample: `# Kyverno policy - require labels
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-labels
+spec:
+  validationFailureAction: Enforce
+  rules:
+    - name: require-team-label
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+                - Deployment
+      validate:
+        message: "Label 'team' is required"
+        pattern:
+          metadata:
+            labels:
+              team: "?*"` },
+          { id: 'compliance-2', titleKey: 'bestPractices.compliance.policy.item2', priority: 'critical', codeExample: `# OPA Gatekeeper constraint template
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8srequiredlabels
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sRequiredLabels
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            labels:
+              type: array
+              items:
+                type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8srequiredlabels
+        violation[{"msg": msg}] {
+          provided := {label | input.review.object.metadata.labels[label]}
+          required := {label | label := input.parameters.labels[_]}
+          missing := required - provided
+          count(missing) > 0
+          msg := sprintf("Missing labels: %v", [missing])
+        }` },
+          { id: 'compliance-3', titleKey: 'bestPractices.compliance.policy.item3', priority: 'important', codeExample: `# Kyverno - block privileged containers
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: disallow-privileged
+spec:
+  validationFailureAction: Enforce
+  rules:
+    - name: deny-privileged
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      validate:
+        message: "Privileged containers are not allowed"
+        pattern:
+          spec:
+            containers:
+              - securityContext:
+                  privileged: "!true"` },
+          { id: 'compliance-4', titleKey: 'bestPractices.compliance.policy.item4', priority: 'recommended', codeExample: `# Kyverno - mutate to add defaults
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: add-security-defaults
+spec:
+  rules:
+    - name: add-security-context
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      mutate:
+        patchStrategicMerge:
+          spec:
+            containers:
+              - (name): "*"
+                securityContext:
+                  runAsNonRoot: true
+                  readOnlyRootFilesystem: true
+                  allowPrivilegeEscalation: false` },
+        ],
+      },
+      {
+        id: 'compliance-audit',
+        titleKey: 'bestPractices.compliance.audit.title',
+        descKey: 'bestPractices.compliance.audit.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+          </svg>
+        ),
+        color: 'text-amber-600 dark:text-amber-400',
+        bgColor: 'bg-amber-50 dark:bg-amber-600/20',
+        iconBg: 'bg-amber-600',
+        items: [
+          { id: 'compliance-5', titleKey: 'bestPractices.compliance.audit.item1', priority: 'critical', codeExample: `# Enable audit logging in kube-apiserver
+# /etc/kubernetes/audit-policy.yaml
+apiVersion: audit.k8s.io/v1
+kind: Policy
+rules:
+  # Log pod changes at RequestResponse level
+  - level: RequestResponse
+    resources:
+      - group: ""
+        resources: ["pods"]
+  # Log secrets at Metadata level (no body)
+  - level: Metadata
+    resources:
+      - group: ""
+        resources: ["secrets"]
+  # Log all other resources at Request level
+  - level: Request
+    resources:
+      - group: ""
+      - group: "apps"
+      - group: "batch"` },
+          { id: 'compliance-6', titleKey: 'bestPractices.compliance.audit.item2', priority: 'important', codeExample: `# Forward audit logs to external system
+# kube-apiserver flags
+--audit-log-path=/var/log/kubernetes/audit.log
+--audit-log-maxage=30
+--audit-log-maxbackup=10
+--audit-log-maxsize=100
+--audit-policy-file=/etc/kubernetes/audit-policy.yaml
+
+# Or use webhook backend
+--audit-webhook-config-file=/etc/kubernetes/audit-webhook.yaml
+--audit-webhook-batch-max-wait=5s` },
+          { id: 'compliance-7', titleKey: 'bestPractices.compliance.audit.item3', priority: 'important', codeExample: `# Falco for runtime security monitoring
+# Install Falco
+helm repo add falcosecurity https://falcosecurity.github.io/charts
+helm install falco falcosecurity/falco \\
+  --set falcosidekick.enabled=true \\
+  --set falcosidekick.webui.enabled=true
+
+# Custom Falco rule
+- rule: Detect shell in container
+  desc: Alert when a shell is spawned in a container
+  condition: >
+    spawned_process and container
+    and shell_procs
+    and not known_shell_spawn_binaries
+  output: >
+    Shell spawned in container
+    (user=%user.name container=%container.name image=%container.image.repository)
+  priority: WARNING` },
+          { id: 'compliance-8', titleKey: 'bestPractices.compliance.audit.item4', priority: 'recommended' },
+        ],
+      },
+      {
+        id: 'compliance-standards',
+        titleKey: 'bestPractices.compliance.standards.title',
+        descKey: 'bestPractices.compliance.standards.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m8.9-4.414c.376.023.75.05 1.124.08 1.131.094 1.976 1.057 1.976 2.192V16.5A2.25 2.25 0 0118 18.75h-2.25m-7.5-10.5H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V18.75m-7.5-10.5h6.375c.621 0 1.125.504 1.125 1.125v9.375m-8.25-3l1.5 1.5 3-3.75" />
+          </svg>
+        ),
+        color: 'text-green-600 dark:text-green-400',
+        bgColor: 'bg-green-50 dark:bg-green-600/20',
+        iconBg: 'bg-green-600',
+        items: [
+          { id: 'compliance-9', titleKey: 'bestPractices.compliance.standards.item1', priority: 'critical', codeExample: `# Run CIS Kubernetes Benchmark with kube-bench
+# Install and run kube-bench
+kubectl apply -f https://raw.githubusercontent.com/aquasecurity/kube-bench/main/job.yaml
+
+# View results
+kubectl logs -l app=kube-bench
+
+# Or run directly on master node
+docker run --pid=host -v /etc:/etc:ro \\
+  aquasec/kube-bench:latest run --targets=master` },
+          { id: 'compliance-10', titleKey: 'bestPractices.compliance.standards.item2', priority: 'important', codeExample: `# NSA/CISA Kubernetes Hardening checklist
+# 1. Pod Security Standards
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: production
+  labels:
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted
+
+# 2. Network Policies (deny by default)
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress` },
+          { id: 'compliance-11', titleKey: 'bestPractices.compliance.standards.item3', priority: 'important', codeExample: `# PCI-DSS requirements mapping
+# Requirement 2: No vendor defaults
+# - Change default ServiceAccount tokens
+automountServiceAccountToken: false
+
+# Requirement 7: Restrict access
+# - RBAC with least privilege
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: app-reader
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "services"]
+    verbs: ["get", "list"]
+
+# Requirement 10: Track access
+# - Enable audit logging (see audit section)` },
+          { id: 'compliance-12', titleKey: 'bestPractices.compliance.standards.item4', priority: 'recommended' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'devsecops',
+    labelKey: 'bestPractices.tab.devsecops',
+    icon: (
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+    ),
+    practices: [
+      {
+        id: 'devsecops-scanning',
+        titleKey: 'bestPractices.devsecops.scanning.title',
+        descKey: 'bestPractices.devsecops.scanning.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+          </svg>
+        ),
+        color: 'text-red-600 dark:text-red-400',
+        bgColor: 'bg-red-50 dark:bg-red-600/20',
+        iconBg: 'bg-red-600',
+        items: [
+          { id: 'devsecops-1', titleKey: 'bestPractices.devsecops.scanning.item1', priority: 'critical', codeExample: `# Scan running images in your cluster
+kubectl get pods -A -o jsonpath='{range .items[*]}{.spec.containers[*].image}{"\\n"}{end}' | sort -u > images.txt
+
+# Scan each image with Trivy
+while read image; do
+  trivy image --severity HIGH,CRITICAL "$image"
+done < images.txt
+
+# Scan a specific namespace
+kubectl get pods -n production -o jsonpath='{.items[*].spec.containers[*].image}' | tr ' ' '\\n' | xargs -I {} trivy image {}` },
+          { id: 'devsecops-2', titleKey: 'bestPractices.devsecops.scanning.item2', priority: 'critical', codeExample: `# Falco rules for runtime threat detection
+# /etc/falco/falco_rules.local.yaml
+- rule: Shell Spawned in Container
+  desc: Detect shell execution in container
+  condition: >
+    spawned_process and container and shell_procs
+  output: "Shell spawned (user=%user.name container=%container.name image=%container.image.repository command=%proc.cmdline)"
+  priority: WARNING
+
+- rule: Sensitive File Access
+  desc: Detect access to sensitive files
+  condition: >
+    open_read and container and
+    fd.name in (/etc/shadow, /etc/passwd, /etc/kubernetes/admin.conf)
+  output: "Sensitive file accessed (file=%fd.name container=%container.name)"
+  priority: CRITICAL` },
+          { id: 'devsecops-3', titleKey: 'bestPractices.devsecops.scanning.item3', priority: 'important', codeExample: `# Audit cluster security with kube-bench (CIS Benchmark)
+# Run on master node
+kube-bench run --targets master
+
+# Run on worker node
+kube-bench run --targets node
+
+# Run as a Job in cluster
+kubectl apply -f https://raw.githubusercontent.com/aquasecurity/kube-bench/main/job.yaml
+kubectl logs -l app=kube-bench --tail=-1` },
+          { id: 'devsecops-4', titleKey: 'bestPractices.devsecops.scanning.item4', priority: 'recommended', codeExample: `# Validate manifests before applying
+# With kubeconform (validates against K8s schemas)
+kubeconform -strict -kubernetes-version 1.29.0 ./manifests/
+
+# With kube-score (best practices)
+kube-score score deployment.yaml
+
+# Pre-commit hook for validation
+# .pre-commit-config.yaml
+repos:
+  - repo: https://github.com/yannh/kubeconform
+    hooks:
+      - id: kubeconform
+        args: ['-strict', '-kubernetes-version', '1.29.0']` },
+        ],
+      },
+      {
+        id: 'devsecops-supplychain',
+        titleKey: 'bestPractices.devsecops.supplychain.title',
+        descKey: 'bestPractices.devsecops.supplychain.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m9.182 9.182l4.5-4.5a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
+          </svg>
+        ),
+        color: 'text-violet-600 dark:text-violet-400',
+        bgColor: 'bg-violet-50 dark:bg-violet-600/20',
+        iconBg: 'bg-violet-600',
+        items: [
+          { id: 'devsecops-5', titleKey: 'bestPractices.devsecops.supplychain.item1', priority: 'critical', codeExample: `# Kyverno policy to verify image signatures
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: verify-image-signature
+spec:
+  validationFailureAction: Enforce
+  rules:
+    - name: verify-signature
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      verifyImages:
+        - imageReferences:
+            - "myregistry.io/*"
+          attestors:
+            - entries:
+                - keyless:
+                    issuer: https://token.actions.githubusercontent.com
+                    subject: https://github.com/myorg/*` },
+          { id: 'devsecops-6', titleKey: 'bestPractices.devsecops.supplychain.item2', priority: 'critical', codeExample: `# Restrict to allowed registries only
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: allowed-registries
+spec:
+  validationFailureAction: Enforce
+  rules:
+    - name: validate-registries
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      validate:
+        message: "Images must come from approved registries"
+        pattern:
+          spec:
+            containers:
+              - image: "myregistry.io/* | gcr.io/myproject/*"
+            initContainers:
+              - image: "myregistry.io/* | gcr.io/myproject/*"` },
+          { id: 'devsecops-7', titleKey: 'bestPractices.devsecops.supplychain.item3', priority: 'important', codeExample: `# Use image digests instead of tags
+# Bad - mutable tag
+image: nginx:1.25
+
+# Good - immutable digest
+image: nginx@sha256:a484819eb60211f5299034ac80f...
+
+# Kyverno policy to require digests
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-image-digest
+spec:
+  validationFailureAction: Enforce
+  rules:
+    - name: require-digest
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      validate:
+        message: "Images must use digest (@sha256:...)"
+        pattern:
+          spec:
+            containers:
+              - image: "*@sha256:*"` },
+          { id: 'devsecops-8', titleKey: 'bestPractices.devsecops.supplychain.item4', priority: 'recommended', codeExample: `# Sigstore Policy Controller for signature verification
+# Install Policy Controller
+helm repo add sigstore https://sigstore.github.io/helm-charts
+helm install policy-controller sigstore/policy-controller \\
+  --namespace cosign-system --create-namespace
+
+# Create ClusterImagePolicy
+apiVersion: policy.sigstore.dev/v1beta1
+kind: ClusterImagePolicy
+metadata:
+  name: require-signatures
+spec:
+  images:
+    - glob: "myregistry.io/**"
+  authorities:
+    - keyless:
+        url: https://fulcio.sigstore.dev
+        identities:
+          - issuer: https://token.actions.githubusercontent.com
+            subject: https://github.com/myorg/myrepo/.github/workflows/*` },
+        ],
+      },
+      {
+        id: 'devsecops-admission',
+        titleKey: 'bestPractices.devsecops.admission.title',
+        descKey: 'bestPractices.devsecops.admission.desc',
+        icon: (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+          </svg>
+        ),
+        color: 'text-teal-600 dark:text-teal-400',
+        bgColor: 'bg-teal-50 dark:bg-teal-600/20',
+        iconBg: 'bg-teal-600',
+        items: [
+          { id: 'devsecops-9', titleKey: 'bestPractices.devsecops.admission.item1', priority: 'critical', codeExample: `# Enforce Pod Security Standards
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: production
+  labels:
+    # Enforce restricted profile
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/enforce-version: latest
+    # Warn on violations of baseline
+    pod-security.kubernetes.io/warn: baseline
+    pod-security.kubernetes.io/warn-version: latest` },
+          { id: 'devsecops-10', titleKey: 'bestPractices.devsecops.admission.item2', priority: 'important', codeExample: `# Kyverno - block latest tag
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: disallow-latest-tag
+spec:
+  validationFailureAction: Enforce
+  rules:
+    - name: require-image-tag
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      validate:
+        message: "Using 'latest' tag is not allowed"
+        pattern:
+          spec:
+            containers:
+              - image: "!*:latest"
+            initContainers:
+              - image: "!*:latest"` },
+          { id: 'devsecops-11', titleKey: 'bestPractices.devsecops.admission.item3', priority: 'important', codeExample: `# Require resource limits
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-limits
+spec:
+  validationFailureAction: Enforce
+  rules:
+    - name: require-cpu-memory-limits
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      validate:
+        message: "CPU and memory limits are required"
+        pattern:
+          spec:
+            containers:
+              - resources:
+                  limits:
+                    memory: "?*"
+                    cpu: "?*"` },
+          { id: 'devsecops-12', titleKey: 'bestPractices.devsecops.admission.item4', priority: 'recommended', codeExample: `# Dry-run mode for policy testing
+# Kyverno in audit mode
+spec:
+  validationFailureAction: Audit  # Don't block, just log
+
+# Generate policy reports
+kubectl get polr -A
+
+# View violations
+kubectl get polr -A -o jsonpath='{range .items[*]}{.metadata.name}{"\\n"}{range .results[*]}  {.rule}: {.message}{"\\n"}{end}{end}'` },
+        ],
+      },
+    ],
+  },
+];
+
+export default function BestPractices({ lang }: BestPracticesProps) {
+  const t = useTranslations(lang);
+  const [activeMainCategory, setActiveMainCategory] = useState<MainCategoryType>('cluster');
+  const [activeSubCategory, setActiveSubCategory] = useState<SubCategoryType>('operations');
+  const [expandedPractices, setExpandedPractices] = useState<string[]>([]);
+  const [expandedCode, setExpandedCode] = useState<string[]>([]);
+  const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
+  const [expandedDetails, setExpandedDetails] = useState<string[]>([]);
+
+  // Load checked items from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('bestPracticesChecked');
+    if (saved) {
+      setCheckedItems(JSON.parse(saved));
+    }
+  }, []);
+
+  // Save checked items to localStorage
+  useEffect(() => {
+    localStorage.setItem('bestPracticesChecked', JSON.stringify(checkedItems));
+  }, [checkedItems]);
+
+  const togglePractice = (practiceKey: string) => {
+    setExpandedPractices(prev =>
+      prev.includes(practiceKey) ? prev.filter(p => p !== practiceKey) : [...prev, practiceKey]
+    );
+  };
+
+  const toggleCode = (itemId: string) => {
+    setExpandedCode(prev =>
+      prev.includes(itemId) ? prev.filter(i => i !== itemId) : [...prev, itemId]
+    );
+  };
+
+  const toggleCheck = (itemId: string) => {
+    setCheckedItems(prev => ({ ...prev, [itemId]: !prev[itemId] }));
+  };
+
+  const toggleDetails = (itemId: string) => {
+    setExpandedDetails(prev =>
+      prev.includes(itemId) ? prev.filter(i => i !== itemId) : [...prev, itemId]
+    );
+  };
+
+  const getPriorityLabel = (priority: Priority) => {
+    const config = PRIORITY_CONFIG[priority];
+    if (lang === 'es') return config.labelEs;
+    if (lang === 'pt') return config.labelPt;
+    return config.label;
+  };
+
+  // Get current main category and its subcategories
+  const currentMainCategory = MAIN_CATEGORIES.find(c => c.id === activeMainCategory)!;
+  const currentSubCategories = currentMainCategory.subcategories
+    .map(id => TABS_CONFIG.find(tab => tab.id === id)!)
+    .filter(Boolean);
+  const currentTab = TABS_CONFIG.find(tab => tab.id === activeSubCategory);
+
+  // When main category changes, select first subcategory
+  const handleMainCategoryChange = (categoryId: MainCategoryType) => {
+    setActiveMainCategory(categoryId);
+    const category = MAIN_CATEGORIES.find(c => c.id === categoryId);
+    if (category && category.subcategories.length > 0) {
+      setActiveSubCategory(category.subcategories[0]);
+    }
+  };
+
+  return (
+    <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-8 2xl:px-12 3xl:px-16 py-6 sm:py-8">
+      {/* Header Section */}
+      <div className="mb-6 sm:mb-8">
+        <div className="card rounded-xl overflow-hidden border-0 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 dark:from-emerald-500/20 dark:to-teal-500/20 border border-emerald-200/50 dark:border-emerald-500/20">
+          <div className="card-body p-5 sm:p-6 lg:p-8">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-emerald-600 dark:text-emerald-400 mb-1">
+              {t('bestPractices.title')}
+            </h1>
+            <p className="text-base sm:text-lg text-neutral-600 dark:text-neutral-300">
+              {t('bestPractices.subtitle')}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Categories - Horizontal Pills */}
+      <div className="mb-6">
+        <div className="flex flex-wrap gap-2">
+          {MAIN_CATEGORIES.map(category => {
+            const isActive = activeMainCategory === category.id;
+            return (
+              <button
+                key={category.id}
+                onClick={() => handleMainCategoryChange(category.id)}
+                className={`group flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-all duration-200 ${
+                  isActive
+                    ? `bg-gradient-to-r ${category.color} text-white shadow-md`
+                    : 'bg-white dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-700 border border-neutral-200 dark:border-neutral-700'
+                }`}
+              >
+                <span className="flex-shrink-0">{category.icon}</span>
+                <span className="text-sm font-medium">{t(category.labelKey)}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Subcategories - Horizontal Pills */}
+      <div className="mb-6">
+        <div className="flex flex-wrap gap-2 p-2 bg-neutral-100 dark:bg-neutral-800 rounded-xl">
+          {currentSubCategories.map(subcat => {
+            const isActive = activeSubCategory === subcat.id;
+            const subcatItems = subcat.practices.flatMap(p => p.items);
+            const subcatChecked = subcatItems.filter(i => checkedItems[i.id]).length;
+            const subcatTotal = subcatItems.length;
+
+            return (
+              <button
+                key={subcat.id}
+                onClick={() => setActiveSubCategory(subcat.id)}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm transition-all ${
+                  isActive
+                    ? 'bg-white dark:bg-neutral-900 text-primary-600 dark:text-primary-400 shadow-md'
+                    : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-white/50 dark:hover:bg-neutral-700/50'
+                }`}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  {subcat.icon}
+                </svg>
+                <span>{t(subcat.labelKey)}</span>
+                <span className={`text-xs px-1.5 py-0.5 rounded-full ${
+                  isActive
+                    ? 'bg-primary-100 dark:bg-primary-900/50 text-primary-600 dark:text-primary-400'
+                    : 'bg-neutral-200 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-400'
+                }`}>
+                  {subcatChecked}/{subcatTotal}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Breadcrumb */}
+      <div className="mb-4 flex items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400">
+        <span>{currentMainCategory.icon}</span>
+        <span>{t(currentMainCategory.labelKey)}</span>
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+        <span className="text-neutral-700 dark:text-neutral-200 font-medium">{currentTab && t(currentTab.labelKey)}</span>
+      </div>
+
+      {/* Tab Content */}
+      {currentTab && (
+        <div className="space-y-6">
+          {currentTab.practices.map((practice) => {
+            const isExpanded = expandedPractices.includes(practice.id);
+            const practiceChecked = practice.items.filter(i => checkedItems[i.id]).length;
+            const practiceTotal = practice.items.length;
+            const practiceProgress = Math.round((practiceChecked / practiceTotal) * 100);
+
+            return (
+              <div
+                key={practice.id}
+                className="card rounded-xl overflow-hidden border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800/50 transition-all duration-300 hover:shadow-md"
+              >
+                <button
+                  className="w-full p-4 text-left transition-all duration-300"
+                  onClick={() => togglePractice(practice.id)}
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex items-start gap-3 flex-1">
+                      <div className={`w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-700/50 flex items-center justify-center flex-shrink-0 ${practice.color}`}>
+                        {practice.icon}
+                      </div>
+                      <div className="flex-1">
+                        <h4 className={`text-base font-semibold text-neutral-800 dark:text-neutral-100`}>
+                          {t(practice.titleKey)}
+                        </h4>
+                        <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-0.5">
+                          {t(practice.descKey)}
+                        </p>
+                        {/* Progress bar */}
+                        <div className="mt-2 flex items-center gap-3">
+                          <div className="flex-1 h-1.5 bg-neutral-200 dark:bg-neutral-700 rounded-full overflow-hidden max-w-xs">
+                            <div
+                              className="h-full bg-emerald-500 rounded-full transition-all duration-300"
+                              style={{ width: `${practiceProgress}%` }}
+                            />
+                          </div>
+                          <span className="text-xs font-medium text-neutral-500 dark:text-neutral-400">
+                            {practiceChecked}/{practiceTotal}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-2 rounded-lg bg-white/60 dark:bg-neutral-900/40">
+                      <svg
+                        className={`w-4 h-4 text-neutral-500 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+                  </div>
+                </button>
+
+                {isExpanded && (
+                  <div className="border-t border-neutral-200 dark:border-neutral-700 bg-white/60 dark:bg-neutral-900/30 p-4">
+                    <div className="space-y-3">
+                      {practice.items.map((item) => {
+                        const isChecked = checkedItems[item.id];
+                        const isCodeExpanded = expandedCode.includes(item.id);
+                        const isDetailsExpanded = expandedDetails.includes(item.id);
+                        const priorityConfig = PRIORITY_CONFIG[item.priority];
+                        const hasDetails = item.whyItMattersKey || item.commonMistakeKey;
+
+                        return (
+                          <div
+                            key={item.id}
+                            className={`rounded-xl border transition-all duration-200 ${
+                              isChecked
+                                ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
+                                : 'bg-white dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700'
+                            }`}
+                          >
+                            <div className="p-4">
+                              <div className="flex items-start gap-3">
+                                {/* Checkbox */}
+                                <button
+                                  onClick={() => toggleCheck(item.id)}
+                                  className={`flex-shrink-0 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all ${
+                                    isChecked
+                                      ? 'bg-green-500 border-green-500 text-white'
+                                      : 'border-neutral-300 dark:border-neutral-600 hover:border-primary-400'
+                                  }`}
+                                >
+                                  {isChecked && (
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                    </svg>
+                                  )}
+                                </button>
+
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex flex-wrap items-center gap-2 mb-1">
+                                    {/* Priority badge */}
+                                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${priorityConfig.color}`}>
+                                      <span className={`w-1.5 h-1.5 rounded-full ${priorityConfig.dot}`} />
+                                      {getPriorityLabel(item.priority)}
+                                    </span>
+                                  </div>
+                                  <p className={`text-sm leading-relaxed ${isChecked ? 'text-neutral-500 line-through' : 'text-neutral-700 dark:text-neutral-300'}`}>
+                                    {t(item.titleKey)}
+                                  </p>
+
+                                  {/* Action buttons */}
+                                  <div className="mt-2 flex flex-wrap gap-2">
+                                    {/* Details toggle (why it matters / common mistakes) */}
+                                    {hasDetails && (
+                                      <button
+                                        onClick={() => toggleDetails(item.id)}
+                                        className="inline-flex items-center gap-1.5 text-xs font-medium text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300"
+                                      >
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        {isDetailsExpanded
+                                          ? (lang === 'es' ? 'Ocultar detalles' : lang === 'pt' ? 'Ocultar detalhes' : 'Hide details')
+                                          : (lang === 'es' ? '¿Por qué importa?' : lang === 'pt' ? 'Por que importa?' : 'Why it matters?')}
+                                      </button>
+                                    )}
+                                    {/* Code example toggle */}
+                                    {item.codeExample && (
+                                      <button
+                                        onClick={() => toggleCode(item.id)}
+                                        className="inline-flex items-center gap-1.5 text-xs font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300"
+                                      >
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                                        </svg>
+                                        {isCodeExpanded ? (lang === 'es' ? 'Ocultar código' : lang === 'pt' ? 'Ocultar código' : 'Hide code') : (lang === 'es' ? 'Ver código' : lang === 'pt' ? 'Ver código' : 'Show code')}
+                                      </button>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Why it matters & Common mistakes */}
+                              {hasDetails && isDetailsExpanded && (
+                                <div className="mt-3 ml-9 space-y-3">
+                                  {item.whyItMattersKey && (
+                                    <div className="p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                                      <div className="flex items-start gap-2">
+                                        <span className="text-blue-500 mt-0.5">💡</span>
+                                        <div>
+                                          <span className="text-xs font-semibold text-blue-700 dark:text-blue-300 uppercase">
+                                            {lang === 'es' ? 'Por qué importa' : lang === 'pt' ? 'Por que importa' : 'Why it matters'}
+                                          </span>
+                                          <p className="text-sm text-blue-800 dark:text-blue-200 mt-1">
+                                            {t(item.whyItMattersKey)}
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  )}
+                                  {item.commonMistakeKey && (
+                                    <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                                      <div className="flex items-start gap-2">
+                                        <span className="text-red-500 mt-0.5">⚠️</span>
+                                        <div>
+                                          <span className="text-xs font-semibold text-red-700 dark:text-red-300 uppercase">
+                                            {lang === 'es' ? 'Error común' : lang === 'pt' ? 'Erro comum' : 'Common mistake'}
+                                          </span>
+                                          <p className="text-sm text-red-800 dark:text-red-200 mt-1">
+                                            {t(item.commonMistakeKey)}
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+
+                              {/* Code example */}
+                              {item.codeExample && isCodeExpanded && (
+                                <div className="mt-3 ml-9">
+                                  <pre className="bg-neutral-900 text-neutral-100 p-4 rounded-lg text-xs overflow-x-auto">
+                                    <code>{item.codeExample}</code>
+                                  </pre>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}

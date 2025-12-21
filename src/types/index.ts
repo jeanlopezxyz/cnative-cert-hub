@@ -11,9 +11,9 @@ import type { Question } from './quiz';
 
 export type Language = 'en' | 'es' | 'pt';
 
-export type CertificationLevel = 'entry' | 'intermediate' | 'advanced';
+export type CertificationLevel = 'entry' | 'intermediate' | 'advanced' | 'professional';
 
-export type ExamType = 'performance' | 'multiple-choice';
+export type ExamType = 'performance' | 'multiple-choice' | 'performance-based';
 
 export type CertificationCategory =
   | 'kubernetes'
@@ -95,7 +95,7 @@ export type ToolResource = StudyResource;
 /**
  * Practice/Simulator resource
  */
-export interface PracticeResource extends StudyResource {
+export interface PracticeResource extends Omit<StudyResource, 'type'> {
   isOfficial?: boolean;
   type?: 'simulator' | 'scenario' | 'lab' | 'playground';
 }

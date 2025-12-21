@@ -166,12 +166,6 @@ export const ckadResources: CertificationResources = {
       isPaid: false,
     },
     {
-      title: 'CKAD Exam Curriculum',
-      url: 'https://github.com/cncf/curriculum/blob/master/CKAD_Curriculum.pdf',
-      description: 'Official CKAD exam curriculum and objectives',
-      isPaid: false,
-    },
-    {
       title: 'kubectl Cheat Sheet',
       url: 'https://kubernetes.io/docs/reference/kubectl/cheatsheet/',
       description: 'Essential kubectl commands for the exam',
@@ -181,6 +175,12 @@ export const ckadResources: CertificationResources = {
       title: 'Kubernetes API Reference',
       url: 'https://kubernetes.io/docs/reference/kubernetes-api/',
       description: 'Complete Kubernetes API reference',
+      isPaid: false,
+    },
+    {
+      title: 'Kubernetes Tasks',
+      url: 'https://kubernetes.io/docs/tasks/',
+      description: 'Step-by-step guides for common operations',
       isPaid: false,
     },
   ],

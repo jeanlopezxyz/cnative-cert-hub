@@ -181,12 +181,6 @@ export const cnpeResources: CertificationResources = {
 
   documentation: [
     {
-      title: 'CNPE Exam Curriculum',
-      url: 'https://github.com/cncf/curriculum/blob/master/CNPE_Curriculum.pdf',
-      description: 'Official CNPE exam curriculum and domains',
-      isPaid: false,
-    },
-    {
       title: 'CNCF TAG App Delivery',
       url: 'https://tag-app-delivery.cncf.io/',
       description: 'Platform engineering resources from CNCF',

@@ -1,4 +1,5 @@
 import type { Certification } from '../../types';
+import { cnpeResources } from '../resources/cnpe';
 
 export const cnpe: Certification = {
   id: 'cnpe',
@@ -80,29 +81,7 @@ export const cnpe: Certification = {
       ],
     },
   ],
-  resources: {
-    official: 'https://www.cncf.io/training/certification/cnpe/',
-    github: [
-      'https://github.com/cncf/curriculum',
-      'https://github.com/cncf/tag-app-delivery',
-    ],
-    practice: [
-      'https://killer.sh',
-      'https://killercoda.com/playgrounds/scenario/kubernetes',
-    ],
-    courses: [
-      {
-        title: 'Platform Engineering on Kubernetes',
-        url: 'https://training.linuxfoundation.org/training/platform-engineering-on-kubernetes-lfs256/',
-        author: 'The Linux Foundation',
-        description: 'Advanced platform engineering concepts for CNPE preparation',
-        isPaid: true,
-        duration: '30 hours',
-        difficulty: 'advanced',
-        rating: 4.8,
-      },
-    ],
-  },
+  resources: cnpeResources,
   studyTimeWeeks: 10,
   passingScore: 66,
   validity: 3,
