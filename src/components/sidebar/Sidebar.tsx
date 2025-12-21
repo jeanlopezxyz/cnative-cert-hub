@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslations } from '../../i18n/utils';
 import { certifications } from '../../data/certifications';
-import { useOptimizedStorage } from '../../utils/storage';
 import { APP_CONFIG } from '../../constants';
 import {
   CERTIFICATION_CATEGORIES,
@@ -31,7 +30,6 @@ function getStoredValue<T>(key: string, defaultValue: T): T {
 
 export default function Sidebar({ lang }: SidebarProps) {
   const t = useTranslations(lang);
-  const storage = useOptimizedStorage();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [currentPath, setCurrentPath] = useState('');
   // Initialize directly from localStorage to prevent flash
@@ -55,24 +53,30 @@ export default function Sidebar({ lang }: SidebarProps) {
     }
   }, []);
 
-  // Save states
+  // Save states immediately (no batching) to persist during View Transitions
   useEffect(() => {
     if (isHydrated) {
-      storage.setBatched('sidebarCollapsed', JSON.stringify(isDesktopCollapsed));
+      try {
+        localStorage.setItem('sidebarCollapsed', JSON.stringify(isDesktopCollapsed));
+      } catch {}
     }
-  }, [isDesktopCollapsed, isHydrated, storage]);
+  }, [isDesktopCollapsed, isHydrated]);
 
   useEffect(() => {
     if (isHydrated) {
-      storage.setBatched('sidebarOpenSections', JSON.stringify(openSections));
+      try {
+        localStorage.setItem('sidebarOpenSections', JSON.stringify(openSections));
+      } catch {}
     }
-  }, [openSections, isHydrated, storage]);
+  }, [openSections, isHydrated]);
 
   useEffect(() => {
     if (isHydrated) {
-      storage.setBatched('sidebarOpenCategories', JSON.stringify(openCategories));
+      try {
+        localStorage.setItem('sidebarOpenCategories', JSON.stringify(openCategories));
+      } catch {}
     }
-  }, [openCategories, isHydrated, storage]);
+  }, [openCategories, isHydrated]);
 
   // Update current path and handle mobile state after Astro page transitions
   useEffect(() => {
