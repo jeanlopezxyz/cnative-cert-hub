@@ -1,6 +1,5 @@
 ---
-// ViewTransitions removed to prevent theme flash during navigation
-// import { ViewTransitions } from 'astro:transitions';
+import { ViewTransitions, fade } from 'astro:transitions';
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
 import { EXTERNAL_URLS, TYPOGRAPHY } from '../config/app.config';
 import { APP_CONFIG } from '../constants/index';
@@ -57,11 +56,11 @@ const hreflangUrls = {
 ---
 
 <!doctype html>
-<html lang={lang}>
+<html lang={lang} transition:animate={fade({ duration: 0 })}>
   <head>
     <meta charset="UTF-8" />
-    <!-- Theme initialization - runs on every page load -->
-    <script is:inline>
+    <!-- Theme initialization - runs on every page load/navigation -->
+    <script is:inline data-astro-rerun>
       (function() {
         var theme;
         try { theme = localStorage.getItem('theme'); } catch(e) {}
@@ -116,8 +115,8 @@ const hreflangUrls = {
     <link rel="icon" type="image/svg+xml" href={`${baseUrl}favicon.svg`} />
     <link rel="apple-touch-icon" sizes="180x180" href={`${baseUrl}apple-touch-icon.png`} />
 
-    <!-- View Transitions disabled to prevent theme flash -->
-    <!-- <ViewTransitions /> -->
+    <!-- View Transitions with instant swap -->
+    <ViewTransitions />
     
     <!-- Optimized font loading: preconnect + preload + display=swap for best performance -->
     <!-- Preconnect establishes early connections to font servers -->
@@ -131,7 +130,7 @@ const hreflangUrls = {
     <!-- Note: Astro automatically handles preloading of compiled assets -->
 
     <!-- Critical anti-flash CSS - Minimal inline styles for instant render -->
-    <style>
+    <style is:global>
       /* Theme colors - Blue-tinted neutral palette */
       :root {
         color-scheme: light dark;
@@ -150,13 +149,20 @@ const hreflangUrls = {
         color: var(--text-primary);
       }
 
-      /* COMPLETELY DISABLE View Transitions animations */
+      /* COMPLETELY DISABLE View Transitions animations - highest specificity */
       ::view-transition-group(*),
       ::view-transition-old(*),
       ::view-transition-new(*) {
         animation: none !important;
         animation-duration: 0s !important;
         animation-delay: 0s !important;
+      }
+
+      /* Override Astro's generated transition animations */
+      ::view-transition-old(astro-smooz4hq-1),
+      ::view-transition-new(astro-smooz4hq-1) {
+        animation: none !important;
+        animation-duration: 0s !important;
       }
 
       /* Set explicit background during view transition - use dark color by default */
@@ -167,20 +173,44 @@ const hreflangUrls = {
       }
 
       /* Override for light mode */
-      :root:not(.dark) ::view-transition,
-      :root:not(.dark) ::view-transition-group(root),
-      :root:not(.dark) ::view-transition-image-pair(root) {
+      html:not(.dark) ::view-transition,
+      html:not(.dark) ::view-transition-group(root),
+      html:not(.dark) ::view-transition-image-pair(root),
+      html.light ::view-transition,
+      html.light ::view-transition-group(root),
+      html.light ::view-transition-image-pair(root) {
         background-color: #E2E8F0 !important; /* light mode color */
       }
 
       /* Hide old snapshot immediately, show new one instantly */
       ::view-transition-old(root) {
         display: none !important;
+        opacity: 0 !important;
       }
       ::view-transition-new(root) {
         animation: none !important;
+        opacity: 1 !important;
       }
     </style>
+
+    <!-- Apply theme before View Transition swap to prevent flash -->
+    <script is:inline>
+      (function() {
+        function getTheme() {
+          try {
+            var t = localStorage.getItem('theme');
+            if (t === 'dark' || t === 'light') return t;
+          } catch(e) {}
+          return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+
+        document.addEventListener('astro:before-swap', function(event) {
+          var theme = getTheme();
+          event.newDocument.documentElement.classList.remove('dark', 'light');
+          event.newDocument.documentElement.classList.add(theme);
+        });
+      })();
+    </script>
 
     <!-- Structured Data - JSON-LD -->
     <script type="application/ld+json" set:html={JSON.stringify({
