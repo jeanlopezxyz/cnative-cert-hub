@@ -3053,9 +3053,9 @@ export default function BestPractices({ lang }: BestPracticesProps) {
                               {/* Code example */}
                               {item.codeExample && isCodeExpanded && (
                                 <div className="mt-3">
-                                  <div className="rounded-lg overflow-hidden border border-neutral-700 dark:border-neutral-600">
+                                  <div className="rounded-lg overflow-hidden">
                                     {/* Header bar */}
-                                    <div className="flex items-center justify-between px-4 py-2 bg-neutral-800 dark:bg-neutral-900 border-b border-neutral-700">
+                                    <div className="flex items-center justify-between px-4 py-2 bg-[#282c34]">
                                       <div className="flex items-center gap-2">
                                         <div className="flex gap-1.5">
                                           <div className="w-3 h-3 rounded-full bg-red-500"></div>
@@ -3086,7 +3086,9 @@ export default function BestPractices({ lang }: BestPracticesProps) {
                                         padding: '1rem',
                                         fontSize: '0.75rem',
                                         lineHeight: '1.5',
-                                        background: '#1a1a2e',
+                                        background: '#282c34',
+                                        boxShadow: 'none',
+                                        border: 'none',
                                       }}
                                       showLineNumbers={false}
                                     >
