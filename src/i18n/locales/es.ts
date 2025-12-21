@@ -522,8 +522,6 @@ export const es = {
   'aria.toggleCategory': 'Alternar categoría %s',
   'search.placeholder': 'Buscar certificaciones',
   'search.results': 'Resultados',
-  'search.navigate': 'Navegar',
-  'search.select': 'Seleccionar',
 
   // Error Boundary
   'error.somethingWentWrong': 'Algo salió mal',

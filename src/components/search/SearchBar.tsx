@@ -576,16 +576,6 @@ export default function SearchBar({ lang }: SearchBarProps) {
                 </div>
               ))}
             </div>
-
-            {/* Footer hint */}
-            <div className="px-4 py-2 bg-neutral-50 dark:bg-neutral-900/50 border-t border-neutral-200 dark:border-neutral-700">
-              <p className="text-[10px] text-neutral-400 dark:text-neutral-500 flex items-center gap-2">
-                <kbd className="px-1.5 py-0.5 bg-neutral-200 dark:bg-neutral-700 rounded text-neutral-600 dark:text-neutral-400 font-mono">↑↓</kbd>
-                <span>{t('search.navigate')}</span>
-                <kbd className="px-1.5 py-0.5 bg-neutral-200 dark:bg-neutral-700 rounded text-neutral-600 dark:text-neutral-400 font-mono">↵</kbd>
-                <span>{t('search.select')}</span>
-              </p>
-            </div>
           </div>
         )}
 
