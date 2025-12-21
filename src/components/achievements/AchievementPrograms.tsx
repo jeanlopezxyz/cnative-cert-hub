@@ -58,7 +58,7 @@ export default function AchievementPrograms({ lang }: AchievementProgramsProps) 
               href={program.href}
               className={`group relative ${program.bgColor} rounded-xl p-5 flex overflow-hidden transition-all duration-200 hover:scale-[1.02]`}
             >
-              <div className="flex flex-col w-full relative z-10">
+              <div className="flex flex-col w-full h-full relative z-10">
                 <h3 className={`text-lg font-bold mb-1 ${program.textColor}`}>
                   {program.title}
                 </h3>
@@ -66,8 +66,11 @@ export default function AchievementPrograms({ lang }: AchievementProgramsProps) 
                   {program.description}
                 </p>
 
-                {/* Button */}
-                <div className="mt-3">
+                {/* Spacer to push button to bottom */}
+                <div className="flex-1" />
+
+                {/* Button - aligned to bottom right */}
+                <div className="mt-3 flex justify-end">
                   <span className={`inline-flex items-center gap-1.5 text-sm font-medium ${program.textColor}`}>
                     {t('certifications.card.viewDetails')}
                     <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
