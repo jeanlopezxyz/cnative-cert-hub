@@ -58,8 +58,8 @@ export const es = {
   'achievements.golden.shortDesc': 'Completa las 15 certificaciones cloud native',
   'achievements.golden.progress': 'Certificaciones Completadas',
   'achievements.golden.required': 'Todas las Certificaciones CNCF + LFCS',
-  'achievements.kubestronaut.requirements': 'Requisitos del Programa',
-  'achievements.kubestronaut.benefits': 'Beneficios del Programa',
+  'achievements.kubestronaut.requirements': 'Requisitos',
+  'achievements.kubestronaut.benefits': 'Beneficios',
   'achievements.kubestronaut.requiredCerts': 'Certificaciones Requeridas',
   'achievements.kubestronaut.note': 'Importante:',
   'achievements.kubestronaut.cksNote':
@@ -87,8 +87,8 @@ export const es = {
   'achievements.kubestronaut.ctaButton': 'Comenzar con KCNA',
   'achievements.kubestronaut.heroCta': 'Comienza tu camino',
   'achievements.kubestronaut.heroCtaSecondary': 'Programa Oficial',
-  'achievements.golden.requirements': 'Requisitos del Programa',
-  'achievements.golden.benefits': 'Beneficios del Programa',
+  'achievements.golden.requirements': 'Requisitos',
+  'achievements.golden.benefits': 'Beneficios',
   'achievements.golden.how': 'Camino hacia Golden Kubestronaut',
   'achievements.golden.upcomingTitle': 'Aviso de Actualización del Programa',
   'achievements.golden.upcomingDesc': 'A partir del 1 de marzo de 2026, CNPE (Certified Cloud Native Platform Engineer) se añadirá como requisito para el estatus Golden Kubestronaut, aumentando el total a 16 certificaciones. Los Golden Kubestronauts actuales conservan su estatus de por vida.',
@@ -828,12 +828,12 @@ export const es = {
   'bestPractices.tab.gitops': 'GitOps & CI/CD',
 
   // Best Practices Main Categories
-  'bestPractices.category.cluster': 'Cluster',
-  'bestPractices.category.security': 'Seguridad',
-  'bestPractices.category.workloads': 'Cargas de Trabajo',
+  'bestPractices.category.infrastructure': 'Infraestructura',
+  'bestPractices.category.applications': 'Aplicaciones',
   'bestPractices.category.networking': 'Redes',
-  'bestPractices.category.data': 'Datos',
-  'bestPractices.category.deployment': 'Despliegue',
+  'bestPractices.category.security': 'Seguridad',
+  'bestPractices.category.observability': 'Observabilidad',
+  'bestPractices.category.cicd': 'CI/CD',
 
   // Containerization Tab
   'bestPractices.containers.images.title': 'Imágenes de Contenedor',
