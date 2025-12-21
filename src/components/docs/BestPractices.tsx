@@ -3050,10 +3050,36 @@ export default function BestPractices({ lang }: BestPracticesProps) {
 
                               {/* Code example */}
                               {item.codeExample && isCodeExpanded && (
-                                <div className="mt-3 ml-9">
-                                  <pre className="bg-neutral-900 text-neutral-100 p-4 rounded-lg text-xs overflow-x-auto">
-                                    <code>{item.codeExample}</code>
-                                  </pre>
+                                <div className="mt-3">
+                                  <div className="rounded-lg overflow-hidden border border-neutral-700 dark:border-neutral-600 shadow-lg">
+                                    {/* Header bar */}
+                                    <div className="flex items-center justify-between px-4 py-2 bg-neutral-800 dark:bg-neutral-900 border-b border-neutral-700">
+                                      <div className="flex items-center gap-2">
+                                        <div className="flex gap-1.5">
+                                          <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                                          <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                          <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                                        </div>
+                                        <span className="text-xs text-neutral-400 ml-2 font-mono">YAML / Bash</span>
+                                      </div>
+                                      <button
+                                        onClick={() => {
+                                          navigator.clipboard.writeText(item.codeExample || '');
+                                        }}
+                                        className="flex items-center gap-1.5 px-2 py-1 text-xs text-neutral-400 hover:text-white hover:bg-neutral-700 rounded transition-colors"
+                                        title={lang === 'es' ? 'Copiar código' : lang === 'pt' ? 'Copiar código' : 'Copy code'}
+                                      >
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                        </svg>
+                                        {lang === 'es' ? 'Copiar' : lang === 'pt' ? 'Copiar' : 'Copy'}
+                                      </button>
+                                    </div>
+                                    {/* Code content */}
+                                    <pre className="bg-neutral-900 dark:bg-neutral-950 text-neutral-100 p-4 text-xs overflow-x-auto">
+                                      <code className="font-mono leading-relaxed">{item.codeExample}</code>
+                                    </pre>
+                                  </div>
                                 </div>
                               )}
                             </div>
