@@ -20,18 +20,18 @@ export default function AchievementPrograms({ lang }: AchievementProgramsProps) 
       title: t('achievements.kubestronaut.title'),
       description: t('achievements.kubestronaut.description'),
       href: `${basePath}${langPath}/achievements/kubestronaut`,
-      bgColor: 'bg-cyan-50 dark:bg-cyan-600/20',
-      textColor: 'text-cyan-700 dark:text-cyan-300',
-      subtextColor: 'text-cyan-600/80 dark:text-cyan-400/80',
+      bgColor: 'bg-white dark:bg-neutral-800',
+      textColor: 'text-cyan-600 dark:text-cyan-400',
+      subtextColor: 'text-neutral-600 dark:text-neutral-400',
     },
     {
       id: 'golden',
       title: t('achievements.golden.title'),
       description: t('achievements.golden.description'),
       href: `${basePath}${langPath}/achievements/golden-kubestronaut`,
-      bgColor: 'bg-amber-50 dark:bg-amber-600/20',
-      textColor: 'text-amber-700 dark:text-amber-300',
-      subtextColor: 'text-amber-600/80 dark:text-amber-400/80',
+      bgColor: 'bg-white dark:bg-neutral-800',
+      textColor: 'text-amber-600 dark:text-amber-400',
+      subtextColor: 'text-neutral-600 dark:text-neutral-400',
     },
   ];
 
@@ -42,10 +42,10 @@ export default function AchievementPrograms({ lang }: AchievementProgramsProps) 
         <div className="bg-cyan-50 dark:bg-cyan-900/30 rounded-xl p-5 sm:p-6">
           {/* Section Header */}
           <div className="mb-6">
-            <h2 className="text-xl sm:text-2xl font-bold mb-2 text-neutral-900 dark:text-white">
+            <h2 className="text-xl sm:text-2xl font-bold mb-2 text-cyan-600 dark:text-cyan-400">
               {t('achievements.programs.title')}
             </h2>
-            <p className="text-sm text-neutral-600 dark:text-neutral-400">
+            <p className="text-sm text-cyan-600/80 dark:text-cyan-400/80">
               {t('achievements.programs.subtitle')}
             </p>
           </div>
