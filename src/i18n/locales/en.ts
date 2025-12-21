@@ -819,7 +819,7 @@ export const en = {
   // Best Practices Tabs
   'bestPractices.tab.containerization': 'Containerization',
   'bestPractices.tab.development': 'Development',
-  'bestPractices.tab.security': 'Security',
+  'bestPractices.tab.accesscontrol': 'Access Control',
   'bestPractices.tab.networking': 'Networking',
   'bestPractices.tab.observability': 'Observability',
   'bestPractices.tab.storage': 'Storage & Backup',

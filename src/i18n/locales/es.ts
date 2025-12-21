@@ -821,7 +821,7 @@ export const es = {
   // Best Practices Tabs
   'bestPractices.tab.containerization': 'Contenedores',
   'bestPractices.tab.development': 'Desarrollo',
-  'bestPractices.tab.security': 'Seguridad',
+  'bestPractices.tab.accesscontrol': 'Control de Acceso',
   'bestPractices.tab.networking': 'Redes',
   'bestPractices.tab.observability': 'Observabilidad',
   'bestPractices.tab.storage': 'Almacenamiento',

@@ -12,7 +12,7 @@ interface BestPracticesProps {
 }
 
 type MainCategoryType = 'infrastructure' | 'applications' | 'networking' | 'security' | 'observability' | 'cicd';
-type SubCategoryType = 'containerization' | 'development' | 'security' | 'networking' | 'observability' | 'storage' | 'gitops' | 'highavailability' | 'costoptimization' | 'servicemesh' | 'operations' | 'multitenancy' | 'stateful' | 'compliance' | 'devsecops';
+type SubCategoryType = 'containerization' | 'development' | 'accesscontrol' | 'networking' | 'observability' | 'storage' | 'gitops' | 'highavailability' | 'costoptimization' | 'servicemesh' | 'operations' | 'multitenancy' | 'stateful' | 'compliance' | 'devsecops';
 type Priority = 'critical' | 'important' | 'recommended';
 
 interface BestPracticeItem {
@@ -112,7 +112,7 @@ const MAIN_CATEGORIES: MainCategoryConfig[] = [
     labelKey: 'bestPractices.category.security',
     icon: CategoryIcons.security,
     color: 'from-red-500 to-red-600',
-    subcategories: ['security', 'compliance', 'devsecops'],
+    subcategories: ['accesscontrol', 'compliance', 'devsecops'],
   },
   {
     id: 'observability',
@@ -387,8 +387,8 @@ spec:
     ],
   },
   {
-    id: 'security',
-    labelKey: 'bestPractices.tab.security',
+    id: 'accesscontrol',
+    labelKey: 'bestPractices.tab.accesscontrol',
     icon: (
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
     ),
