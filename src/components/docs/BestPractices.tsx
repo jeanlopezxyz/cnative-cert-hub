@@ -3053,7 +3053,7 @@ export default function BestPractices({ lang }: BestPracticesProps) {
                               {/* Code example */}
                               {item.codeExample && isCodeExpanded && (
                                 <div className="mt-3">
-                                  <div className="rounded-lg overflow-hidden border border-neutral-700 dark:border-neutral-600 shadow-lg">
+                                  <div className="rounded-lg overflow-hidden border border-neutral-700 dark:border-neutral-600">
                                     {/* Header bar */}
                                     <div className="flex items-center justify-between px-4 py-2 bg-neutral-800 dark:bg-neutral-900 border-b border-neutral-700">
                                       <div className="flex items-center gap-2">
