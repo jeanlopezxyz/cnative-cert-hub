@@ -36,7 +36,7 @@ export default function Sidebar({ lang }: SidebarProps) {
   const [currentPath, setCurrentPath] = useState('');
   // Initialize directly from localStorage to prevent flash
   const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(() =>
-    getStoredValue('sidebarCollapsed', 'false') === 'true'
+    getStoredValue('sidebarCollapsed', false) === true
   );
   const [isHydrated, setIsHydrated] = useState(false);
   const [openSections, setOpenSections] = useState<string[]>(() =>
@@ -58,7 +58,7 @@ export default function Sidebar({ lang }: SidebarProps) {
   // Save states
   useEffect(() => {
     if (isHydrated) {
-      storage.setBatched('sidebarCollapsed', isDesktopCollapsed.toString());
+      storage.setBatched('sidebarCollapsed', JSON.stringify(isDesktopCollapsed));
     }
   }, [isDesktopCollapsed, isHydrated, storage]);
 
