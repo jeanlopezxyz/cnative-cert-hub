@@ -30,7 +30,7 @@ export default function CertificationCard({
     >
       {/* WowDash Card Style - no border, rounded-xl, shadow on hover */}
       <div className={`card h-full rounded-xl overflow-hidden border-0 ${colors.bg}`}>
-        <div className="card-body p-4 sm:p-5">
+        <div className="card-body p-4 sm:p-5 flex flex-col h-full">
           {/* Icon */}
           <div className={`w-10 h-10 sm:w-12 sm:h-12 inline-flex items-center justify-center ${colors.icon} text-white mb-3 rounded-xl`}>
             <svg className="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -44,13 +44,18 @@ export default function CertificationCard({
             {cert.name}
           </p>
 
-          {/* Read More Link */}
-          <span className={`btn ${colors.text} hover:underline px-0 py-0 mt-auto inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium`}>
-            {t('certifications.card.viewDetails')}
-            <svg className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </span>
+          {/* Spacer to push button to bottom */}
+          <div className="flex-1" />
+
+          {/* Read More Link - aligned to bottom right */}
+          <div className="flex justify-end">
+            <span className={`btn ${colors.text} hover:underline px-0 py-0 inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium`}>
+              {t('certifications.card.viewDetails')}
+              <svg className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </span>
+          </div>
         </div>
       </div>
     </a>
