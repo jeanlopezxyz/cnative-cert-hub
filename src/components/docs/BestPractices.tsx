@@ -2798,9 +2798,24 @@ export default function BestPractices({ lang }: BestPracticesProps) {
         </p>
       </div>
 
-      {/* Main Categories - Horizontal Pills */}
-      <div className="mb-6">
-        <div className="flex flex-wrap gap-2">
+      {/* Main Categories - Dropdown on mobile, Pills on desktop */}
+      <div className="mb-4">
+        {/* Mobile: Dropdown */}
+        <div className="sm:hidden">
+          <select
+            value={activeMainCategory}
+            onChange={(e) => handleMainCategoryChange(e.target.value as MainCategoryType)}
+            className="w-full px-4 py-3 rounded-lg bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-white font-medium text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+          >
+            {MAIN_CATEGORIES.map(category => (
+              <option key={category.id} value={category.id}>
+                {t(category.labelKey)}
+              </option>
+            ))}
+          </select>
+        </div>
+        {/* Desktop: Pills */}
+        <div className="hidden sm:flex flex-wrap gap-2">
           {MAIN_CATEGORIES.map(category => {
             const isActive = activeMainCategory === category.id;
             return (
@@ -2821,9 +2836,9 @@ export default function BestPractices({ lang }: BestPracticesProps) {
         </div>
       </div>
 
-      {/* Subcategories - Horizontal Pills */}
-      <div className="mb-6">
-        <div className="flex flex-wrap gap-2 p-2 bg-neutral-100 dark:bg-neutral-800 rounded-xl">
+      {/* Subcategories - Horizontal scroll on mobile, wrap on desktop */}
+      <div className="mb-4">
+        <div className="flex gap-2 p-2 bg-neutral-100 dark:bg-neutral-800 rounded-xl overflow-x-auto sm:flex-wrap scrollbar-hide">
           {currentSubCategories.map(subcat => {
             const isActive = activeSubCategory === subcat.id;
 
@@ -2831,13 +2846,13 @@ export default function BestPractices({ lang }: BestPracticesProps) {
               <button
                 key={subcat.id}
                 onClick={() => setActiveSubCategory(subcat.id)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm transition-all ${
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm transition-all whitespace-nowrap flex-shrink-0 ${
                   isActive
                     ? 'bg-white dark:bg-neutral-900 text-primary-600 dark:text-primary-400 shadow-md'
                     : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-white/50 dark:hover:bg-neutral-700/50'
                 }`}
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   {subcat.icon}
                 </svg>
                 <span>{t(subcat.labelKey)}</span>
@@ -2847,8 +2862,8 @@ export default function BestPractices({ lang }: BestPracticesProps) {
         </div>
       </div>
 
-      {/* Breadcrumb */}
-      <div className="mb-4 flex items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400">
+      {/* Breadcrumb - hidden on mobile */}
+      <div className="hidden sm:flex mb-4 items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400">
         <span>{currentMainCategory.icon}</span>
         <span>{t(currentMainCategory.labelKey)}</span>
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
