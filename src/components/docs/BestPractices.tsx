@@ -2744,6 +2744,7 @@ export default function BestPractices({ lang }: BestPracticesProps) {
   const [expandedPractices, setExpandedPractices] = useState<string[]>([]);
   const [expandedCode, setExpandedCode] = useState<string[]>([]);
   const [expandedDetails, setExpandedDetails] = useState<string[]>([]);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const togglePractice = (practiceKey: string) => {
     setExpandedPractices(prev =>
@@ -2800,19 +2801,56 @@ export default function BestPractices({ lang }: BestPracticesProps) {
 
       {/* Main Categories - Dropdown on mobile, Pills on desktop */}
       <div className="mb-4">
-        {/* Mobile: Dropdown */}
-        <div className="sm:hidden">
-          <select
-            value={activeMainCategory}
-            onChange={(e) => handleMainCategoryChange(e.target.value as MainCategoryType)}
-            className="w-full px-4 py-3 rounded-lg bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-white font-medium text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+        {/* Mobile: Custom Dropdown */}
+        <div className="sm:hidden relative">
+          <button
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            className={`w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-gradient-to-r ${currentMainCategory.color} text-white font-medium text-sm shadow-md transition-all duration-200`}
           >
-            {MAIN_CATEGORIES.map(category => (
-              <option key={category.id} value={category.id}>
-                {t(category.labelKey)}
-              </option>
-            ))}
-          </select>
+            <div className="flex items-center gap-3">
+              <span className="flex-shrink-0">{currentMainCategory.icon}</span>
+              <span>{t(currentMainCategory.labelKey)}</span>
+            </div>
+            <svg
+              className={`w-5 h-5 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          {isDropdownOpen && (
+            <div className="absolute z-50 mt-2 w-full rounded-xl bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 shadow-lg overflow-hidden">
+              {MAIN_CATEGORIES.map(category => {
+                const isActive = activeMainCategory === category.id;
+                return (
+                  <button
+                    key={category.id}
+                    onClick={() => {
+                      handleMainCategoryChange(category.id);
+                      setIsDropdownOpen(false);
+                    }}
+                    className={`w-full flex items-center gap-3 px-4 py-3 text-left text-sm font-medium transition-colors ${
+                      isActive
+                        ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400'
+                        : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-700/50'
+                    }`}
+                  >
+                    <span className={`flex-shrink-0 ${isActive ? 'text-primary-500' : 'text-neutral-400'}`}>
+                      {category.icon}
+                    </span>
+                    <span>{t(category.labelKey)}</span>
+                    {isActive && (
+                      <svg className="w-4 h-4 ml-auto text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
         {/* Desktop: Pills */}
         <div className="hidden sm:flex flex-wrap gap-2">
