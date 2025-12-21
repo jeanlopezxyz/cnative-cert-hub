@@ -4,6 +4,8 @@
  */
 
 import React, { useState } from 'react';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import type { Language } from '../../types';
 import { useTranslations } from '../../i18n/utils';
 
@@ -3075,10 +3077,21 @@ export default function BestPractices({ lang }: BestPracticesProps) {
                                         {lang === 'es' ? 'Copiar' : lang === 'pt' ? 'Copiar' : 'Copy'}
                                       </button>
                                     </div>
-                                    {/* Code content */}
-                                    <pre className="bg-neutral-900 dark:bg-neutral-950 text-neutral-100 p-4 text-xs overflow-x-auto">
-                                      <code className="font-mono leading-relaxed">{item.codeExample}</code>
-                                    </pre>
+                                    {/* Code content with syntax highlighting */}
+                                    <SyntaxHighlighter
+                                      language="yaml"
+                                      style={oneDark}
+                                      customStyle={{
+                                        margin: 0,
+                                        padding: '1rem',
+                                        fontSize: '0.75rem',
+                                        lineHeight: '1.5',
+                                        background: '#1a1a2e',
+                                      }}
+                                      showLineNumbers={false}
+                                    >
+                                      {item.codeExample}
+                                    </SyntaxHighlighter>
                                   </div>
                                 </div>
                               )}
