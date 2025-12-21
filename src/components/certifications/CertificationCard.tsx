@@ -40,16 +40,9 @@ export default function CertificationCard({
 
           {/* Acronym & Name */}
           <h6 className={`text-lg font-bold mb-1 ${colors.text}`}>{cert.acronym}</h6>
-          <p className="text-neutral-600 dark:text-neutral-300 text-sm mb-3 line-clamp-2 min-h-[40px]">
+          <p className="text-neutral-600 dark:text-neutral-300 text-sm mb-4 line-clamp-2 min-h-[40px]">
             {cert.name}
           </p>
-
-          {/* Level badge */}
-          <div className="mb-4">
-            <span className={`text-xs px-2.5 py-1 rounded-md font-medium ${colors.text} bg-white/60 dark:bg-neutral-900/40`}>
-              {t(`certifications.level.${cert.level}`)}
-            </span>
-          </div>
 
           {/* Read More Link */}
           <span className={`btn ${colors.text} hover:underline px-0 py-0 mt-auto inline-flex items-center gap-2 text-sm font-medium`}>
