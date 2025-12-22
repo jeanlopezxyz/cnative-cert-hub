@@ -550,44 +550,46 @@ export default function CertificationStudyGuide({
                         className="w-full p-4 text-left transition-all duration-300"
                         onClick={() => toggleExpandDomain(domain.name)}
                       >
-                        <div className="flex items-center justify-between gap-3">
-                          <div className="flex items-center gap-3 flex-1 min-w-0">
-                            {/* Domain Number */}
-                            <div className={`w-10 h-10 rounded-lg ${colors.icon} flex items-center justify-center text-white text-base font-bold flex-shrink-0`}>
-                              {index + 1}
-                            </div>
-
-                            <div className="flex-1 min-w-0">
-                              <h4 className={`text-base font-semibold ${colors.text} transition-colors truncate`}>
-                                {domain.name}
-                              </h4>
-                            </div>
+                        <div className="flex items-start sm:items-center gap-3">
+                          {/* Domain Number */}
+                          <div className={`w-10 h-10 rounded-lg ${colors.icon} flex items-center justify-center text-white text-base font-bold flex-shrink-0`}>
+                            {index + 1}
                           </div>
 
-                          {/* Right Side - Info Pills + Arrow */}
-                          <div className="flex items-center gap-2 flex-shrink-0">
-                            <span className={`inline-flex items-center px-2 py-0.5 ${colors.badge} text-base font-medium rounded`}>
-                              {domain.weight}%
-                            </span>
-                            <span className="inline-flex items-center px-2 py-0.5 bg-white/60 dark:bg-neutral-900/40 text-neutral-500 dark:text-neutral-400 text-base rounded">
-                              {domain.topics.length} {t('certification.topics')}
-                            </span>
-                            <div className="p-1.5 rounded-lg bg-white/60 dark:bg-neutral-900/40 transition-colors">
-                              <svg
-                                className={`w-3.5 h-3.5 text-neutral-500 dark:text-neutral-400 transition-transform duration-300 ${
-                                  expandedDomains.includes(domain.name) ? 'rotate-180' : ''
-                                }`}
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M19 9l-7 7-7-7"
-                                />
-                              </svg>
+                          {/* Content - stacks on mobile */}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                              {/* Domain Name */}
+                              <h4 className={`text-base font-semibold ${colors.text} transition-colors`}>
+                                {domain.name}
+                              </h4>
+
+                              {/* Info Pills + Arrow */}
+                              <div className="flex items-center gap-2 flex-shrink-0">
+                                <span className={`inline-flex items-center px-2 py-0.5 ${colors.badge} text-base font-medium rounded`}>
+                                  {domain.weight}%
+                                </span>
+                                <span className="inline-flex items-center px-2 py-0.5 bg-white/60 dark:bg-neutral-900/40 text-neutral-500 dark:text-neutral-400 text-base rounded">
+                                  {domain.topics.length} {t('certification.topics')}
+                                </span>
+                                <div className="p-1.5 rounded-lg bg-white/60 dark:bg-neutral-900/40 transition-colors">
+                                  <svg
+                                    className={`w-3.5 h-3.5 text-neutral-500 dark:text-neutral-400 transition-transform duration-300 ${
+                                      expandedDomains.includes(domain.name) ? 'rotate-180' : ''
+                                    }`}
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M19 9l-7 7-7-7"
+                                    />
+                                  </svg>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>
