@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import html2canvas from 'html2canvas';
 import { useTranslations } from '../../i18n/utils';
 import type { Language } from '../../types';
 import { useOptimizedStorage } from '../../utils/storage';
@@ -50,6 +51,8 @@ export default function SimpleQuestionSimulator({
 
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+  const resultsRef = useRef<HTMLDivElement>(null);
 
   // Load saved state
   useEffect(() => {
@@ -142,46 +145,107 @@ export default function SimpleQuestionSimulator({
     return `${status} - I scored ${score}% (${correct}/${questions.length}) on the ${certificationId.toUpperCase()} Practice Quiz!\n\n🎯 Test your knowledge: https://cncf-certification-hub.pages.dev/${lang}/certifications/${certificationId}\n\n#CloudNative #CNCF #${certificationId.toUpperCase()} #Kubernetes`;
   };
 
-  const handleNativeShare = async () => {
-    const shareText = getShareText();
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: `${certificationId.toUpperCase()} Quiz Results`,
-          text: shareText,
-          url: `https://cncf-certification-hub.pages.dev/${lang}/certifications/${certificationId}`,
-        });
-      } catch (error) {
-        // User cancelled or error occurred
-        setShowShareMenu(true);
-      }
-    } else {
-      setShowShareMenu(true);
+  const generateResultImage = async (): Promise<Blob | null> => {
+    if (!resultsRef.current) return null;
+
+    try {
+      setIsGeneratingImage(true);
+      const canvas = await html2canvas(resultsRef.current, {
+        backgroundColor: '#ffffff',
+        scale: 2,
+        logging: false,
+        useCORS: true,
+      });
+
+      return new Promise((resolve) => {
+        canvas.toBlob((blob) => {
+          setIsGeneratingImage(false);
+          resolve(blob);
+        }, 'image/png', 1.0);
+      });
+    } catch (error) {
+      logger.warn('Failed to generate image:', error);
+      setIsGeneratingImage(false);
+      return null;
     }
   };
 
-  const shareToWhatsApp = () => {
+  const handleNativeShare = async () => {
+    const imageBlob = await generateResultImage();
+    const shareText = getShareText();
+
+    if (navigator.share && imageBlob) {
+      try {
+        const file = new File([imageBlob], `${certificationId}-quiz-result.png`, { type: 'image/png' });
+
+        // Check if we can share files
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            title: `${certificationId.toUpperCase()} Quiz Results`,
+            text: shareText,
+            files: [file],
+          });
+          return;
+        }
+      } catch (error) {
+        // User cancelled or error occurred, fall through to menu
+      }
+    }
+    setShowShareMenu(true);
+  };
+
+  const downloadImage = async () => {
+    const imageBlob = await generateResultImage();
+    if (imageBlob) {
+      const url = URL.createObjectURL(imageBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${certificationId}-quiz-result.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  };
+
+  const shareToWhatsApp = async () => {
+    // Download image first, then open WhatsApp
+    await downloadImage();
     const text = encodeURIComponent(getShareText());
     window.open(`https://wa.me/?text=${text}`, '_blank');
   };
 
-  const shareToLinkedIn = () => {
+  const shareToLinkedIn = async () => {
+    await downloadImage();
     const url = encodeURIComponent(`https://cncf-certification-hub.pages.dev/${lang}/certifications/${certificationId}`);
     window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
   };
 
-  const shareToTwitter = () => {
+  const shareToTwitter = async () => {
+    await downloadImage();
     const text = encodeURIComponent(getShareText());
     window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
   };
 
-  const copyToClipboard = async () => {
+  const copyImageToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(getShareText());
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      const imageBlob = await generateResultImage();
+      if (imageBlob) {
+        await navigator.clipboard.write([
+          new ClipboardItem({ 'image/png': imageBlob })
+        ]);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      }
     } catch (error) {
-      logger.warn('Failed to copy to clipboard:', error);
+      // Fallback: copy text if image copy fails
+      try {
+        await navigator.clipboard.writeText(getShareText());
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (e) {
+        logger.warn('Failed to copy:', e);
+      }
     }
   };
 
@@ -309,64 +373,76 @@ export default function SimpleQuestionSimulator({
 
     return (
       <div className="space-y-4">
-        {/* Result Header */}
-        <div className={`rounded-2xl overflow-hidden ${
-          passed
-            ? 'bg-gradient-to-br from-emerald-500 to-teal-600'
-            : 'bg-gradient-to-br from-rose-500 to-red-600'
-        }`}>
-          <div className="p-6 text-white text-center">
-            <div className={`w-20 h-20 mx-auto mb-4 rounded-2xl flex items-center justify-center ${
-              passed ? 'bg-white/20' : 'bg-white/20'
-            }`}>
-              {passed ? (
-                <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                </svg>
-              ) : (
-                <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              )}
+        {/* Shareable Result Card */}
+        <div ref={resultsRef} className="space-y-4 p-4 bg-white dark:bg-neutral-900 rounded-2xl">
+          {/* Result Header */}
+          <div className={`rounded-2xl overflow-hidden ${
+            passed
+              ? 'bg-gradient-to-br from-emerald-500 to-teal-600'
+              : 'bg-gradient-to-br from-rose-500 to-red-600'
+          }`}>
+            <div className="p-6 text-white text-center">
+              {/* Certification Badge */}
+              <div className="text-xs font-bold uppercase tracking-wider opacity-80 mb-3">
+                {certificationId.toUpperCase()} Practice Quiz
+              </div>
+              <div className={`w-20 h-20 mx-auto mb-4 rounded-2xl flex items-center justify-center ${
+                passed ? 'bg-white/20' : 'bg-white/20'
+              }`}>
+                {passed ? (
+                  <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                  </svg>
+                ) : (
+                  <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                )}
+              </div>
+              <h4 className="text-xl font-bold mb-2">{t('quiz.quizComplete')}</h4>
+              <div className="text-5xl font-black mb-2">{score}%</div>
+              <p className="text-white/80 font-medium">
+                {passed ? t('quiz.passed') : t('quiz.failed')} ({t('quiz.threshold')}: 75%)
+              </p>
             </div>
-            <h4 className="text-xl font-bold mb-2">{t('quiz.quizComplete')}</h4>
-            <div className="text-5xl font-black mb-2">{score}%</div>
-            <p className="text-white/80 font-medium">
-              {passed ? t('quiz.passed') : t('quiz.failed')} ({t('quiz.threshold')}: 75%)
-            </p>
           </div>
-        </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-3 gap-3">
-          <div className="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 p-4 text-center">
-            <div className="w-10 h-10 mx-auto mb-2 bg-gradient-to-br from-emerald-500 to-green-600 text-white rounded-lg flex items-center justify-center">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-              </svg>
+          {/* Stats Cards */}
+          <div className="grid grid-cols-3 gap-3">
+            <div className="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 p-4 text-center">
+              <div className="w-10 h-10 mx-auto mb-2 bg-gradient-to-br from-emerald-500 to-green-600 text-white rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{correct}</h3>
+              <p className="text-neutral-500 dark:text-neutral-400 text-xs">{t('quiz.correctCount')}</p>
             </div>
-            <h3 className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{correct}</h3>
-            <p className="text-neutral-500 dark:text-neutral-400 text-xs">{t('quiz.correctCount')}</p>
+            <div className="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 p-4 text-center">
+              <div className="w-10 h-10 mx-auto mb-2 bg-gradient-to-br from-rose-500 to-red-600 text-white rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold text-rose-600 dark:text-rose-400">{questions.length - correct}</h3>
+              <p className="text-neutral-500 dark:text-neutral-400 text-xs">{t('quiz.incorrectCount')}</p>
+            </div>
+            <div className="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 p-4 text-center">
+              <div className="w-10 h-10 mx-auto mb-2 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                {state.startTime ? Math.floor((Date.now() - state.startTime) / 60000) : 0}m
+              </h3>
+              <p className="text-neutral-500 dark:text-neutral-400 text-xs">{t('quiz.timeUsed')}</p>
+            </div>
           </div>
-          <div className="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 p-4 text-center">
-            <div className="w-10 h-10 mx-auto mb-2 bg-gradient-to-br from-rose-500 to-red-600 text-white rounded-lg flex items-center justify-center">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </div>
-            <h3 className="text-2xl font-bold text-rose-600 dark:text-rose-400">{questions.length - correct}</h3>
-            <p className="text-neutral-500 dark:text-neutral-400 text-xs">{t('quiz.incorrectCount')}</p>
-          </div>
-          <div className="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 p-4 text-center">
-            <div className="w-10 h-10 mx-auto mb-2 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-lg flex items-center justify-center">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <h3 className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-              {state.startTime ? Math.floor((Date.now() - state.startTime) / 60000) : 0}m
-            </h3>
-            <p className="text-neutral-500 dark:text-neutral-400 text-xs">{t('quiz.timeUsed')}</p>
+
+          {/* Branding for shared image */}
+          <div className="text-center text-xs text-neutral-400 dark:text-neutral-500 pt-2">
+            cncf-certification-hub.pages.dev
           </div>
         </div>
 
@@ -385,12 +461,20 @@ export default function SimpleQuestionSimulator({
             <div className="relative flex-1">
               <button
                 onClick={handleNativeShare}
-                className="w-full px-5 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold rounded-xl transition-all shadow-lg shadow-cyan-500/25 inline-flex items-center justify-center gap-2"
+                disabled={isGeneratingImage}
+                className="w-full px-5 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 disabled:opacity-70 disabled:cursor-wait text-white font-semibold rounded-xl transition-all shadow-lg shadow-cyan-500/25 inline-flex items-center justify-center gap-2"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                </svg>
-                {t('quiz.shareResult')}
+                {isGeneratingImage ? (
+                  <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                  </svg>
+                )}
+                {isGeneratingImage ? t('quiz.generating') : t('quiz.shareResult')}
               </button>
 
               {/* Share Menu Dropdown */}
@@ -446,9 +530,22 @@ export default function SimpleQuestionSimulator({
                       {/* Divider */}
                       <div className="border-t border-neutral-200 dark:border-neutral-700 my-1" />
 
-                      {/* Copy Link */}
+                      {/* Download Image */}
                       <button
-                        onClick={() => { copyToClipboard(); setShowShareMenu(false); }}
+                        onClick={() => { downloadImage(); setShowShareMenu(false); }}
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors group"
+                      >
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
+                          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                          </svg>
+                        </div>
+                        <span className="font-medium text-neutral-700 dark:text-neutral-200">{t('quiz.downloadImage')}</span>
+                      </button>
+
+                      {/* Copy Image */}
+                      <button
+                        onClick={() => { copyImageToClipboard(); setShowShareMenu(false); }}
                         className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors group"
                       >
                         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
@@ -458,7 +555,7 @@ export default function SimpleQuestionSimulator({
                             </svg>
                           ) : (
                             <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
                           )}
                         </div>
