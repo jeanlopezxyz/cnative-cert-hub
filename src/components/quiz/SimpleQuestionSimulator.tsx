@@ -659,9 +659,9 @@ export default function SimpleQuestionSimulator({
                 {state.currentQuestion + 1}
               </div>
               <div>
-                <h6 className="text-base font-bold text-neutral-900 dark:text-white">
+                <h4 className="text-base font-bold text-neutral-900 dark:text-white">
                   {t('quiz.question')} {state.currentQuestion + 1} {t('quiz.of')} {questions.length}
-                </h6>
+                </h4>
                 <div className="flex items-center gap-2 mt-0.5">
                   <span className={`text-base font-medium px-2 py-0.5 rounded-full ${
                     isStudyMode

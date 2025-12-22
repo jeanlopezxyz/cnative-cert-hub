@@ -67,7 +67,7 @@ export default function CertificationGrid({
                 </div>
 
                 {/* Acronym */}
-                <h6 className={`text-base sm:text-lg font-bold mb-1 ${colors.text}`}>{cert?.acronym}</h6>
+                <h3 className={`text-base sm:text-lg font-bold mb-1 ${colors.text}`}>{cert?.acronym}</h3>
 
                 {/* Name */}
                 <p className="text-neutral-600 dark:text-neutral-300 text-base mb-3 line-clamp-2 min-h-[40px]">

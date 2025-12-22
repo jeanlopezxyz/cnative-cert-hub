@@ -46,6 +46,29 @@
     min-height: 100vh;
   }
 
+  /* Global focus-visible styles for accessibility */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  [role="button"]:focus-visible,
+  [tabindex]:focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary-500;
+    outline-style: solid;
+  }
+
+  /* High contrast focus for dark mode */
+  html.dark a:focus-visible,
+  html.dark button:focus-visible,
+  html.dark input:focus-visible,
+  html.dark select:focus-visible,
+  html.dark textarea:focus-visible,
+  html.dark [role="button"]:focus-visible,
+  html.dark [tabindex]:focus-visible {
+    @apply outline-primary-400;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;
