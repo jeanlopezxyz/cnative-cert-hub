@@ -45,7 +45,7 @@ export default function AchievementPrograms({ lang }: AchievementProgramsProps) 
           <h2 className="text-xl sm:text-2xl font-bold mb-2 text-neutral-900 dark:text-white">
             {t('achievements.programs.title')}
           </h2>
-          <p className="text-sm text-neutral-600 dark:text-neutral-400 max-w-3xl mx-auto">
+          <p className="text-base text-neutral-600 dark:text-neutral-400 max-w-3xl mx-auto">
             {t('achievements.programs.subtitle')}
           </p>
         </div>
@@ -62,7 +62,7 @@ export default function AchievementPrograms({ lang }: AchievementProgramsProps) 
                 <h3 className={`text-lg font-bold mb-1 ${program.textColor}`}>
                   {program.title}
                 </h3>
-                <p className={`text-sm leading-relaxed ${program.subtextColor}`}>
+                <p className={`text-base leading-relaxed ${program.subtextColor}`}>
                   {program.description}
                 </p>
 
@@ -71,7 +71,7 @@ export default function AchievementPrograms({ lang }: AchievementProgramsProps) 
 
                 {/* Button - aligned to bottom right */}
                 <div className="mt-3 flex justify-end">
-                  <span className={`inline-flex items-center gap-1.5 text-sm font-medium ${program.textColor}`}>
+                  <span className={`inline-flex items-center gap-1.5 text-base font-medium ${program.textColor}`}>
                     {t('certifications.card.viewDetails')}
                     <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

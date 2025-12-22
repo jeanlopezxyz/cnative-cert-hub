@@ -501,7 +501,7 @@ export const es = {
   'accessibility.kubernetesSlack': 'Slack de Kubernetes',
 
   // Site
-  'site.titleShort': 'CNative CertHub',
+  'site.titleShort': 'CNCertHub',
 
 
   // Common

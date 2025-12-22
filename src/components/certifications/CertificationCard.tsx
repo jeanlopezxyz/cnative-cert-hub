@@ -40,7 +40,7 @@ export default function CertificationCard({
 
           {/* Acronym & Name */}
           <h6 className={`text-base sm:text-lg font-bold mb-1 ${colors.text}`}>{cert.acronym}</h6>
-          <p className="text-neutral-600 dark:text-neutral-300 text-xs sm:text-sm mb-3 line-clamp-2 min-h-[32px]">
+          <p className="text-neutral-600 dark:text-neutral-300 text-sm sm:text-base mb-3 line-clamp-2 min-h-[32px]">
             {cert.name}
           </p>
 
@@ -49,7 +49,7 @@ export default function CertificationCard({
 
           {/* Read More Link - aligned to bottom right */}
           <div className="flex justify-end">
-            <span className={`btn ${colors.text} hover:underline px-0 py-0 inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium`}>
+            <span className={`btn ${colors.text} hover:underline px-0 py-0 inline-flex items-center gap-1.5 text-sm sm:text-base font-medium`}>
               {t('certifications.card.viewDetails')}
               <svg className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />

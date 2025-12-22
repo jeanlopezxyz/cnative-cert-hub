@@ -2796,7 +2796,7 @@ export default function BestPractices({ lang }: BestPracticesProps) {
         <h1 className="text-xl font-semibold text-neutral-900 dark:text-white mb-1">
           {t('bestPractices.title')}
         </h1>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400">
+        <p className="text-base text-neutral-500 dark:text-neutral-400">
           {t('bestPractices.subtitle')}
         </p>
       </div>
@@ -2807,7 +2807,7 @@ export default function BestPractices({ lang }: BestPracticesProps) {
         <div className="sm:hidden relative">
           <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className={`w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-gradient-to-r ${currentMainCategory.color} text-white font-medium text-sm shadow-md transition-all duration-200`}
+            className={`w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-gradient-to-r ${currentMainCategory.color} text-white font-medium text-base shadow-md transition-all duration-200`}
           >
             <div className="flex items-center gap-3">
               <span className="flex-shrink-0">{currentMainCategory.icon}</span>
@@ -2833,7 +2833,7 @@ export default function BestPractices({ lang }: BestPracticesProps) {
                       handleMainCategoryChange(category.id);
                       setIsDropdownOpen(false);
                     }}
-                    className={`w-full flex items-center gap-3 px-4 py-3 text-left text-sm font-medium transition-colors ${
+                    className={`w-full flex items-center gap-3 px-4 py-3 text-left text-base font-medium transition-colors ${
                       isActive
                         ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400'
                         : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-700/50'
@@ -2855,7 +2855,7 @@ export default function BestPractices({ lang }: BestPracticesProps) {
           )}
         </div>
         {/* Desktop: Pills */}
-        <div className="hidden sm:flex flex-wrap gap-2">
+        <div className="hidden sm:flex flex-wrap gap-2 p-2 bg-neutral-100 dark:bg-neutral-700/50 rounded-xl shadow-sm dark:shadow-none">
           {MAIN_CATEGORIES.map(category => {
             const isActive = activeMainCategory === category.id;
             return (
@@ -2865,11 +2865,11 @@ export default function BestPractices({ lang }: BestPracticesProps) {
                 className={`group flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-all duration-200 ${
                   isActive
                     ? `bg-gradient-to-r ${category.color} text-white shadow-md`
-                    : 'bg-white dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-700 border border-neutral-200 dark:border-neutral-700'
+                    : 'bg-white dark:bg-neutral-700/50 text-neutral-600 dark:text-neutral-300 hover:bg-white/80 dark:hover:bg-neutral-700'
                 }`}
               >
                 <span className="flex-shrink-0">{category.icon}</span>
-                <span className="text-sm font-medium">{t(category.labelKey)}</span>
+                <span className="text-base font-medium">{t(category.labelKey)}</span>
               </button>
             );
           })}
@@ -2878,7 +2878,7 @@ export default function BestPractices({ lang }: BestPracticesProps) {
 
       {/* Subcategories - Horizontal scroll on mobile, wrap on desktop */}
       <div className="mb-4">
-        <div className="flex gap-2 p-2 bg-neutral-100 dark:bg-neutral-800 rounded-xl overflow-x-auto sm:flex-wrap scrollbar-hide">
+        <div className="flex gap-2 p-2 bg-neutral-100 dark:bg-neutral-700/50 rounded-xl shadow-sm dark:shadow-none overflow-x-auto sm:flex-wrap scrollbar-hide">
           {currentSubCategories.map(subcat => {
             const isActive = activeSubCategory === subcat.id;
 
@@ -2886,7 +2886,7 @@ export default function BestPractices({ lang }: BestPracticesProps) {
               <button
                 key={subcat.id}
                 onClick={() => setActiveSubCategory(subcat.id)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm transition-all whitespace-nowrap flex-shrink-0 ${
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium text-base transition-all whitespace-nowrap flex-shrink-0 ${
                   isActive
                     ? 'bg-white dark:bg-neutral-900 text-primary-600 dark:text-primary-400 shadow-md'
                     : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-white/50 dark:hover:bg-neutral-700/50'
@@ -2902,16 +2902,6 @@ export default function BestPractices({ lang }: BestPracticesProps) {
         </div>
       </div>
 
-      {/* Breadcrumb - hidden on mobile */}
-      <div className="hidden sm:flex mb-4 items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400">
-        <span>{currentMainCategory.icon}</span>
-        <span>{t(currentMainCategory.labelKey)}</span>
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-        </svg>
-        <span className="text-neutral-700 dark:text-neutral-200 font-medium">{currentTab && t(currentTab.labelKey)}</span>
-      </div>
-
       {/* Tab Content */}
       {currentTab && (
         <div className="space-y-6">
@@ -2921,7 +2911,7 @@ export default function BestPractices({ lang }: BestPracticesProps) {
             return (
               <div
                 key={practice.id}
-                className="card rounded-xl overflow-hidden border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800/50 transition-all duration-300 hover:shadow-md"
+                className="card rounded-xl overflow-hidden bg-neutral-100 dark:bg-neutral-700/50 shadow-sm transition-all duration-300 hover:shadow-md"
               >
                 <button
                   className="w-full p-4 text-left transition-all duration-300"
@@ -2936,7 +2926,7 @@ export default function BestPractices({ lang }: BestPracticesProps) {
                         <h4 className={`text-base font-semibold text-neutral-800 dark:text-neutral-100`}>
                           {t(practice.titleKey)}
                         </h4>
-                        <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-0.5">
+                        <p className="text-base text-neutral-500 dark:text-neutral-400 mt-0.5">
                           {t(practice.descKey)}
                         </p>
                       </div>
@@ -2955,7 +2945,7 @@ export default function BestPractices({ lang }: BestPracticesProps) {
                 </button>
 
                 {isExpanded && (
-                  <div className="border-t border-neutral-200 dark:border-neutral-700 bg-white/60 dark:bg-neutral-900/30 p-4">
+                  <div className="bg-neutral-100 dark:bg-neutral-900 p-4 rounded-b-xl">
                     <div className="space-y-3">
                       {practice.items.map((item) => {
                         const isCodeExpanded = expandedCode.includes(item.id);
@@ -2966,17 +2956,17 @@ export default function BestPractices({ lang }: BestPracticesProps) {
                         return (
                           <div
                             key={item.id}
-                            className="rounded-xl border transition-all duration-200 bg-white dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700"
+                            className="rounded-xl transition-all duration-200 bg-white dark:bg-neutral-700/50 shadow-sm"
                           >
                             <div className="p-4">
                               <div className="flex items-start gap-3">
                                 <div className="flex-1 min-w-0">
                                   <div className="flex items-start justify-between gap-3">
-                                    <p className="text-sm leading-relaxed text-neutral-700 dark:text-neutral-300">
+                                    <p className="text-base leading-relaxed text-neutral-700 dark:text-neutral-300">
                                       {t(item.titleKey)}
                                     </p>
                                     {/* Priority badge */}
-                                    <span className={`flex-shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${priorityConfig.color}`}>
+                                    <span className={`flex-shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-base font-medium ${priorityConfig.color}`}>
                                       <span className={`w-1.5 h-1.5 rounded-full ${priorityConfig.dot}`} />
                                       {getPriorityLabel(item.priority)}
                                     </span>
@@ -2988,7 +2978,7 @@ export default function BestPractices({ lang }: BestPracticesProps) {
                                     {hasDetails && (
                                       <button
                                         onClick={() => toggleDetails(item.id)}
-                                        className="inline-flex items-center gap-1.5 text-xs font-medium text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300"
+                                        className="inline-flex items-center gap-1.5 text-base font-medium text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300"
                                       >
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -3002,7 +2992,7 @@ export default function BestPractices({ lang }: BestPracticesProps) {
                                     {item.codeExample && (
                                       <button
                                         onClick={() => toggleCode(item.id)}
-                                        className="inline-flex items-center gap-1.5 text-xs font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300"
+                                        className="inline-flex items-center gap-1.5 text-base font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300"
                                       >
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
@@ -3022,10 +3012,10 @@ export default function BestPractices({ lang }: BestPracticesProps) {
                                       <div className="flex items-start gap-2">
                                         <span className="text-blue-500 mt-0.5">💡</span>
                                         <div>
-                                          <span className="text-xs font-semibold text-blue-700 dark:text-blue-300 uppercase">
+                                          <span className="text-base font-semibold text-blue-700 dark:text-blue-300 uppercase">
                                             {lang === 'es' ? 'Por qué importa' : lang === 'pt' ? 'Por que importa' : 'Why it matters'}
                                           </span>
-                                          <p className="text-sm text-blue-800 dark:text-blue-200 mt-1">
+                                          <p className="text-base text-blue-800 dark:text-blue-200 mt-1">
                                             {t(item.whyItMattersKey)}
                                           </p>
                                         </div>
@@ -3037,10 +3027,10 @@ export default function BestPractices({ lang }: BestPracticesProps) {
                                       <div className="flex items-start gap-2">
                                         <span className="text-red-500 mt-0.5">⚠️</span>
                                         <div>
-                                          <span className="text-xs font-semibold text-red-700 dark:text-red-300 uppercase">
+                                          <span className="text-base font-semibold text-red-700 dark:text-red-300 uppercase">
                                             {lang === 'es' ? 'Error común' : lang === 'pt' ? 'Erro comum' : 'Common mistake'}
                                           </span>
-                                          <p className="text-sm text-red-800 dark:text-red-200 mt-1">
+                                          <p className="text-base text-red-800 dark:text-red-200 mt-1">
                                             {t(item.commonMistakeKey)}
                                           </p>
                                         </div>
@@ -3062,13 +3052,13 @@ export default function BestPractices({ lang }: BestPracticesProps) {
                                           <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                                           <div className="w-3 h-3 rounded-full bg-green-500"></div>
                                         </div>
-                                        <span className="text-xs text-neutral-400 ml-2 font-mono">YAML / Bash</span>
+                                        <span className="text-base text-neutral-400 ml-2 font-mono">YAML / Bash</span>
                                       </div>
                                       <button
                                         onClick={() => {
                                           navigator.clipboard.writeText(item.codeExample || '');
                                         }}
-                                        className="flex items-center gap-1.5 px-2 py-1 text-xs text-neutral-400 hover:text-white hover:bg-neutral-700 rounded transition-colors"
+                                        className="flex items-center gap-1.5 px-2 py-1 text-base text-neutral-400 hover:text-white hover:bg-neutral-700 rounded transition-colors"
                                         title={lang === 'es' ? 'Copiar código' : lang === 'pt' ? 'Copiar código' : 'Copy code'}
                                       >
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

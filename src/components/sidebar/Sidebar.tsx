@@ -43,7 +43,6 @@ export default function Sidebar({ lang }: SidebarProps) {
   const isFirstRender = useRef(true);
 
   // Initialize state - use defaults on first render, localStorage only affects subsequent interactions
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [currentPath, setCurrentPath] = useState(() =>
     typeof window !== 'undefined' ? window.location.pathname : ''
   );
@@ -61,10 +60,6 @@ export default function Sidebar({ lang }: SidebarProps) {
   useEffect(() => {
     const updatePath = () => {
       setCurrentPath(window.location.pathname);
-      // Close mobile sidebar on navigation
-      if (window.innerWidth < 1024) {
-        setIsMobileOpen(false);
-      }
     };
 
     // Mark first render complete
@@ -82,36 +77,6 @@ export default function Sidebar({ lang }: SidebarProps) {
     };
   }, []);
 
-  // Listen for mobile sidebar toggle from header
-  useEffect(() => {
-    const handleToggle = () => {
-      setIsMobileOpen(prev => !prev);
-    };
-
-    // Add listener immediately
-    window.addEventListener('toggle-mobile-sidebar', handleToggle);
-
-    // Also re-add after View Transitions
-    const reattachListener = () => {
-      window.removeEventListener('toggle-mobile-sidebar', handleToggle);
-      window.addEventListener('toggle-mobile-sidebar', handleToggle);
-    };
-
-    document.addEventListener('astro:page-load', reattachListener);
-    document.addEventListener('astro:after-swap', reattachListener);
-
-    return () => {
-      window.removeEventListener('toggle-mobile-sidebar', handleToggle);
-      document.removeEventListener('astro:page-load', reattachListener);
-      document.removeEventListener('astro:after-swap', reattachListener);
-    };
-  }, []);
-
-  // Close mobile sidebar on link click
-  const closeMobileSidebar = useCallback(() => {
-    setIsMobileOpen(false);
-  }, []);
-
   // Collapse all sections and go to home
   const handleLogoClick = () => {
     const emptySections: string[] = [];
@@ -120,7 +85,6 @@ export default function Sidebar({ lang }: SidebarProps) {
     setOpenCategories(emptyCategories);
     saveToStorage('sidebarOpenSections', emptySections);
     saveToStorage('sidebarOpenCategories', emptyCategories);
-    closeMobileSidebar();
   };
 
   const toggleSection = useCallback((section: string) => {
@@ -147,48 +111,43 @@ export default function Sidebar({ lang }: SidebarProps) {
 
   return (
     <>
-      {/* Mobile Backdrop */}
+      {/* Mobile Backdrop - visibility controlled by body.mobile-sidebar-open class */}
       <div
-        className={`
+        data-mobile-backdrop
+        className="
           fixed inset-0 z-30 lg:hidden transition-all duration-300
-          ${isMobileOpen ? 'bg-black/60 backdrop-blur-sm visible' : 'bg-transparent backdrop-blur-none invisible'}
-        `}
-        onClick={() => setIsMobileOpen(false)}
+          bg-transparent backdrop-blur-none invisible
+          mobile-backdrop
+        "
       />
 
-      {/* Sidebar */}
+      {/* Sidebar - position controlled by body.mobile-sidebar-open class */}
       <aside
         className={`
           fixed top-0 h-screen z-40
           w-[300px] lg:w-[280px]
-          bg-white dark:bg-neutral-900
-          border-r border-neutral-200/80 dark:border-neutral-800
+          bg-neutral-100 dark:bg-neutral-900
           shadow-xl lg:shadow-none
           transition-all duration-300 ease-out
-          ${isMobileOpen ? 'left-0' : '-left-full lg:left-0'}
+          -left-full lg:left-0
+          mobile-sidebar
           ${isDesktopCollapsed ? 'lg:w-[80px] lg:hover:w-[280px]' : ''}
         `}
       >
         {/* Logo Section - Enhanced for mobile */}
-        <div className="h-16 px-4 lg:px-5 flex items-center justify-between border-b border-neutral-100 dark:border-neutral-800 lg:border-0">
-          <a href={`${APP_CONFIG.basePath}/${lang === 'en' ? '' : lang}`} onClick={handleLogoClick} className="flex items-center gap-3">
-            {/* Logo Icon - Certificate Badge */}
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center shadow-lg shadow-primary-500/25">
-              <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-              </svg>
-            </div>
-            {/* Logo Text - Hidden when collapsed */}
+        <div className="h-16 px-4 lg:px-5 flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 lg:border-0">
+          <a href={`${APP_CONFIG.basePath}/${lang === 'en' ? '' : lang}`} onClick={handleLogoClick} className="flex items-center">
+            {/* Logo Text Only */}
             <div className={`transition-opacity duration-200 ${isDesktopCollapsed ? 'lg:opacity-0 lg:group-hover:opacity-100' : ''}`}>
-              <span className="text-lg font-bold text-neutral-900 dark:text-white">CNative</span>
-              <span className="text-lg font-bold text-primary-600">Cert</span>
-              <span className="text-lg font-bold text-neutral-900 dark:text-white">Hub</span>
+              <span className="text-3xl font-bold text-neutral-900 dark:text-white">CN</span>
+              <span className="text-3xl font-bold text-primary-600">Cert</span>
+              <span className="text-3xl font-bold text-neutral-900 dark:text-white">Hub</span>
             </div>
           </a>
 
           {/* Mobile Close Button - Enhanced */}
           <button
-            onClick={() => setIsMobileOpen(false)}
+            data-sidebar-close
             className="lg:hidden p-2.5 rounded-xl bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
             aria-label="Close menu"
           >
@@ -224,9 +183,8 @@ export default function Sidebar({ lang }: SidebarProps) {
                   <a
                     key={item.id}
                     href={href}
-                    onClick={closeMobileSidebar}
                     className={`
-                      flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
+                      sidebar-nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
                       transition-all duration-200
                       ${isActive
                         ? 'bg-primary-600 text-white shadow-md shadow-primary-600/30'
@@ -269,7 +227,6 @@ export default function Sidebar({ lang }: SidebarProps) {
                     onToggle={() => toggleCategory(category.key)}
                     lang={lang}
                     currentPath={currentPath}
-                    onLinkClick={closeMobileSidebar}
                   />
                 ))}
               </div>
@@ -302,9 +259,8 @@ export default function Sidebar({ lang }: SidebarProps) {
                   <a
                     key={item.id}
                     href={href}
-                    onClick={closeMobileSidebar}
                     className={`
-                      flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
+                      sidebar-nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
                       transition-all duration-200
                       ${isActive
                         ? 'bg-primary-600 text-white shadow-md shadow-primary-600/30'
@@ -342,9 +298,8 @@ export default function Sidebar({ lang }: SidebarProps) {
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={closeMobileSidebar}
                   className="
-                    flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
+                    sidebar-nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
                     text-neutral-600 dark:text-neutral-400
                     hover:bg-neutral-100 dark:hover:bg-neutral-700/50
                     hover:text-primary-600 dark:hover:text-primary-400

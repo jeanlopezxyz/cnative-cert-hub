@@ -217,19 +217,19 @@ const hreflangUrls = {
       "@type": "WebSite",
       "name": "Cloud Native Certification Resources Hub",
       "description": finalDescription,
-      "url": `${siteUrl}${basePath}`,
+      "url": siteUrl,
       "inLanguage": [lang, "en", "es", "pt"],
       "publisher": {
         "@type": "Organization",
         "name": "CNCertHub",
         "logo": {
           "@type": "ImageObject",
-          "url": `${siteUrl}${basePath}/favicon.svg`
+          "url": `${siteUrl}/favicon.svg`
         }
       },
       "potentialAction": {
         "@type": "SearchAction",
-        "target": `${siteUrl}${basePath}/?q={search_term_string}`,
+        "target": `${siteUrl}/?q={search_term_string}`,
         "query-input": "required name=search_term_string"
       }
     })} />
@@ -242,7 +242,7 @@ const hreflangUrls = {
           "@type": "ListItem",
           "position": 1,
           "name": "Home",
-          "item": `${siteUrl}${basePath}`
+          "item": siteUrl
         },
         {
           "@type": "ListItem",

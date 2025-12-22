@@ -531,7 +531,7 @@ export default function SearchBar({ lang }: SearchBarProps) {
 
                     <div className="flex-1 min-w-0">
                       {/* Title */}
-                      <div className={`text-sm font-semibold truncate ${
+                      <div className={`text-base font-semibold truncate ${
                         index === focusedIndex
                           ? 'text-primary-700 dark:text-primary-300'
                           : 'text-neutral-800 dark:text-neutral-100 group-hover:text-primary-600 dark:group-hover:text-primary-400'

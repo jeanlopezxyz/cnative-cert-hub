@@ -1,6 +1,6 @@
 {
   "name": "Cloud Native Certification Hub",
-  "short_name": "CNative CertHub",
+  "short_name": "CNCertHub",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",

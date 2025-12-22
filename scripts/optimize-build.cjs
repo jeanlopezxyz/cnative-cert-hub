@@ -151,7 +151,7 @@ function addPreloadHints(dir) {
  */
 function generateServiceWorker(distPath) {
   const swContent = `
-// Service Worker for CNative CertHub
+// Service Worker for CNCertHub
 const CACHE_NAME = 'cnative-cert-hub-v1';
 const urlsToCache = [
   '/',

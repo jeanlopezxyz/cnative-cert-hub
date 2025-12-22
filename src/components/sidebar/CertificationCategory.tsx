@@ -10,7 +10,6 @@ interface CertificationCategoryProps {
   onToggle: () => void;
   lang: string;
   currentPath: string;
-  onLinkClick?: () => void;
 }
 
 /**
@@ -24,7 +23,6 @@ export default function CertificationCategory({
   onToggle,
   lang,
   currentPath,
-  onLinkClick,
 }: CertificationCategoryProps) {
   const hasCerts = !!(certifications && certifications.length > 0);
   const t = useTranslations(lang as 'en' | 'es' | 'pt');
@@ -103,9 +101,8 @@ export default function CertificationCategory({
                 <a
                   key={cert.id}
                   href={certHref}
-                  onClick={onLinkClick}
                   className={`
-                    flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm
+                    sidebar-nav-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm
                     transition-all duration-200
                     ${isActive
                       ? 'bg-primary-600 text-white font-medium shadow-md shadow-primary-600/25'

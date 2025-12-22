@@ -119,6 +119,15 @@
     @apply bg-primary-500/30;
   }
 
+  /* Mobile sidebar visibility - controlled by body class */
+  body.mobile-sidebar-open .mobile-sidebar {
+    left: 0 !important;
+  }
+
+  body.mobile-sidebar-open .mobile-backdrop {
+    @apply bg-black/60 backdrop-blur-sm visible;
+  }
+
   html.light ::selection {
     @apply text-neutral-900;
   }

@@ -71,7 +71,7 @@ function CertificationHeader({ t }: { t: (key: string) => string }) {
       <h2 className="text-xl sm:text-2xl font-bold mb-2 text-neutral-900 dark:text-white">
         {t('certifications.title')}
       </h2>
-      <p className="text-sm text-neutral-600 dark:text-neutral-400 max-w-3xl mx-auto">
+      <p className="text-base text-neutral-600 dark:text-neutral-400 max-w-3xl mx-auto">
         {t('certifications.subtitle')}
       </p>
     </div>

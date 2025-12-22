@@ -308,7 +308,7 @@ export default function SimpleQuestionSimulator({
           <h5 className="text-lg font-bold text-neutral-900 dark:text-white mb-2">
             {t('quiz.title')}
           </h5>
-          <p className="text-neutral-600 dark:text-neutral-400 text-sm">
+          <p className="text-neutral-600 dark:text-neutral-400 text-base">
             {t('quiz.comingSoon')}
           </p>
         </div>
@@ -330,7 +330,7 @@ export default function SimpleQuestionSimulator({
             </div>
             <div>
               <h5 className="font-bold text-lg">{t('quiz.title')}</h5>
-              <p className="text-white/80 text-sm">{t('quiz.subtitle')}</p>
+              <p className="text-white/80 text-base">{t('quiz.subtitle')}</p>
             </div>
           </div>
         </div>
@@ -345,7 +345,7 @@ export default function SimpleQuestionSimulator({
                 </svg>
               </div>
               <div className="text-2xl font-bold text-cyan-700 dark:text-cyan-400">{questions.length}</div>
-              <div className="text-xs font-medium text-cyan-600 dark:text-cyan-300">{t('quiz.questions')}</div>
+              <div className="text-base font-medium text-cyan-600 dark:text-cyan-300">{t('quiz.questions')}</div>
             </div>
             <div className="p-4 bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/30 dark:to-amber-800/30 rounded-xl text-center">
               <div className="w-10 h-10 mx-auto mb-2 bg-amber-500 rounded-lg flex items-center justify-center">
@@ -354,7 +354,7 @@ export default function SimpleQuestionSimulator({
                 </svg>
               </div>
               <div className="text-2xl font-bold text-amber-700 dark:text-amber-400">{examDuration}m</div>
-              <div className="text-xs font-medium text-amber-600 dark:text-amber-300">{t('quiz.duration')}</div>
+              <div className="text-base font-medium text-amber-600 dark:text-amber-300">{t('quiz.duration')}</div>
             </div>
             <div className="p-4 bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-900/30 dark:to-emerald-800/30 rounded-xl text-center">
               <div className="w-10 h-10 mx-auto mb-2 bg-emerald-500 rounded-lg flex items-center justify-center">
@@ -363,7 +363,7 @@ export default function SimpleQuestionSimulator({
                 </svg>
               </div>
               <div className="text-2xl font-bold text-emerald-700 dark:text-emerald-400">75%</div>
-              <div className="text-xs font-medium text-emerald-600 dark:text-emerald-300">{t('quiz.passing')}</div>
+              <div className="text-base font-medium text-emerald-600 dark:text-emerald-300">{t('quiz.passing')}</div>
             </div>
           </div>
 
@@ -381,9 +381,9 @@ export default function SimpleQuestionSimulator({
                 </div>
                 <div className="flex-1 text-left">
                   <div className="font-bold text-emerald-700 dark:text-emerald-400">{t('quiz.studyMode')}</div>
-                  <div className="text-xs text-emerald-600 dark:text-emerald-300">{t('quiz.studyModeDesc')}</div>
+                  <div className="text-base text-emerald-600 dark:text-emerald-300">{t('quiz.studyModeDesc')}</div>
                 </div>
-                <div className="px-3 py-1 bg-emerald-500 text-white text-xs font-bold rounded-full">
+                <div className="px-3 py-1 bg-emerald-500 text-white text-base font-bold rounded-full">
                   {t('quiz.recommended')}
                 </div>
               </div>
@@ -401,7 +401,7 @@ export default function SimpleQuestionSimulator({
                 </div>
                 <div className="flex-1 text-left">
                   <div className="font-bold text-purple-700 dark:text-purple-400">{t('quiz.examMode')}</div>
-                  <div className="text-xs text-purple-600 dark:text-purple-300">{t('quiz.examModeDesc')}</div>
+                  <div className="text-base text-purple-600 dark:text-purple-300">{t('quiz.examModeDesc')}</div>
                 </div>
               </div>
             </button>
@@ -429,7 +429,7 @@ export default function SimpleQuestionSimulator({
           }`}>
             <div className="p-6 text-white text-center">
               {/* Certification Badge */}
-              <div className="text-xs font-bold uppercase tracking-wider opacity-80 mb-3">
+              <div className="text-base font-bold uppercase tracking-wider opacity-80 mb-3">
                 {certificationId.toUpperCase()} Practice Quiz
               </div>
               <div className={`w-20 h-20 mx-auto mb-4 rounded-2xl flex items-center justify-center ${
@@ -462,7 +462,7 @@ export default function SimpleQuestionSimulator({
                 </svg>
               </div>
               <h3 className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{correct}</h3>
-              <p className="text-neutral-500 dark:text-neutral-400 text-xs">{t('quiz.correctCount')}</p>
+              <p className="text-neutral-500 dark:text-neutral-400 text-base">{t('quiz.correctCount')}</p>
             </div>
             <div className="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 p-4 text-center">
               <div className="w-10 h-10 mx-auto mb-2 bg-gradient-to-br from-rose-500 to-red-600 text-white rounded-lg flex items-center justify-center">
@@ -471,7 +471,7 @@ export default function SimpleQuestionSimulator({
                 </svg>
               </div>
               <h3 className="text-2xl font-bold text-rose-600 dark:text-rose-400">{questions.length - correct}</h3>
-              <p className="text-neutral-500 dark:text-neutral-400 text-xs">{t('quiz.incorrectCount')}</p>
+              <p className="text-neutral-500 dark:text-neutral-400 text-base">{t('quiz.incorrectCount')}</p>
             </div>
             <div className="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 p-4 text-center">
               <div className="w-10 h-10 mx-auto mb-2 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-lg flex items-center justify-center">
@@ -482,12 +482,12 @@ export default function SimpleQuestionSimulator({
               <h3 className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                 {state.startTime ? Math.floor((Date.now() - state.startTime) / 60000) : 0}m
               </h3>
-              <p className="text-neutral-500 dark:text-neutral-400 text-xs">{t('quiz.timeUsed')}</p>
+              <p className="text-neutral-500 dark:text-neutral-400 text-base">{t('quiz.timeUsed')}</p>
             </div>
           </div>
 
           {/* Branding for shared image */}
-          <div className="text-center text-xs text-neutral-400 dark:text-neutral-500 pt-2">
+          <div className="text-center text-base text-neutral-400 dark:text-neutral-500 pt-2">
             cncf-certification-hub.pages.dev
           </div>
         </div>
@@ -624,7 +624,7 @@ export default function SimpleQuestionSimulator({
               <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <span className="font-medium text-sm">{shareToast}</span>
+              <span className="font-medium text-base">{shareToast}</span>
             </div>
           </div>
         )}
@@ -659,31 +659,31 @@ export default function SimpleQuestionSimulator({
                 {state.currentQuestion + 1}
               </div>
               <div>
-                <h6 className="text-sm font-bold text-neutral-900 dark:text-white">
+                <h6 className="text-base font-bold text-neutral-900 dark:text-white">
                   {t('quiz.question')} {state.currentQuestion + 1} {t('quiz.of')} {questions.length}
                 </h6>
                 <div className="flex items-center gap-2 mt-0.5">
-                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+                  <span className={`text-base font-medium px-2 py-0.5 rounded-full ${
                     isStudyMode
                       ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300'
                       : 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300'
                   }`}>
                     {isStudyMode ? t('quiz.studyMode') : t('quiz.examMode')}
                   </span>
-                  <span className="text-xs text-neutral-500 dark:text-neutral-400">{currentQ?.domain}</span>
+                  <span className="text-base text-neutral-500 dark:text-neutral-400">{currentQ?.domain}</span>
                 </div>
               </div>
             </div>
             <div className="flex gap-2">
               <button
                 onClick={finishQuiz}
-                className="px-3 py-2 bg-rose-100 dark:bg-rose-900/30 hover:bg-rose-200 dark:hover:bg-rose-900/50 text-rose-700 dark:text-rose-300 text-xs font-semibold rounded-lg transition-colors"
+                className="px-3 py-2 bg-rose-100 dark:bg-rose-900/30 hover:bg-rose-200 dark:hover:bg-rose-900/50 text-rose-700 dark:text-rose-300 text-base font-semibold rounded-lg transition-colors"
               >
                 {t('quiz.finish')}
               </button>
               <button
                 onClick={resetQuiz}
-                className="px-3 py-2 bg-neutral-100 dark:bg-neutral-700 hover:bg-neutral-200 dark:hover:bg-neutral-600 text-neutral-700 dark:text-neutral-300 text-xs font-semibold rounded-lg transition-colors"
+                className="px-3 py-2 bg-neutral-100 dark:bg-neutral-700 hover:bg-neutral-200 dark:hover:bg-neutral-600 text-neutral-700 dark:text-neutral-300 text-base font-semibold rounded-lg transition-colors"
               >
                 {t('quiz.reset')}
               </button>
@@ -692,7 +692,7 @@ export default function SimpleQuestionSimulator({
 
           {/* Progress bar */}
           <div className="mt-4">
-            <div className="flex items-center justify-between text-xs text-neutral-500 dark:text-neutral-400 mb-2">
+            <div className="flex items-center justify-between text-base text-neutral-500 dark:text-neutral-400 mb-2">
               <span>{t('quiz.progress')}: {Math.round(((state.currentQuestion + 1) / questions.length) * 100)}%</span>
               <span>{state.answers.filter(a => a !== null).length} {t('quiz.answered')}</span>
             </div>
@@ -784,7 +784,7 @@ export default function SimpleQuestionSimulator({
                 >
                   <div className="flex items-start gap-3">
                     {iconContent}
-                    <span className={`text-sm leading-relaxed ${
+                    <span className={`text-base leading-relaxed ${
                       showFeedback
                         ? isCorrectOption
                           ? 'text-emerald-800 dark:text-emerald-200 font-medium'
@@ -833,7 +833,7 @@ export default function SimpleQuestionSimulator({
               </div>
 
               <div className="bg-white/60 dark:bg-neutral-800/60 rounded-lg p-3 mb-3">
-                <p className="text-neutral-700 dark:text-neutral-300 text-sm leading-relaxed">
+                <p className="text-neutral-700 dark:text-neutral-300 text-base leading-relaxed">
                   <span className="font-semibold text-neutral-900 dark:text-white">{t('quiz.explanation')}:</span> {currentQ.explanation}
                 </p>
               </div>
@@ -843,7 +843,7 @@ export default function SimpleQuestionSimulator({
                   <svg className="w-5 h-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <p className="text-sm text-emerald-700 dark:text-emerald-300">
+                  <p className="text-base text-emerald-700 dark:text-emerald-300">
                     <span className="font-semibold">{t('quiz.correctAnswer')}:</span> {String.fromCharCode(65 + currentQ.correctAnswer)}) {currentQ.options[currentQ.correctAnswer]}
                   </p>
                 </div>
@@ -872,7 +872,7 @@ export default function SimpleQuestionSimulator({
               <div />
             )}
 
-            <span className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
+            <span className="text-base font-medium text-neutral-500 dark:text-neutral-400">
               {state.currentQuestion + 1} / {questions.length}
             </span>
 

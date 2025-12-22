@@ -108,7 +108,7 @@ export default function LanguageSelector({ currentLang }: LanguageSelectorProps)
                       : 'text-neutral-500 dark:text-neutral-400'
                   }`}>{langCodes[lang]}</span>
                 </div>
-                <span className={`font-medium text-sm transition-all duration-200 ease-linear ${
+                <span className={`font-medium text-base transition-all duration-200 ease-linear ${
                   isActive
                     ? 'text-primary-600 dark:text-primary-400'
                     : 'text-neutral-600 dark:text-neutral-400 group-hover/items:text-primary-500'

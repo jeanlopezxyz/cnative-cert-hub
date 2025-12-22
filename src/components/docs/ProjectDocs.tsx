@@ -208,7 +208,7 @@ export default function ProjectDocs({ lang }: ProjectDocProps) {
         <h1 className="text-xl font-semibold text-neutral-900 dark:text-white mb-1">
           {t('docs.title')}
         </h1>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400">
+        <p className="text-base text-neutral-500 dark:text-neutral-400">
           {t('docs.subtitle')}
         </p>
       </div>
@@ -221,7 +221,7 @@ export default function ProjectDocs({ lang }: ProjectDocProps) {
             href={project.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="group relative bg-white dark:bg-neutral-800 rounded-xl p-4 shadow-sm dark:shadow-neutral-900/50 hover:shadow-md dark:hover:shadow-neutral-900/70 transition-all duration-300 hover:-translate-y-0.5 overflow-hidden border border-transparent dark:border-neutral-700"
+            className="group relative bg-neutral-100 dark:bg-neutral-700/50 rounded-xl p-4 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 overflow-hidden"
           >
             {/* Color overlay on hover */}
             <div className={`absolute inset-0 ${colorStyles[project.color]?.icon || 'bg-blue-500'} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
@@ -238,7 +238,7 @@ export default function ProjectDocs({ lang }: ProjectDocProps) {
               </div>
 
               {/* Category badge - Soft style */}
-              <span className={`text-xs font-semibold px-2.5 py-1 rounded-md ${colorStyles[project.color]?.badge || 'bg-blue-100 text-blue-600'}`}>
+              <span className={`text-base font-semibold px-2.5 py-1 rounded-md ${colorStyles[project.color]?.badge || 'bg-blue-100 text-blue-600'}`}>
                 {t(project.categoryKey)}
               </span>
             </div>
@@ -251,7 +251,7 @@ export default function ProjectDocs({ lang }: ProjectDocProps) {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
               </h3>
-              <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed line-clamp-2">
+              <p className="text-base text-neutral-600 dark:text-neutral-400 leading-relaxed line-clamp-2">
                 {t(project.descKey)}
               </p>
             </div>
@@ -266,7 +266,7 @@ export default function ProjectDocs({ lang }: ProjectDocProps) {
       <div className="flex-grow" />
 
       {/* CNCF Landscape Link */}
-      <div className="mt-12 pt-8 border-t border-neutral-200 dark:border-neutral-700 text-center">
+      <div className="mt-6 pt-4 border-t border-neutral-200 dark:border-neutral-700 text-center">
         <a
           href="https://landscape.cncf.io/"
           target="_blank"
