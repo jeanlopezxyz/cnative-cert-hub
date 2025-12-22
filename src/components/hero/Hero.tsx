@@ -18,15 +18,6 @@ export default function Hero({ lang }: HeroProps) {
           <div className="flex flex-col lg:flex-row">
             {/* Content */}
             <div className="flex-1 p-6 sm:p-8 lg:p-10">
-              {/* Badge - WowDash Style */}
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 mb-5 bg-primary-50 dark:bg-primary-900/20 rounded-full">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-primary-500"></span>
-                </span>
-                <span className="text-sm font-medium text-primary-600 dark:text-primary-400">{t('hero.stats.badge')}</span>
-              </div>
-
               {/* Title */}
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 text-neutral-900 dark:text-white leading-tight">
                 {t('hero.title')}
