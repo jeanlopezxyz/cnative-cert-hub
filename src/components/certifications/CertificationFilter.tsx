@@ -45,19 +45,35 @@ export default function CertificationFilter({
     },
   ];
 
+  const allFilter = filters[0];
+  const levelFilters = filters.slice(1);
+
   return (
-    <div className="flex flex-wrap gap-2 justify-center mb-8">
-      {filters.map(({ value, label, activeClasses, inactiveClasses }) => (
-        <button
-          key={value}
-          onClick={() => onFilterChange(value)}
-          className={`px-4 py-2 rounded-lg font-medium transition-all ${
-            currentFilter === value ? activeClasses : inactiveClasses
-          }`}
-        >
-          {label}
-        </button>
-      ))}
+    <div className="flex flex-col sm:flex-row items-center justify-center gap-2 mb-8">
+      {/* All Levels - own row on mobile */}
+      <button
+        onClick={() => onFilterChange(allFilter.value)}
+        className={`px-4 py-2 rounded-lg font-medium transition-all ${
+          currentFilter === allFilter.value ? allFilter.activeClasses : allFilter.inactiveClasses
+        }`}
+      >
+        {allFilter.label}
+      </button>
+
+      {/* Level filters - second row on mobile */}
+      <div className="flex gap-2">
+        {levelFilters.map(({ value, label, activeClasses, inactiveClasses }) => (
+          <button
+            key={value}
+            onClick={() => onFilterChange(value)}
+            className={`px-4 py-2 rounded-lg font-medium transition-all ${
+              currentFilter === value ? activeClasses : inactiveClasses
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
