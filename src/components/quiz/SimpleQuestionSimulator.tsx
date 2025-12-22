@@ -52,7 +52,20 @@ export default function SimpleQuestionSimulator({
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [copied, setCopied] = useState(false);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+  const [shareToast, setShareToast] = useState<string | null>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
+
+  // Helper to check if native file sharing is supported
+  const canShareFiles = () => {
+    if (!navigator.share || !navigator.canShare) return false;
+    // Test with a dummy file
+    try {
+      const testFile = new File(['test'], 'test.png', { type: 'image/png' });
+      return navigator.canShare({ files: [testFile] });
+    } catch {
+      return false;
+    }
+  };
 
   // Load saved state
   useEffect(() => {
@@ -194,7 +207,7 @@ export default function SimpleQuestionSimulator({
     setShowShareMenu(true);
   };
 
-  const downloadImage = async () => {
+  const downloadImage = async (): Promise<boolean> => {
     const imageBlob = await generateResultImage();
     if (imageBlob) {
       const url = URL.createObjectURL(imageBlob);
@@ -205,27 +218,59 @@ export default function SimpleQuestionSimulator({
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+      return true;
+    }
+    return false;
+  };
+
+  const showToast = (message: string) => {
+    setShareToast(message);
+    setTimeout(() => setShareToast(null), 4000);
+  };
+
+  const shareWithImage = async (platform: 'whatsapp' | 'linkedin' | 'twitter') => {
+    const imageBlob = await generateResultImage();
+    if (!imageBlob) return;
+
+    const file = new File([imageBlob], `${certificationId}-quiz-result.png`, { type: 'image/png' });
+    const shareText = getShareText();
+
+    // Try native share with file first (works on mobile)
+    if (canShareFiles()) {
+      try {
+        await navigator.share({
+          text: shareText,
+          files: [file],
+        });
+        return; // Success - exit early
+      } catch (error) {
+        // User cancelled or error - fall through to web share
+      }
+    }
+
+    // Fallback: Download image and open platform URL
+    await downloadImage();
+    showToast(t('quiz.imageDownloaded'));
+
+    const text = encodeURIComponent(shareText);
+    const url = encodeURIComponent(`https://cncf-certification-hub.pages.dev/${lang}/certifications/${certificationId}`);
+
+    switch (platform) {
+      case 'whatsapp':
+        window.open(`https://wa.me/?text=${text}`, '_blank');
+        break;
+      case 'linkedin':
+        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
+        break;
+      case 'twitter':
+        window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
+        break;
     }
   };
 
-  const shareToWhatsApp = async () => {
-    // Download image first, then open WhatsApp
-    await downloadImage();
-    const text = encodeURIComponent(getShareText());
-    window.open(`https://wa.me/?text=${text}`, '_blank');
-  };
-
-  const shareToLinkedIn = async () => {
-    await downloadImage();
-    const url = encodeURIComponent(`https://cncf-certification-hub.pages.dev/${lang}/certifications/${certificationId}`);
-    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
-  };
-
-  const shareToTwitter = async () => {
-    await downloadImage();
-    const text = encodeURIComponent(getShareText());
-    window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
-  };
+  const shareToWhatsApp = () => shareWithImage('whatsapp');
+  const shareToLinkedIn = () => shareWithImage('linkedin');
+  const shareToTwitter = () => shareWithImage('twitter');
 
   const copyImageToClipboard = async () => {
     try {
@@ -570,6 +615,18 @@ export default function SimpleQuestionSimulator({
             </div>
           </div>
         </div>
+
+        {/* Toast notification */}
+        {shareToast && (
+          <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 animate-pulse">
+            <div className="flex items-center gap-3 px-5 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl shadow-lg shadow-amber-500/30">
+              <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span className="font-medium text-sm">{shareToast}</span>
+            </div>
+          </div>
+        )}
       </div>
     );
   }

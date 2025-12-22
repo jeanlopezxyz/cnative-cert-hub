@@ -744,6 +744,7 @@ export const es = {
   'quiz.copied': '¡Copiado!',
   'quiz.generating': 'Generando...',
   'quiz.downloadImage': 'Descargar Imagen',
+  'quiz.imageDownloaded': '¡Imagen descargada! Adjúntala a tu publicación',
   'quiz.comingSoon': '¡Las preguntas de práctica para esta certificación están llegando pronto!',
   'quiz.studyModeDesc': 'Ver respuestas inmediatamente y aprender mientras avanzas',
   'quiz.examModeDesc': 'Simular condiciones reales de examen',
