@@ -171,11 +171,11 @@
     }
   }
 
-  /* Scroll margin for anchor targets - accounts for fixed header (h-16 = 4rem) */
+  /* Scroll margin for anchor targets - just enough for fixed header (h-16 = 64px) */
   .scroll-section,
   #achievements,
   #certifications {
-    scroll-margin-top: 80px !important;
+    scroll-margin-top: 64px !important;
   }
 }
 
