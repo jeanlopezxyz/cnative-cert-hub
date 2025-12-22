@@ -7,8 +7,8 @@ import path from 'path';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://jeanlopezxyz.github.io',
-  base: '/cnative-cert-hub',
+  site: 'https://cncerthub.xyz',
+  base: '/',
   output: 'static',
   i18n: {
     defaultLocale: "en",

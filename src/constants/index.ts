@@ -5,9 +5,9 @@
 
 export const APP_CONFIG = {
   name: 'Cloud Native Certification Resources Hub',
-  shortName: 'CNative CertHub',
+  shortName: 'CNCertHub',
   description: 'Study guides & exam prep',
-  basePath: '/cnative-cert-hub',
+  basePath: '',
   defaultLanguage: 'en',
 } as const;
 
