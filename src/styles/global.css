@@ -133,14 +133,6 @@
   .animate-fade-in-left,
   .animate-scale-in {
     contain: layout style paint;
-    will-change: opacity, transform;
-  }
-
-  .animate-fade-in:not(:hover),
-  .animate-fade-in-up:not(:hover),
-  .animate-fade-in-left:not(:hover),
-  .animate-scale-in:not(:hover) {
-    will-change: auto;
   }
 
   /* Respect user's motion preferences */
@@ -403,7 +395,6 @@
   /* Subtle parallax effect */
   .parallax-slow {
     transform: translateZ(0);
-    will-change: transform;
   }
 
   /* Card hover lift */
