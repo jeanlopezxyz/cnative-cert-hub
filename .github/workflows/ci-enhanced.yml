@@ -57,26 +57,23 @@ jobs:
         run: npm run coverage || echo "Coverage optional for now"
         continue-on-error: true
 
-  # 3. Build con matrix
+  # 3. Build
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x]
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '20'
           cache: 'npm'
-      
+
       - run: npm ci
-      
+
       - name: Build project
         run: npm run build
-      
+
       - name: Check bundle size
         run: |
           echo "📦 Bundle Analysis:"
@@ -86,9 +83,8 @@ jobs:
           echo ""
           echo "Largest files:"
           find dist -name "*.js" -o -name "*.css" | xargs du -sh | sort -rh | head -10
-      
+
       - name: Upload build artifacts
-        if: matrix.node-version == '20.x'
         uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
