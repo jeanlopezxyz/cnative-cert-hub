@@ -27,28 +27,23 @@ export default function LanguageSelector({ currentLang }: LanguageSelectorProps)
     const path = window.location.pathname;
     const segments = path.split('/').filter(Boolean);
 
-    // Remove base path if exists
-    if (segments[0] === 'cnative-cert-hub') {
-      segments.shift();
-    }
-
     // Remove current language if it exists
     if (segments[0] && Object.keys(languages).includes(segments[0])) {
       segments.shift();
     }
 
-    // Build new path with base
-    let newPath = '/cnative-cert-hub';
+    // Build new path
+    let newPath = '';
     if (lang !== 'en') {
-      newPath += '/' + lang;
+      newPath = '/' + lang;
     }
     if (segments.length > 0) {
       newPath += '/' + segments.join('/');
     }
 
-    // Add trailing slash for index pages
-    if (segments.length === 0 || segments[0] === '') {
-      newPath += '/';
+    // Add trailing slash for index pages or ensure root path
+    if (!newPath || segments.length === 0) {
+      newPath = newPath || '/';
     }
 
     // Use Astro's navigate for View Transitions
