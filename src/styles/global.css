@@ -171,12 +171,6 @@
     }
   }
 
-  /* Scroll margin for anchor targets - just enough for fixed header (h-16 = 64px) */
-  .scroll-section,
-  #achievements,
-  #certifications {
-    scroll-margin-top: 64px !important;
-  }
 }
 
 @layer components {

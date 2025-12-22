@@ -38,7 +38,7 @@ export default function AchievementPrograms({ lang }: AchievementProgramsProps) 
   ];
 
   return (
-    <section className="pt-4 pb-6 sm:pt-6 sm:pb-8">
+    <section className="pb-6 sm:pb-8">
       <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-8 2xl:px-12 3xl:px-16">
         {/* Section Header - Same style as CertificationGrid */}
         <div className="text-center mb-8">
