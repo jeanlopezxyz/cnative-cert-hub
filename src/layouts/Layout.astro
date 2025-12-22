@@ -339,10 +339,11 @@ const hreflangUrls = {
       // Function to setup mobile menu toggle
       function setupMobileMenuToggle() {
         var btn = document.getElementById('mobile-menu-btn');
-        if (btn) {
-          // Remove any existing listener to avoid duplicates
-          btn.replaceWith(btn.cloneNode(true));
-          document.getElementById('mobile-menu-btn')?.addEventListener('click', function() {
+        if (btn && !btn.hasAttribute('data-listener-attached')) {
+          btn.setAttribute('data-listener-attached', 'true');
+          btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
             window.dispatchEvent(new CustomEvent('toggle-mobile-sidebar'));
           });
         }
@@ -350,6 +351,21 @@ const hreflangUrls = {
 
       // Setup on initial load
       setupMobileMenuToggle();
+
+      // Re-setup after View Transitions
+      document.addEventListener('astro:page-load', setupMobileMenuToggle);
+      document.addEventListener('astro:after-swap', setupMobileMenuToggle);
+
+      // Re-setup after theme changes (MutationObserver on html class)
+      var themeObserver = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          if (mutation.attributeName === 'class') {
+            // Small delay to ensure DOM is ready
+            setTimeout(setupMobileMenuToggle, 50);
+          }
+        });
+      });
+      themeObserver.observe(document.documentElement, { attributes: true });
     </script>
     
     <div class="min-h-screen">

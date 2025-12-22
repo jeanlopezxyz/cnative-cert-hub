@@ -84,9 +84,27 @@ export default function Sidebar({ lang }: SidebarProps) {
 
   // Listen for mobile sidebar toggle from header
   useEffect(() => {
-    const handleToggle = () => setIsMobileOpen(prev => !prev);
+    const handleToggle = () => {
+      setIsMobileOpen(prev => !prev);
+    };
+
+    // Add listener immediately
     window.addEventListener('toggle-mobile-sidebar', handleToggle);
-    return () => window.removeEventListener('toggle-mobile-sidebar', handleToggle);
+
+    // Also re-add after View Transitions
+    const reattachListener = () => {
+      window.removeEventListener('toggle-mobile-sidebar', handleToggle);
+      window.addEventListener('toggle-mobile-sidebar', handleToggle);
+    };
+
+    document.addEventListener('astro:page-load', reattachListener);
+    document.addEventListener('astro:after-swap', reattachListener);
+
+    return () => {
+      window.removeEventListener('toggle-mobile-sidebar', handleToggle);
+      document.removeEventListener('astro:page-load', reattachListener);
+      document.removeEventListener('astro:after-swap', reattachListener);
+    };
   }, []);
 
   // Close mobile sidebar on link click
