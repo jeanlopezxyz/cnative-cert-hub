@@ -68,6 +68,10 @@ const hreflangUrls = {
         }
         document.documentElement.classList.remove('dark', 'light');
         document.documentElement.classList.add(theme);
+        // Disable backdrop-filter in Firefox to avoid APZ scroll-linked warnings
+        if (navigator.userAgent.indexOf('Firefox') > -1) {
+          document.documentElement.classList.add('no-backdrop-filter');
+        }
       })();
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
