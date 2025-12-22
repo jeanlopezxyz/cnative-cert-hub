@@ -39,7 +39,7 @@ export default function CertificationGrid({ lang }: CertificationGridProps) {
   const filteredCerts = [...kubestronautCerts, ...otherCerts, ...lfcsCert];
 
   return (
-    <section id="certifications" className="pt-4 pb-12 sm:pt-6 sm:pb-16 scroll-section">
+    <section className="pt-4 pb-12 sm:pt-6 sm:pb-16">
       <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-8 2xl:px-12 3xl:px-16">
         <CertificationHeader t={t} />
 
@@ -68,7 +68,7 @@ export default function CertificationGrid({ lang }: CertificationGridProps) {
 function CertificationHeader({ t }: { t: (key: string) => string }) {
   return (
     <div className="text-center mb-8 animate-fade-in-up">
-      <h2 className="text-xl sm:text-2xl font-bold mb-2 text-neutral-900 dark:text-white">
+      <h2 id="certifications" className="text-xl sm:text-2xl font-bold mb-2 text-neutral-900 dark:text-white scroll-section">
         {t('certifications.title')}
       </h2>
       <p className="text-base text-neutral-600 dark:text-neutral-400 max-w-3xl mx-auto">

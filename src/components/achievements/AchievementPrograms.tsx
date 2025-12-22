@@ -38,11 +38,11 @@ export default function AchievementPrograms({ lang }: AchievementProgramsProps) 
   ];
 
   return (
-    <section id="achievements" className="pt-4 pb-6 sm:pt-6 sm:pb-8 scroll-section">
+    <section className="pt-4 pb-6 sm:pt-6 sm:pb-8">
       <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-8 2xl:px-12 3xl:px-16">
         {/* Section Header - Same style as CertificationGrid */}
         <div className="text-center mb-8">
-          <h2 className="text-xl sm:text-2xl font-bold mb-2 text-neutral-900 dark:text-white">
+          <h2 id="achievements" className="text-xl sm:text-2xl font-bold mb-2 text-neutral-900 dark:text-white scroll-section">
             {t('achievements.programs.title')}
           </h2>
           <p className="text-base text-neutral-600 dark:text-neutral-400 max-w-3xl mx-auto">
