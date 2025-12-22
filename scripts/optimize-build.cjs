@@ -23,29 +23,29 @@ function log(color, message) {
 
 /**
  * Optimize HTML files
+ * Note: We avoid aggressive minification that could break inline scripts
  */
 function optimizeHTML(dir) {
   const files = fs.readdirSync(dir, { withFileTypes: true });
   let optimizedCount = 0;
-  
+
   for (const file of files) {
     const fullPath = path.join(dir, file.name);
-    
+
     if (file.isDirectory()) {
       optimizedCount += optimizeHTML(fullPath);
     } else if (file.name.endsWith('.html')) {
       let content = fs.readFileSync(fullPath, 'utf8');
       const originalSize = content.length;
-      
-      // Remove unnecessary whitespace
-      content = content.replace(/\s+/g, ' ');
-      content = content.replace(/> </g, '><');
-      content = content.replace(/<!--[\s\S]*?-->/g, '');
-      
-      // Remove empty attributes
+
+      // Only remove HTML comments (not inside scripts)
+      // Use a safer approach that preserves script content
+      content = content.replace(/<!--(?![^>]*<script)[\s\S]*?-->/g, '');
+
+      // Remove empty attributes (safe operation)
       content = content.replace(/\s+(?:class|id|style)=""/g, '');
-      
-      // Optimize inline styles
+
+      // Optimize inline styles (safe operation)
       content = content.replace(/style="([^"]*)"/g, (match, styles) => {
         const optimized = styles
           .replace(/\s*:\s*/g, ':')
@@ -53,7 +53,7 @@ function optimizeHTML(dir) {
           .replace(/;$/, '');
         return `style="${optimized}"`;
       });
-      
+
       const newSize = content.length;
       if (newSize < originalSize) {
         fs.writeFileSync(fullPath, content);
@@ -61,7 +61,7 @@ function optimizeHTML(dir) {
       }
     }
   }
-  
+
   return optimizedCount;
 }
 
