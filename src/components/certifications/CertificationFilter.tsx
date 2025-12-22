@@ -50,18 +50,20 @@ export default function CertificationFilter({
 
   return (
     <div className="flex flex-col sm:flex-row items-center justify-center gap-2 mb-8">
-      {/* All Levels - own row on mobile */}
-      <button
-        onClick={() => onFilterChange(allFilter.value)}
-        className={`px-4 py-2 rounded-lg font-medium transition-all ${
-          currentFilter === allFilter.value ? allFilter.activeClasses : allFilter.inactiveClasses
-        }`}
-      >
-        {allFilter.label}
-      </button>
+      {/* All Levels - own row on mobile, centered */}
+      <div className="flex justify-center w-full sm:w-auto">
+        <button
+          onClick={() => onFilterChange(allFilter.value)}
+          className={`px-4 py-2 rounded-lg font-medium transition-all ${
+            currentFilter === allFilter.value ? allFilter.activeClasses : allFilter.inactiveClasses
+          }`}
+        >
+          {allFilter.label}
+        </button>
+      </div>
 
-      {/* Level filters - second row on mobile */}
-      <div className="flex gap-2">
+      {/* Level filters - second row on mobile, centered */}
+      <div className="flex justify-center gap-2 w-full sm:w-auto">
         {levelFilters.map(({ value, label, activeClasses, inactiveClasses }) => (
           <button
             key={value}
