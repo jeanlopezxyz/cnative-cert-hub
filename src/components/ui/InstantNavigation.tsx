@@ -1,19 +1,7 @@
 import { useEffect } from 'react';
 
-// Get the base path from the current URL or use default
-const getBasePath = () => {
-  if (typeof window === 'undefined') return '/cnative-cert-hub';
-  // Extract base path from current location
-  const pathParts = window.location.pathname.split('/');
-  if (pathParts[1] === 'cnative-cert-hub') {
-    return '/cnative-cert-hub';
-  }
-  return '';
-};
-
 export const InstantNavigation: React.FC = () => {
   useEffect(() => {
-    const basePath = getBasePath();
     const prefetchedUrls = new Set<string>();
 
     // Preload navigation links on hover

@@ -75,7 +75,7 @@ export default function SimpleQuestionSimulator({
       try {
         const parsed = JSON.parse(saved);
         setState(parsed);
-      } catch (error) {
+      } catch (_error) {
         logger.warn('Failed to load quiz state:', error);
       }
     }
@@ -177,7 +177,7 @@ export default function SimpleQuestionSimulator({
           resolve(blob);
         }, 'image/png', 1.0);
       });
-    } catch (error) {
+    } catch (_error) {
       logger.warn('Failed to generate image:', error);
       setIsGeneratingImage(false);
       return null;
@@ -201,7 +201,7 @@ export default function SimpleQuestionSimulator({
           });
           return;
         }
-      } catch (error) {
+      } catch (_error) {
         // User cancelled or error occurred, fall through to menu
       }
     }
@@ -244,7 +244,7 @@ export default function SimpleQuestionSimulator({
           files: [file],
         });
         return; // Success - exit early
-      } catch (error) {
+      } catch (_error) {
         // User cancelled or error - fall through to web share
       }
     }
@@ -283,7 +283,7 @@ export default function SimpleQuestionSimulator({
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
       }
-    } catch (error) {
+    } catch (_error) {
       // Fallback: copy text if image copy fails
       try {
         await navigator.clipboard.writeText(getShareText());

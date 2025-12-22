@@ -27,7 +27,9 @@ function getStoredValue<T>(key: string, defaultValue: T): T {
   try {
     const saved = localStorage.getItem(key);
     if (saved !== null) return JSON.parse(saved);
-  } catch {}
+  } catch {
+    // Silently fail for localStorage errors (e.g., private browsing)
+  }
   return defaultValue;
 }
 
@@ -35,7 +37,9 @@ function getStoredValue<T>(key: string, defaultValue: T): T {
 function saveToStorage(key: string, value: unknown): void {
   try {
     localStorage.setItem(key, JSON.stringify(value));
-  } catch {}
+  } catch {
+    // Silently fail for localStorage errors (e.g., private browsing)
+  }
 }
 
 export default function Sidebar({ lang }: SidebarProps) {

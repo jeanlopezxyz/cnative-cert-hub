@@ -37,13 +37,6 @@ interface BestPractice {
   items: BestPracticeItem[];
 }
 
-interface SubCategoryConfig {
-  id: SubCategoryType;
-  labelKey: string;
-  icon: React.ReactNode;
-  practices: BestPractice[];
-}
-
 interface MainCategoryConfig {
   id: MainCategoryType;
   labelKey: string;

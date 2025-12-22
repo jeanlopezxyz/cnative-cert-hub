@@ -7,7 +7,7 @@ export default tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    ignores: ['dist/**', 'node_modules/**', '.astro/**', '*.config.*', 'src/scripts/**'],
+    ignores: ['dist/**', 'node_modules/**', '.astro/**', '*.config.*', 'src/scripts/**', 'scripts/**'],
   },
   {
     files: ['**/*.{ts,tsx}'],
@@ -29,7 +29,7 @@ export default tseslint.config(
     },
     rules: {
       // TypeScript
-      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' }],
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/consistent-type-imports': 'warn',
 

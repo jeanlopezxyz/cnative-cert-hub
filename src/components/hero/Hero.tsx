@@ -1,5 +1,4 @@
 import { useTranslations } from '../../i18n/utils';
-import { APP_CONFIG } from '../../constants';
 
 import type { ui } from '../../i18n/ui';
 
