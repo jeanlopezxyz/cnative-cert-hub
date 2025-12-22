@@ -22,7 +22,7 @@ export default function AchievementPrograms({ lang }: AchievementProgramsProps) 
       href: `${basePath}${langPath}/achievements/kubestronaut`,
       bgColor: 'bg-blue-50 dark:bg-blue-900/30',
       iconBg: 'bg-blue-600',
-      textColor: 'text-blue-600 dark:text-blue-400',
+      textColor: 'text-blue-700 dark:text-blue-300',
       subtextColor: 'text-neutral-600 dark:text-neutral-300',
     },
     {
@@ -32,7 +32,7 @@ export default function AchievementPrograms({ lang }: AchievementProgramsProps) 
       href: `${basePath}${langPath}/achievements/golden-kubestronaut`,
       bgColor: 'bg-amber-50 dark:bg-amber-900/30',
       iconBg: 'bg-amber-500',
-      textColor: 'text-amber-600 dark:text-amber-400',
+      textColor: 'text-amber-700 dark:text-amber-300',
       subtextColor: 'text-neutral-600 dark:text-neutral-300',
     },
   ];
@@ -45,7 +45,7 @@ export default function AchievementPrograms({ lang }: AchievementProgramsProps) 
           <h2 id="achievements" className="text-xl sm:text-2xl font-bold mb-2 text-neutral-900 dark:text-white scroll-section">
             {t('achievements.programs.title')}
           </h2>
-          <p className="text-base text-neutral-600 dark:text-neutral-400 max-w-3xl mx-auto">
+          <p className="text-base text-neutral-700 dark:text-neutral-300 max-w-3xl mx-auto">
             {t('achievements.programs.subtitle')}
           </p>
         </div>

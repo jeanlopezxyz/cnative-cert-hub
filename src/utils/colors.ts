@@ -14,22 +14,22 @@ export interface LevelColors {
 export const LEVEL_COLORS: Record<string, LevelColors> = {
   entry: {
     bg: 'bg-emerald-50 dark:bg-emerald-600/20',
-    text: 'text-emerald-600 dark:text-emerald-400',
+    text: 'text-emerald-700 dark:text-emerald-300',
     icon: 'bg-emerald-600',
   },
   intermediate: {
     bg: 'bg-blue-50 dark:bg-blue-600/20',
-    text: 'text-blue-600 dark:text-blue-400',
+    text: 'text-blue-700 dark:text-blue-300',
     icon: 'bg-blue-600',
   },
   advanced: {
     bg: 'bg-violet-50 dark:bg-violet-600/20',
-    text: 'text-violet-600 dark:text-violet-400',
+    text: 'text-violet-700 dark:text-violet-300',
     icon: 'bg-violet-600',
   },
   expert: {
     bg: 'bg-amber-50 dark:bg-amber-500/20',
-    text: 'text-amber-600 dark:text-amber-400',
+    text: 'text-amber-700 dark:text-amber-300',
     icon: 'bg-amber-500',
   },
 };

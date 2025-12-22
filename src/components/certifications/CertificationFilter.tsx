@@ -23,25 +23,25 @@ export default function CertificationFilter({
       value: 'all',
       label: t('certifications.filter.all'),
       activeClasses: 'bg-neutral-700 dark:bg-neutral-600 text-white shadow-lg shadow-neutral-500/25',
-      inactiveClasses: 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700',
+      inactiveClasses: 'bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700',
     },
     {
       value: 'entry',
       label: t('certifications.filter.entry'),
       activeClasses: 'bg-emerald-600 text-white shadow-lg shadow-emerald-500/25',
-      inactiveClasses: 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-800/40',
+      inactiveClasses: 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-800/40',
     },
     {
       value: 'intermediate',
       label: t('certifications.filter.intermediate'),
       activeClasses: 'bg-blue-600 text-white shadow-lg shadow-blue-500/25',
-      inactiveClasses: 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-800/40',
+      inactiveClasses: 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-800/40',
     },
     {
       value: 'advanced',
       label: t('certifications.filter.advanced'),
       activeClasses: 'bg-violet-600 text-white shadow-lg shadow-violet-500/25',
-      inactiveClasses: 'bg-violet-50 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 hover:bg-violet-100 dark:hover:bg-violet-800/40',
+      inactiveClasses: 'bg-violet-50 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 hover:bg-violet-100 dark:hover:bg-violet-800/40',
     },
   ];
 
