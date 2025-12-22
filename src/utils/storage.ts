@@ -53,10 +53,18 @@ class OptimizedStorage {
   }
 
   /**
+   * Check if we're in a browser environment
+   */
+  private isBrowser(): boolean {
+    return typeof window !== 'undefined' && typeof localStorage !== 'undefined';
+  }
+
+  /**
    * Get item with error handling and sanitization
    */
   getItem(key: string): string | null {
     try {
+      if (!this.isBrowser()) return null;
       if (typeof key !== 'string' || key.length > 100) {
         return null;
       }
@@ -74,6 +82,7 @@ class OptimizedStorage {
    */
   setItem(key: string, value: string): boolean {
     try {
+      if (!this.isBrowser()) return false;
       if (typeof key !== 'string' || typeof value !== 'string') {
         return false;
       }
@@ -91,6 +100,7 @@ class OptimizedStorage {
    */
   removeItem(key: string): boolean {
     try {
+      if (!this.isBrowser()) return false;
       localStorage.removeItem(key);
       return true;
     } catch (error) {
@@ -151,6 +161,7 @@ class OptimizedStorage {
 
   private flushBatch(): void {
     if (this.batchedUpdates.size === 0) return;
+    if (!this.isBrowser()) return;
 
     try {
       // Sort by timestamp to maintain order

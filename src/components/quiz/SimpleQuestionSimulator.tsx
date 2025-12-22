@@ -57,6 +57,7 @@ export default function SimpleQuestionSimulator({
 
   // Helper to check if native file sharing is supported
   const canShareFiles = () => {
+    if (typeof window === 'undefined' || typeof navigator === 'undefined') return false;
     if (!navigator.share || !navigator.canShare) return false;
     // Test with a dummy file
     try {

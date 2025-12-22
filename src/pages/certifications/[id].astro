@@ -16,5 +16,5 @@ const lang = getLangFromUrl(Astro.url);
 ---
 
 <Layout title={certification.name} showSidebar={true}>
-  <CertificationStudyGuide client:load certification={certification} lang={lang} />
+  <CertificationStudyGuide client:only="react" certification={certification} lang={lang} />
 </Layout>
