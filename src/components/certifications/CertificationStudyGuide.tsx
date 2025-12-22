@@ -742,23 +742,23 @@ export default function CertificationStudyGuide({
                                       className="group flex items-start gap-3 p-3 bg-white/80 dark:bg-neutral-800/50 hover:bg-white dark:hover:bg-neutral-800 rounded-lg transition-all"
                                     >
                                       <div className="flex-1 min-w-0">
-                                        <div className={`text-base font-medium text-neutral-800 dark:text-neutral-100 group-hover:${colors.text} transition-colors truncate`}>
+                                        <div className={`text-sm sm:text-base font-medium text-neutral-800 dark:text-neutral-100 group-hover:${colors.text} transition-colors`}>
                                           {resource.title}
                                         </div>
                                         {getStringProperty(resource, 'author') && (
-                                          <div className="text-base text-neutral-500 dark:text-neutral-400 mt-0.5">
+                                          <div className="text-xs sm:text-sm text-neutral-500 dark:text-neutral-400 mt-0.5">
                                             {t('certification.by')}{' '}
                                             {getStringProperty(resource, 'author')}
                                           </div>
                                         )}
-                                        <div className="flex flex-wrap items-center gap-2 mt-2">
+                                        <div className="flex flex-wrap items-center gap-1.5 mt-2">
                                           {getBooleanProperty(resource, 'isPaid') && (
-                                            <span className="px-2 py-0.5 bg-neutral-200 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300 text-base font-semibold rounded">
+                                            <span className="px-1.5 py-0.5 bg-neutral-200 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300 text-xs font-semibold rounded">
                                               {t('certification.paid')}
                                             </span>
                                           )}
                                           {getStringProperty(resource, 'difficulty') && (
-                                            <span className="px-2 py-0.5 bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 text-base font-semibold rounded">
+                                            <span className="px-1.5 py-0.5 bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 text-xs font-semibold rounded">
                                               {getStringProperty(resource, 'difficulty') === 'beginner'
                                                 ? t('certification.beginner')
                                                 : getStringProperty(resource, 'difficulty') === 'intermediate'
@@ -767,13 +767,13 @@ export default function CertificationStudyGuide({
                                             </span>
                                           )}
                                           {getStringProperty(resource, 'duration') && (
-                                            <span className="text-base text-neutral-500 dark:text-neutral-400">
+                                            <span className="text-xs text-neutral-500 dark:text-neutral-400">
                                               {getStringProperty(resource, 'duration')}
                                             </span>
                                           )}
                                         </div>
                                         {resource.description && (
-                                          <p className="text-base text-neutral-500 dark:text-neutral-400 mt-2 line-clamp-2">
+                                          <p className="text-xs sm:text-sm text-neutral-500 dark:text-neutral-400 mt-2">
                                             {resource.description}
                                           </p>
                                         )}
