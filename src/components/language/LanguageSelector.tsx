@@ -97,7 +97,7 @@ export default function LanguageSelector({ currentLang }: LanguageSelectorProps)
                     ? 'bg-primary-100 dark:bg-primary-600/30'
                     : 'bg-neutral-100 dark:bg-neutral-700'
                 }`}>
-                  <span className={`text-[10px] font-bold ${
+                  <span className={`text-xs font-bold ${
                     isActive
                       ? 'text-primary-600 dark:text-primary-400'
                       : 'text-neutral-500 dark:text-neutral-400'

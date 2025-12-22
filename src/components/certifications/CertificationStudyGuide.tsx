@@ -206,7 +206,7 @@ export default function CertificationStudyGuide({
                     {activeTab === 'resources' && t('certification.studyResources')}
                     {activeTab === 'path' && t('certification.practiceQuestions')}
                   </span>
-                  <span className="block text-[11px] text-neutral-500 dark:text-neutral-400 mt-0.5">
+                  <span className="block text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
                     {t('certification.tapToChange')}
                   </span>
                 </div>

@@ -55,11 +55,11 @@ const Badge: React.FC<BadgeProps> = ({
   const getSizeClasses = () => {
     switch (size) {
       case 'small':
-        return 'text-[10px] md:text-xs px-1.5 md:px-2 py-0.5 md:py-1 rounded-sm md:rounded-md';
+        return 'text-xs px-1.5 md:px-2 py-0.5 md:py-1 rounded-sm md:rounded-md';
       case 'large':
         return 'text-sm md:text-base px-3 md:px-4 py-1.5 md:py-2 rounded-md md:rounded-lg';
       default:
-        return 'text-xs px-2 py-1 rounded-md';
+        return 'text-sm px-2 py-1 rounded-md';
     }
   };
 

@@ -544,7 +544,7 @@ export default function SearchBar({ lang }: SearchBarProps) {
                       {(suggestion.level || suggestion.category) && (
                         <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
                           {suggestion.level && (
-                            <span className={`px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide rounded-full ${
+                            <span className={`px-2 py-0.5 text-xs font-semibold uppercase tracking-wide rounded-full ${
                               suggestion.level === 'entry'
                                 ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400'
                                 : suggestion.level === 'intermediate'
@@ -555,7 +555,7 @@ export default function SearchBar({ lang }: SearchBarProps) {
                             </span>
                           )}
                           {suggestion.category && (
-                            <span className="px-2 py-0.5 text-[10px] font-medium bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-400 rounded-full">
+                            <span className="px-2 py-0.5 text-xs font-medium bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-400 rounded-full">
                               {suggestion.category}
                             </span>
                           )}

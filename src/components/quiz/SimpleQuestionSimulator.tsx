@@ -752,7 +752,7 @@ export default function SimpleQuestionSimulator({
                   optionClasses = 'border-neutral-200 dark:border-neutral-600 bg-neutral-50 dark:bg-neutral-700/50 opacity-60';
                   iconContent = (
                     <div className="w-7 h-7 rounded-full bg-neutral-200 dark:bg-neutral-600 flex items-center justify-center">
-                      <span className="text-xs font-bold text-neutral-500 dark:text-neutral-400">{String.fromCharCode(65 + index)}</span>
+                      <span className="text-sm font-bold text-neutral-500 dark:text-neutral-400">{String.fromCharCode(65 + index)}</span>
                     </div>
                   );
                 }
@@ -762,7 +762,7 @@ export default function SimpleQuestionSimulator({
                   optionClasses = 'border-primary-500 bg-primary-50 dark:bg-primary-900/30 ring-2 ring-primary-500/20';
                   iconContent = (
                     <div className="w-7 h-7 rounded-full bg-primary-500 flex items-center justify-center">
-                      <span className="text-xs font-bold text-white">{String.fromCharCode(65 + index)}</span>
+                      <span className="text-sm font-bold text-white">{String.fromCharCode(65 + index)}</span>
                     </div>
                   );
                 } else {

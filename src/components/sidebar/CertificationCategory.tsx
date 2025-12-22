@@ -63,7 +63,7 @@ export default function CertificationCategory({
         <div className="flex items-center gap-2">
           {/* Count Badge */}
           <span className={`
-            text-[11px] font-semibold min-w-[20px] text-center px-1.5 py-0.5 rounded-full
+            text-xs font-semibold min-w-[20px] text-center px-1.5 py-0.5 rounded-full
             ${isOpen || hasActiveChild
               ? 'bg-primary-100 dark:bg-primary-900/50 text-primary-600 dark:text-primary-400'
               : 'bg-neutral-200 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-400'
@@ -114,7 +114,7 @@ export default function CertificationCategory({
                   <span className="flex-1 font-medium">{cert.acronym}</span>
                   {cert.isNew && (
                     <span className={`
-                      text-[10px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider
+                      text-xs font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider
                       ${isActive
                         ? 'bg-white/20 text-white'
                         : 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400'
