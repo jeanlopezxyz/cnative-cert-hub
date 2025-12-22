@@ -171,10 +171,11 @@
     }
   }
 
-  /* Optimized scroll margin - must account for fixed header (h-16 = 4rem) + extra space */
-  .scroll-section {
-    scroll-margin-top: 6rem;
-    contain: layout;
+  /* Scroll margin for anchor targets - accounts for fixed header (h-16 = 4rem) */
+  .scroll-section,
+  #achievements,
+  #certifications {
+    scroll-margin-top: 80px !important;
   }
 }
 
