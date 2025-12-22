@@ -560,16 +560,16 @@ export default function CertificationStudyGuide({
                           <div className="flex-1 min-w-0">
                             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                               {/* Domain Name */}
-                              <h4 className={`text-base font-semibold ${colors.text} transition-colors`}>
+                              <h4 className={`text-base sm:text-lg font-semibold ${colors.text} transition-colors`}>
                                 {domain.name}
                               </h4>
 
                               {/* Info Pills + Arrow */}
                               <div className="flex items-center gap-2 flex-shrink-0">
-                                <span className={`inline-flex items-center px-2 py-0.5 ${colors.badge} text-base font-medium rounded`}>
+                                <span className={`inline-flex items-center px-2 py-0.5 ${colors.badge} text-sm font-medium rounded`}>
                                   {domain.weight}%
                                 </span>
-                                <span className="inline-flex items-center px-2 py-0.5 bg-white/60 dark:bg-neutral-900/40 text-neutral-500 dark:text-neutral-400 text-base rounded">
+                                <span className="inline-flex items-center px-2 py-0.5 bg-white/60 dark:bg-neutral-900/40 text-neutral-500 dark:text-neutral-400 text-sm rounded">
                                   {domain.topics.length} {t('certification.topics')}
                                 </span>
                                 <div className="p-1.5 rounded-lg bg-white/60 dark:bg-neutral-900/40 transition-colors">
