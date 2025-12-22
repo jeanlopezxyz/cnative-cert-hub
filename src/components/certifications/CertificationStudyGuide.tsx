@@ -709,9 +709,9 @@ export default function CertificationStudyGuide({
                               onClick={() => toggleResourceCategory(section.id)}
                               className="w-full px-4 py-3 flex items-center justify-between transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-600"
                             >
-                              <h4 className={`text-lg font-semibold ${colors.text} flex items-center gap-2`}>
+                              <h4 className={`text-base sm:text-lg font-semibold ${colors.text} flex items-center gap-2`}>
                                 {section.title}
-                                <span className="text-lg text-neutral-500 dark:text-neutral-400 font-normal">
+                                <span className="text-xs sm:text-sm text-neutral-500 dark:text-neutral-400 font-normal">
                                   ({section.resources.length})
                                 </span>
                               </h4>
@@ -792,7 +792,7 @@ export default function CertificationStudyGuide({
                                     <div className="text-center pt-2">
                                       <button
                                         onClick={() => toggleSection(section.id)}
-                                        className={`text-base ${colors.text} hover:opacity-80 transition-colors`}
+                                        className={`text-xs sm:text-sm ${colors.text} hover:opacity-80 transition-colors`}
                                       >
                                         {t('certification.showMore')} {section.resources.length - 3}...
                                       </button>
@@ -802,7 +802,7 @@ export default function CertificationStudyGuide({
                                     <div className="text-center pt-2">
                                       <button
                                         onClick={() => toggleSection(section.id)}
-                                        className={`text-base ${colors.text} hover:opacity-80 transition-colors`}
+                                        className={`text-xs sm:text-sm ${colors.text} hover:opacity-80 transition-colors`}
                                       >
                                         {t('certification.showLess')}
                                       </button>
