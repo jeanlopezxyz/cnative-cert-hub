@@ -233,6 +233,10 @@ export default function ProjectDocs({ lang }: ProjectDocProps) {
                 <img
                   src={`${APP_CONFIG.basePath}${project.logo}`}
                   alt={`${project.name} logo`}
+                  width={48}
+                  height={48}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-contain"
                 />
               </div>

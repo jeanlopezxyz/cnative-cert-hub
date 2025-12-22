@@ -77,6 +77,25 @@ const hreflangUrls = {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
 
+    <!-- Security Headers (meta-based for GitHub Pages compatibility) -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()" />
+
+    <!-- Content Security Policy - Balanced security for functionality -->
+    <meta http-equiv="Content-Security-Policy" content="
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com;
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+      font-src 'self' https://fonts.gstatic.com;
+      img-src 'self' data: https: blob:;
+      connect-src 'self' https:;
+      frame-ancestors 'none';
+      base-uri 'self';
+      form-action 'self';
+    " />
+
     <!-- Primary Meta Tags -->
     <title>{title} | Cloud Native Certification Resources Hub</title>
     <meta name="title" content={`${title} | Cloud Native Certification Resources Hub`} />
@@ -84,7 +103,8 @@ const hreflangUrls = {
     <meta name="keywords" content="CNCF, Kubernetes, CKA, CKAD, CKS, KCNA, KCSA, certification, cloud native, DevOps, container, exam preparation" />
     <meta name="author" content="CNCertHub" />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#1E50D9" />
+    <meta name="theme-color" content="#1E50D9" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0F172A" media="(prefers-color-scheme: dark)" />
 
     <!-- Canonical URL -->
     <link rel="canonical" href={canonicalURL} />
@@ -120,15 +140,23 @@ const hreflangUrls = {
 
     <!-- View Transitions with instant swap -->
     <ViewTransitions />
-    
+
+    <!-- Performance: DNS Prefetch for external resources -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+
     <!-- Optimized font loading: preconnect + preload + display=swap for best performance -->
     <!-- Preconnect establishes early connections to font servers -->
     <link rel="preconnect" href={EXTERNAL_URLS.fonts.googleapis} />
     <link rel="preconnect" href={EXTERNAL_URLS.fonts.gstatic} crossorigin />
 
+    <!-- Preload critical font CSS for faster LCP -->
+    <link rel="preload" href={EXTERNAL_URLS.fonts.googleFontsCss} as="style" />
+
     <!-- Load Google Fonts CSS with display=swap for faster rendering -->
     <!-- Using variable fonts reduces HTTP requests and provides smooth weight transitions -->
-    <link href={EXTERNAL_URLS.fonts.googleFontsCss} rel="stylesheet" />
+    <link href={EXTERNAL_URLS.fonts.googleFontsCss} rel="stylesheet" media="print" onload="this.media='all'" />
+    <noscript><link href={EXTERNAL_URLS.fonts.googleFontsCss} rel="stylesheet" /></noscript>
     
     <!-- Note: Astro automatically handles preloading of compiled assets -->
 
