@@ -334,8 +334,12 @@ const hreflangUrls = {
     </header>
 
     <!-- Mobile Menu Toggle Script - Pure DOM approach for resilience -->
-    <script is:inline>
+    <script is:inline data-astro-rerun>
       (function() {
+        // Prevent duplicate listeners
+        if (window._mobileMenuInitialized) return;
+        window._mobileMenuInitialized = true;
+
         // Toggle mobile sidebar - uses body class for state
         function toggleMobileSidebar() {
           document.body.classList.toggle('mobile-sidebar-open');
@@ -380,6 +384,18 @@ const hreflangUrls = {
 
         // Use single document-level listener (survives View Transitions)
         document.addEventListener('click', handleClick, true);
+
+        // Also add direct listener to hamburger button as fallback
+        document.addEventListener('DOMContentLoaded', function() {
+          var menuBtn = document.getElementById('mobile-menu-btn');
+          if (menuBtn) {
+            menuBtn.addEventListener('click', function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              toggleMobileSidebar();
+            });
+          }
+        });
 
         // Close sidebar on navigation
         document.addEventListener('astro:before-swap', closeMobileSidebar);
