@@ -30,18 +30,18 @@ export default function Hero({ lang }: HeroProps) {
 
               {/* Buttons - More prominent CTAs */}
               <div className="flex flex-col sm:flex-row gap-3">
-                <a
-                  href="#achievements"
+                <button
+                  onClick={() => document.getElementById('achievements')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
                   className="inline-flex items-center justify-center px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl transition-all duration-200 hover:scale-105 shadow-lg shadow-primary-600/30"
                 >
                   {t('hero.cta.programs')}
-                </a>
-                <a
-                  href="#certifications"
+                </button>
+                <button
+                  onClick={() => document.getElementById('certifications')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
                   className="inline-flex items-center justify-center px-6 py-3 bg-primary-100 dark:bg-primary-800/30 text-primary-700 dark:text-primary-300 font-semibold rounded-xl hover:bg-primary-200 dark:hover:bg-primary-800/50 transition-all duration-200"
                 >
                   {t('hero.cta.certifications')}
-                </a>
+                </button>
                 <a
                   href="https://www.cncf.io/training/certification/"
                   target="_blank"
