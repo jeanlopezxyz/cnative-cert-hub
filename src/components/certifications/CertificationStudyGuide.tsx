@@ -343,7 +343,7 @@ export default function CertificationStudyGuide({
                 onClick={() =>
                   setActiveTab(tab.id as 'overview' | 'domains' | 'resources' | 'path')
                 }
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-base transition-all whitespace-nowrap ${
+                className={`flex items-center gap-2 px-4 py-2.5 min-h-[44px] rounded-xl font-medium text-base transition-all whitespace-nowrap ${
                   activeTab === tab.id
                     ? 'bg-white dark:bg-neutral-900 text-primary-600 dark:text-primary-400 shadow-sm'
                     : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
@@ -643,7 +643,7 @@ export default function CertificationStudyGuide({
               <div className="flex flex-wrap gap-2 mb-4 p-1.5 bg-neutral-100 dark:bg-neutral-700/50 rounded-xl">
                 <button
                   onClick={() => setActiveResourceTab('official')}
-                  className={`px-4 py-2 rounded-lg text-base font-medium transition-all ${
+                  className={`px-4 py-2.5 min-h-[44px] rounded-lg text-base font-medium transition-all ${
                     activeResourceTab === 'official'
                       ? 'bg-white dark:bg-neutral-900 text-primary-600 dark:text-primary-400 shadow-sm'
                       : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
@@ -653,7 +653,7 @@ export default function CertificationStudyGuide({
                 </button>
                 <button
                   onClick={() => setActiveResourceTab('learning')}
-                  className={`px-4 py-2 rounded-lg text-base font-medium transition-all ${
+                  className={`px-4 py-2.5 min-h-[44px] rounded-lg text-base font-medium transition-all ${
                     activeResourceTab === 'learning'
                       ? 'bg-white dark:bg-neutral-900 text-primary-600 dark:text-primary-400 shadow-sm'
                       : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
@@ -663,7 +663,7 @@ export default function CertificationStudyGuide({
                 </button>
                 <button
                   onClick={() => setActiveResourceTab('practice')}
-                  className={`px-4 py-2 rounded-lg text-base font-medium transition-all ${
+                  className={`px-4 py-2.5 min-h-[44px] rounded-lg text-base font-medium transition-all ${
                     activeResourceTab === 'practice'
                       ? 'bg-white dark:bg-neutral-900 text-primary-600 dark:text-primary-400 shadow-sm'
                       : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
@@ -673,7 +673,7 @@ export default function CertificationStudyGuide({
                 </button>
                 <button
                   onClick={() => setActiveResourceTab('community')}
-                  className={`px-4 py-2 rounded-lg text-base font-medium transition-all ${
+                  className={`px-4 py-2.5 min-h-[44px] rounded-lg text-base font-medium transition-all ${
                     activeResourceTab === 'community'
                       ? 'bg-white dark:bg-neutral-900 text-primary-600 dark:text-primary-400 shadow-sm'
                       : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'

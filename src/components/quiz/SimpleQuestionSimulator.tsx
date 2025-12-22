@@ -769,7 +769,7 @@ export default function SimpleQuestionSimulator({
                   optionClasses = 'border-neutral-200 dark:border-neutral-600 hover:border-primary-300 dark:hover:border-primary-500 bg-white dark:bg-neutral-800';
                   iconContent = (
                     <div className="w-7 h-7 rounded-full border-2 border-neutral-300 dark:border-neutral-500 flex items-center justify-center group-hover:border-primary-400 transition-colors">
-                      <span className="text-xs font-bold text-neutral-500 dark:text-neutral-400 group-hover:text-primary-500 transition-colors">{String.fromCharCode(65 + index)}</span>
+                      <span className="text-sm font-bold text-neutral-500 dark:text-neutral-400 group-hover:text-primary-500 transition-colors">{String.fromCharCode(65 + index)}</span>
                     </div>
                   );
                 }

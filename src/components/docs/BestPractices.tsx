@@ -2862,7 +2862,7 @@ export default function BestPractices({ lang }: BestPracticesProps) {
               <button
                 key={category.id}
                 onClick={() => handleMainCategoryChange(category.id)}
-                className={`group flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-all duration-200 ${
+                className={`group flex items-center gap-2 px-4 py-2.5 min-h-[44px] rounded-lg font-medium transition-all duration-200 ${
                   isActive
                     ? `bg-gradient-to-r ${category.color} text-white shadow-md`
                     : 'bg-white dark:bg-neutral-700/50 text-neutral-600 dark:text-neutral-300 hover:bg-white/80 dark:hover:bg-neutral-700'
@@ -2886,7 +2886,7 @@ export default function BestPractices({ lang }: BestPracticesProps) {
               <button
                 key={subcat.id}
                 onClick={() => setActiveSubCategory(subcat.id)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium text-base transition-all whitespace-nowrap flex-shrink-0 ${
+                className={`flex items-center gap-2 px-4 py-2.5 min-h-[44px] rounded-lg font-medium text-base transition-all whitespace-nowrap flex-shrink-0 ${
                   isActive
                     ? 'bg-white dark:bg-neutral-900 text-primary-600 dark:text-primary-400 shadow-md'
                     : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-white/50 dark:hover:bg-neutral-700/50'
