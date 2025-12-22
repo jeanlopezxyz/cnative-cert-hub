@@ -456,16 +456,9 @@
     transition: backdrop-filter 0.3s ease;
   }
 
-  /* Progressive image loading */
+  /* Progressive image loading - images visible by default */
   img {
     transition: opacity 0.3s ease-in;
-  }
-
-  img[loading="lazy"] {
-    opacity: 0;
-  }
-
-  img[loading="lazy"].loaded {
     opacity: 1;
   }
 
