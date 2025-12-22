@@ -1,5 +1,5 @@
 ---
-import { ViewTransitions, fade } from 'astro:transitions';
+import { ViewTransitions } from 'astro:transitions';
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
 import { EXTERNAL_URLS, TYPOGRAPHY } from '../config/app.config';
 import { APP_CONFIG } from '../constants/index';
@@ -55,7 +55,7 @@ const hreflangUrls = {
 ---
 
 <!doctype html>
-<html lang={lang} transition:animate={fade({ duration: 0 })}>
+<html lang={lang} transition:animate="none">
   <head>
     <meta charset="UTF-8" />
     <!-- Theme initialization - runs on every page load/navigation -->

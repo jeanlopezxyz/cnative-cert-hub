@@ -21,6 +21,7 @@
   }
 
   /* Light mode (default) - Gray background for main content to differentiate from sidebar */
+  html,
   html.light,
   html.light body {
     @apply bg-neutral-200 text-neutral-900;
@@ -30,6 +31,14 @@
   html.dark,
   html.dark body {
     @apply bg-neutral-800 text-neutral-100;
+  }
+
+  /* Ensure html has background during view transitions */
+  html {
+    background-color: #e5e5e5; /* neutral-200 default */
+  }
+  html.dark {
+    background-color: #262626; /* neutral-800 */
   }
 
   body {
@@ -468,10 +477,11 @@
 }
 
 /* Set background color during view transition to match theme */
+/* Must match bg-neutral-800 (dark) and bg-neutral-200 (light) from body */
 ::view-transition,
 ::view-transition-group(root),
 ::view-transition-image-pair(root) {
-  background-color: #1E293B !important;
+  background-color: #262626 !important; /* neutral-800 for dark mode */
 }
 
 html:not(.dark) ::view-transition,
@@ -480,5 +490,5 @@ html:not(.dark) ::view-transition-image-pair(root),
 html.light ::view-transition,
 html.light ::view-transition-group(root),
 html.light ::view-transition-image-pair(root) {
-  background-color: #E2E8F0 !important;
+  background-color: #e5e5e5 !important; /* neutral-200 for light mode */
 }
