@@ -236,7 +236,7 @@ export default function CertificationStudyGuide({
                 <div className="absolute top-full left-0 right-0 mt-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-2xl shadow-2xl shadow-neutral-900/10 dark:shadow-black/30 z-20 overflow-hidden">
                   {/* Header */}
                   <div className="px-4 py-3 bg-neutral-50 dark:bg-neutral-900/50 border-b border-neutral-200 dark:border-neutral-700">
-                    <p className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                    <p className="text-sm font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
                       {t('certification.selectSection')}
                     </p>
                   </div>

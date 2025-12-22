@@ -61,20 +61,20 @@ export default function AchievementCertCard({
             <h6 className={`text-lg font-bold mb-1 ${colors.text}`}>{cert?.acronym}</h6>
 
             {/* Name */}
-            <p className="text-neutral-600 dark:text-neutral-300 text-xs mb-3 line-clamp-2 min-h-[32px]">
+            <p className="text-neutral-600 dark:text-neutral-300 text-sm mb-3 line-clamp-2 min-h-[40px]">
               {cert?.name}
             </p>
 
             {/* Badge if exists */}
             {resolvedBadge && (
-              <span className="text-xs px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 font-medium">
+              <span className="text-sm px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 font-medium">
                 {resolvedBadge.text}
               </span>
             )}
 
             {/* Level */}
             {!resolvedBadge && (
-              <span className={`text-xs px-2.5 py-1 rounded-md font-medium ${colors.text} bg-white/60 dark:bg-neutral-900/40`}>
+              <span className={`text-sm px-2.5 py-1 rounded-md font-medium ${colors.text} bg-white/60 dark:bg-neutral-900/40`}>
                 {t(`certifications.level.${cert?.level}`)}
               </span>
             )}

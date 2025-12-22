@@ -498,7 +498,7 @@ export default function SearchBar({ lang }: SearchBarProps) {
           <div className={`${isExpanded ? 'fixed top-16 left-3 right-3 mt-3' : 'absolute left-0 right-0 top-full mt-3'} bg-white dark:bg-neutral-800 rounded-xl border border-neutral-200 dark:border-neutral-700 shadow-xl shadow-neutral-200/50 dark:shadow-black/30 overflow-hidden z-50`}>
             {/* Header */}
             <div className="px-4 py-2.5 bg-neutral-50 dark:bg-neutral-900/50 border-b border-neutral-200 dark:border-neutral-700">
-              <p className="text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wide">
+              <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wide">
                 {t('search.results')} ({suggestions.length})
               </p>
             </div>

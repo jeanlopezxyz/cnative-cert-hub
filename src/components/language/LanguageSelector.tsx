@@ -72,10 +72,10 @@ export default function LanguageSelector({ currentLang }: LanguageSelectorProps)
       {/* Auxx-style Language Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="inline-flex justify-center items-center p-0 w-[37.5px] h-[37.5px] text-neutral-600 dark:text-neutral-400 transition-all duration-200 ease-linear bg-transparent rounded-md dropdown-toggle hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-primary-600 dark:hover:text-primary-400"
+        className="inline-flex justify-center items-center p-0 w-11 h-11 text-neutral-600 dark:text-neutral-400 transition-all duration-200 ease-linear bg-transparent rounded-md dropdown-toggle hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-primary-600 dark:hover:text-primary-400"
         aria-label={t('aria.selectLanguage')}
       >
-        <span className="text-xs font-bold">{langCodes[currentLang]}</span>
+        <span className="text-sm font-bold">{langCodes[currentLang]}</span>
       </button>
 
       {/* Auxx-style Dropdown */}

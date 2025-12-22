@@ -54,7 +54,7 @@ export default function CertificationFilter({
       <div className="flex justify-center w-full sm:w-auto">
         <button
           onClick={() => onFilterChange(allFilter.value)}
-          className={`px-4 py-2 rounded-lg font-medium transition-all ${
+          className={`px-4 py-2.5 min-h-[44px] rounded-lg font-medium transition-all ${
             currentFilter === allFilter.value ? allFilter.activeClasses : allFilter.inactiveClasses
           }`}
         >
@@ -68,7 +68,7 @@ export default function CertificationFilter({
           <button
             key={value}
             onClick={() => onFilterChange(value)}
-            className={`px-4 py-2 rounded-lg font-medium transition-all ${
+            className={`px-4 py-2.5 min-h-[44px] rounded-lg font-medium transition-all ${
               currentFilter === value ? activeClasses : inactiveClasses
             }`}
           >

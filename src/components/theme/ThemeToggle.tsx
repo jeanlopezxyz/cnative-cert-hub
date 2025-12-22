@@ -45,7 +45,7 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={handleClick}
-      className="inline-flex relative justify-center items-center p-0 w-[37.5px] h-[37.5px] text-neutral-600 dark:text-neutral-400 transition-all duration-200 ease-linear bg-transparent rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-primary-600 dark:hover:text-primary-400"
+      className="inline-flex relative justify-center items-center p-0 w-11 h-11 text-neutral-600 dark:text-neutral-400 transition-all duration-200 ease-linear bg-transparent rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-primary-600 dark:hover:text-primary-400"
       aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
       title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
     >
