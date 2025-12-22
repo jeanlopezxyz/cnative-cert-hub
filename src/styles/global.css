@@ -171,9 +171,9 @@
     }
   }
 
-  /* Optimized scroll margin */
+  /* Optimized scroll margin - must account for fixed header (h-16 = 4rem) + extra space */
   .scroll-section {
-    scroll-margin-top: 5rem;
+    scroll-margin-top: 6rem;
     contain: layout;
   }
 }
