@@ -168,7 +168,7 @@ export default function CertificationStudyGuide({
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-primary-600 dark:text-primary-400 mb-2">
             {certification.acronym}
           </h1>
-          <p className="text-base sm:text-lg text-neutral-600 dark:text-neutral-400">
+          <p className="text-base sm:text-lg text-neutral-700 dark:text-neutral-300">
             {certification.name}
           </p>
         </div>
@@ -206,7 +206,7 @@ export default function CertificationStudyGuide({
                     {activeTab === 'resources' && t('certification.studyResources')}
                     {activeTab === 'path' && t('certification.practiceQuestions')}
                   </span>
-                  <span className="block text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
+                  <span className="block text-xs text-neutral-600 dark:text-neutral-300 mt-0.5">
                     {t('certification.tapToChange')}
                   </span>
                 </div>
@@ -236,7 +236,7 @@ export default function CertificationStudyGuide({
                 <div className="absolute top-full left-0 right-0 mt-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-2xl shadow-2xl shadow-neutral-900/10 dark:shadow-black/30 z-20 overflow-hidden">
                   {/* Header */}
                   <div className="px-4 py-3 bg-neutral-50 dark:bg-neutral-900/50 border-b border-neutral-200 dark:border-neutral-700">
-                    <p className="text-sm font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                    <p className="text-sm font-semibold text-neutral-600 dark:text-neutral-300 uppercase tracking-wider">
                       {t('certification.selectSection')}
                     </p>
                   </div>
