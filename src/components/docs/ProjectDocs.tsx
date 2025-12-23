@@ -202,7 +202,7 @@ export default function ProjectDocs({ lang }: ProjectDocProps) {
   );
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8 py-8 min-h-[calc(100vh-200px)] flex flex-col">
+    <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-8 2xl:px-12 3xl:px-16 py-6 sm:py-8 min-h-[calc(100vh-200px)] flex flex-col">
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-xl font-semibold text-neutral-900 dark:text-white mb-1">
