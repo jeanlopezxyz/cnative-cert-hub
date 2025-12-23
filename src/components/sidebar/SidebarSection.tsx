@@ -52,8 +52,8 @@ export default function SidebarSection({
           w-full flex items-center justify-between px-3 py-2.5 lg:py-3 rounded-xl
           transition-all duration-200 group
           ${isOpen
-            ? 'bg-primary-100 dark:bg-primary-900/40 text-primary-800 dark:text-primary-200'
-            : 'text-neutral-800 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800'
+            ? 'bg-primary-600 text-white'
+            : 'text-neutral-900 dark:text-white hover:bg-neutral-200 dark:hover:bg-neutral-800'
           }
         `}
         aria-expanded={isOpen}
@@ -63,8 +63,8 @@ export default function SidebarSection({
           <span className={`
             w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200
             ${isOpen
-              ? 'bg-primary-200 dark:bg-primary-800/60 text-primary-700 dark:text-primary-300'
-              : 'bg-neutral-200 dark:bg-neutral-800 text-neutral-600 group-hover:bg-primary-100 dark:group-hover:bg-primary-900/40 group-hover:text-primary-700 dark:group-hover:text-primary-300'
+              ? 'bg-white/20 text-white'
+              : 'bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200 group-hover:bg-primary-100 dark:group-hover:bg-primary-800 group-hover:text-primary-700 dark:group-hover:text-white'
             }
           `}>
             {icon}
@@ -78,7 +78,7 @@ export default function SidebarSection({
         <div className={`
           w-6 h-6 rounded-md flex items-center justify-center transition-all duration-200
           ${isOpen
-            ? 'bg-primary-200 dark:bg-primary-800/60'
+            ? 'bg-white/20'
             : 'bg-transparent group-hover:bg-neutral-200 dark:group-hover:bg-neutral-700'
           }
         `}>

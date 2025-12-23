@@ -38,7 +38,7 @@ export default function Hero({ lang }: HeroProps) {
                       window.scrollTo({ top, behavior: 'smooth' });
                     }
                   }}
-                  className="inline-flex items-center justify-center px-6 py-3 bg-primary-700 hover:bg-primary-800 text-white font-semibold rounded-xl transition-all duration-200 hover:scale-105 shadow-lg shadow-primary-700/30"
+                  className="inline-flex items-center justify-center px-6 py-3 bg-primary-700 hover:bg-primary-800 text-white font-bold rounded-xl transition-all duration-200 hover:scale-105 shadow-lg shadow-primary-700/30"
                 >
                   {t('hero.cta.programs')}
                 </button>
@@ -51,7 +51,7 @@ export default function Hero({ lang }: HeroProps) {
                       window.scrollTo({ top, behavior: 'smooth' });
                     }
                   }}
-                  className="inline-flex items-center justify-center px-6 py-3 bg-primary-200 dark:bg-primary-800/50 text-primary-800 dark:text-white font-semibold rounded-xl hover:bg-primary-300 dark:hover:bg-primary-800/70 transition-all duration-200"
+                  className="inline-flex items-center justify-center px-6 py-3 border-2 border-primary-600 bg-white dark:bg-primary-900 text-primary-700 dark:text-white font-bold rounded-xl hover:bg-primary-50 dark:hover:bg-primary-800 transition-all duration-200"
                 >
                   {t('hero.cta.certifications')}
                 </button>
