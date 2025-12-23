@@ -3,7 +3,7 @@ import { ViewTransitions } from 'astro:transitions';
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
 import { EXTERNAL_URLS, TYPOGRAPHY } from '../config/app.config';
 import { APP_CONFIG } from '../constants/index';
-import LanguageSelector from '../components/language/LanguageSelector';
+import LanguageSelector from '../components/language/LanguageSelector.astro';
 import Logo from '../components/Logo';
 import SearchBar from '../components/search/SearchBar';
 import Sidebar from '../components/sidebar/Sidebar';
@@ -331,7 +331,7 @@ const hreflangUrls = {
           <ThemeToggleAstro />
 
           <!-- Language Selector -->
-          <LanguageSelector client:idle currentLang={lang} />
+          <LanguageSelector currentLang={lang} />
 
           <!-- GitHub Link -->
           <a

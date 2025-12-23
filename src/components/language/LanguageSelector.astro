@@ -1,0 +1,167 @@
+---
+import { languages } from '../../i18n/ui';
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+
+interface Props {
+  currentLang?: string;
+}
+
+const { currentLang: propLang } = Astro.props;
+const currentLang = propLang || getLangFromUrl(Astro.url);
+const t = useTranslations(currentLang as 'en' | 'es' | 'pt');
+
+const langCodes: Record<string, string> = {
+  en: 'EN',
+  es: 'ES',
+  pt: 'PT',
+};
+
+const langNames: Record<string, string> = {
+  en: 'English',
+  es: 'Español',
+  pt: 'Português',
+};
+---
+
+<div class="relative flex items-center h-16" id="lang-selector">
+  <button
+    type="button"
+    id="lang-toggle"
+    class="inline-flex justify-center items-center p-0 w-11 h-11 text-neutral-600 dark:text-neutral-400 transition-all duration-200 ease-linear bg-transparent rounded-md dropdown-toggle hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-primary-600 dark:hover:text-primary-400"
+    aria-label={t('aria.selectLanguage')}
+    aria-expanded="false"
+    aria-haspopup="true"
+  >
+    <span class="text-sm font-bold">{langCodes[currentLang]}</span>
+  </button>
+
+  <div
+    id="lang-dropdown"
+    class="hidden absolute z-50 p-4 ltr:text-left rtl:text-right bg-white dark:bg-neutral-800 rounded-md shadow-lg dark:shadow-neutral-900/50 top-full mt-1 right-0 min-w-[10rem] flex-col gap-3 border border-neutral-200 dark:border-neutral-600"
+  >
+    {Object.entries(languages).map(([lang, _name]) => {
+      const isActive = currentLang === lang;
+      return (
+        <button
+          type="button"
+          data-lang={lang}
+          class="lang-option flex items-center gap-3 group/items transition-all duration-200 ease-linear text-left w-full"
+        >
+          <div class={`flex items-center justify-center w-6 h-6 rounded-full ${
+            isActive
+              ? 'bg-primary-100 dark:bg-primary-600/30'
+              : 'bg-neutral-100 dark:bg-neutral-700'
+          }`}>
+            <span class={`text-xs font-bold ${
+              isActive
+                ? 'text-primary-600 dark:text-primary-400'
+                : 'text-neutral-500 dark:text-neutral-400'
+            }`}>{langCodes[lang]}</span>
+          </div>
+          <span class={`font-medium text-base transition-all duration-200 ease-linear ${
+            isActive
+              ? 'text-primary-600 dark:text-primary-400'
+              : 'text-neutral-600 dark:text-neutral-400 group-hover/items:text-primary-500'
+          }`}>{langNames[lang]}</span>
+        </button>
+      );
+    })}
+  </div>
+</div>
+
+<script>
+  function initLanguageSelector() {
+    const selector = document.getElementById('lang-selector');
+    const toggle = document.getElementById('lang-toggle');
+    const dropdown = document.getElementById('lang-dropdown');
+
+    if (!selector || !toggle || !dropdown) return;
+
+    let isOpen = false;
+
+    function openDropdown() {
+      isOpen = true;
+      dropdown.classList.remove('hidden');
+      dropdown.classList.add('flex');
+      toggle.setAttribute('aria-expanded', 'true');
+    }
+
+    function closeDropdown() {
+      isOpen = false;
+      dropdown.classList.add('hidden');
+      dropdown.classList.remove('flex');
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+
+    function toggleDropdown() {
+      if (isOpen) {
+        closeDropdown();
+      } else {
+        openDropdown();
+      }
+    }
+
+    // Toggle on button click
+    toggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleDropdown();
+    });
+
+    // Close on click outside
+    document.addEventListener('click', (e) => {
+      if (isOpen && !selector.contains(e.target as Node)) {
+        closeDropdown();
+      }
+    });
+
+    // Handle language selection
+    const langOptions = dropdown.querySelectorAll('.lang-option');
+    langOptions.forEach(option => {
+      option.addEventListener('click', () => {
+        const lang = option.getAttribute('data-lang');
+        if (!lang) return;
+
+        const path = window.location.pathname;
+        const segments = path.split('/').filter(Boolean);
+
+        // Remove current language if exists
+        const langs = ['en', 'es', 'pt'];
+        if (segments[0] && langs.includes(segments[0])) {
+          segments.shift();
+        }
+
+        // Build new path
+        let newPath = '';
+        if (lang !== 'en') {
+          newPath = '/' + lang;
+        }
+        if (segments.length > 0) {
+          newPath += '/' + segments.join('/');
+        }
+        if (!newPath) {
+          newPath = '/';
+        }
+
+        // Navigate using View Transitions if available
+        if (typeof (window as any).navigation !== 'undefined' && (window as any).navigation.navigate) {
+          (window as any).navigation.navigate(newPath);
+        } else {
+          window.location.href = newPath;
+        }
+
+        closeDropdown();
+      });
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isOpen) {
+        closeDropdown();
+      }
+    });
+  }
+
+  // Initialize on load and after navigation
+  initLanguageSelector();
+  document.addEventListener('astro:after-swap', initLanguageSelector);
+</script>
