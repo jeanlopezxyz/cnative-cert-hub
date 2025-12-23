@@ -1,0 +1,92 @@
+---
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+
+interface Props {
+  lang?: string;
+}
+
+const { lang: propLang } = Astro.props;
+const lang = propLang || getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<section class="py-6 sm:py-8">
+  <div class="w-full px-4 sm:px-6 lg:px-8 xl:px-8 2xl:px-12 3xl:px-16">
+    <!-- Hero Card - WowDash Style with gradient accent -->
+    <div class="card shadow-none bg-primary-50 dark:bg-primary-900/20 rounded-xl overflow-hidden">
+      <div class="flex flex-col lg:flex-row">
+        <!-- Content -->
+        <div class="flex-1 p-6 sm:p-8 lg:p-10">
+          <!-- Title -->
+          <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 text-neutral-900 dark:text-white leading-tight">
+            {t('hero.title')}
+          </h1>
+
+          <!-- Description -->
+          <p class="text-base text-neutral-700 dark:text-neutral-300 leading-relaxed mb-6 max-w-2xl">
+            {t('hero.description')}
+          </p>
+
+          <!-- Buttons - More prominent CTAs -->
+          <div class="flex flex-col sm:flex-row gap-3">
+            <button
+              type="button"
+              data-scroll-to="achievements"
+              class="inline-flex items-center justify-center px-6 py-3 bg-primary-800 hover:bg-primary-900 text-white font-bold rounded-xl transition-all duration-200 hover:scale-105 shadow-lg shadow-primary-800/30"
+            >
+              {t('hero.cta.programs')}
+            </button>
+            <button
+              type="button"
+              data-scroll-to="certifications"
+              class="inline-flex items-center justify-center px-6 py-3 bg-primary-700 hover:bg-primary-800 text-white font-bold rounded-xl transition-all duration-200"
+            >
+              {t('hero.cta.certifications')}
+            </button>
+            <a
+              href="https://www.cncf.io/training/certification/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary-700 hover:bg-primary-800 text-white font-semibold rounded-xl transition-all duration-200"
+            >
+              {t('hero.cta.official')}
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Visual Side Panel -->
+        <div class="hidden lg:flex items-center justify-center p-8 bg-gradient-to-br from-primary-500 to-primary-700 dark:from-primary-600 dark:to-primary-800 min-w-[280px]">
+          <div class="text-center">
+            <div class="w-24 h-24 mx-auto mb-4 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+              <svg class="w-14 h-14 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+              </svg>
+            </div>
+            <p class="text-white/90 text-base font-medium">{t('hero.visual.cloudNative')}</p>
+            <p class="text-white text-2xl font-bold">{t('hero.visual.certifications')}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Smooth scroll for hero buttons
+  document.querySelectorAll('[data-scroll-to]').forEach(button => {
+    button.addEventListener('click', () => {
+      const targetId = button.getAttribute('data-scroll-to');
+      if (targetId) {
+        const el = document.getElementById(targetId);
+        if (el) {
+          const headerHeight = 64;
+          const top = el.getBoundingClientRect().top + window.scrollY - headerHeight;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+      }
+    });
+  });
+</script>
