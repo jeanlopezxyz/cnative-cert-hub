@@ -128,8 +128,44 @@ const hreflangUrls = {
     <link rel="icon" type="image/svg+xml" href={`${baseUrl}favicon.svg`} />
     <link rel="apple-touch-icon" sizes="180x180" href={`${baseUrl}apple-touch-icon.png`} />
 
-    <!-- View Transitions with instant swap -->
+    <!-- View Transitions with instant swap - Desktop only for performance -->
+    <!-- On mobile, we skip client-side navigation to avoid the heavy ClientRouter bundle -->
     <ViewTransitions />
+
+    <!-- Mobile navigation optimization: Use native navigation on mobile -->
+    <script is:inline>
+      (function() {
+        // Only apply on mobile/tablet (< 1024px)
+        if (window.innerWidth >= 1024) return;
+
+        // Mark all internal links to use native navigation
+        function markLinksForNativeNav() {
+          document.querySelectorAll('a[href^="/"], a[href^="' + window.location.origin + '"]').forEach(function(link) {
+            if (!link.hasAttribute('data-astro-reload')) {
+              link.setAttribute('data-astro-reload', '');
+            }
+          });
+        }
+
+        // Run immediately and on DOM ready
+        markLinksForNativeNav();
+        document.addEventListener('DOMContentLoaded', markLinksForNativeNav);
+
+        // Also run after any dynamic content is added (React components)
+        var observer = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.addedNodes.length) {
+              markLinksForNativeNav();
+            }
+          });
+        });
+
+        observer.observe(document.body || document.documentElement, {
+          childList: true,
+          subtree: true
+        });
+      })();
+    </script>
 
     <!-- Performance: DNS Prefetch for external resources -->
     <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
@@ -286,8 +322,6 @@ const hreflangUrls = {
     
     <!-- WowDash-style Header -->
     <header
-      transition:persist={`header-${lang}`}
-      transition:animate="none"
       class={`header-persistent fixed top-0 z-50 bg-neutral-100 dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800 transition-all duration-300 left-0 right-0 ${showSidebar ? 'lg:left-[280px]' : ''}`}
     >
       <div class="h-16 px-4 flex items-center">
@@ -424,7 +458,7 @@ const hreflangUrls = {
     
     <div class="min-h-screen">
       {showSidebar && (
-        <div transition:persist={`sidebar-${lang}`} transition:animate="none" class="sidebar-persistent">
+        <div class="sidebar-persistent">
           {/* Static sidebar shell - visible immediately while React loads */}
           <aside
             id="sidebar-placeholder"
@@ -449,7 +483,7 @@ const hreflangUrls = {
           <slot />
         </main>
         
-        <footer transition:persist={`footer-${lang}`} class={`relative bg-neutral-100 dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 ${compactFooter ? 'mt-0' : 'mt-20'}`} id="footer">
+        <footer class={`relative bg-neutral-100 dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 ${compactFooter ? 'mt-0' : 'mt-20'}`} id="footer">
           <div class="w-full px-4 sm:px-6 lg:px-8 py-8">
             <div class="flex flex-col md:flex-row items-center justify-between gap-6">
               {/* Description */}
