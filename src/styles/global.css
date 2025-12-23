@@ -519,3 +519,8 @@ html.light ::view-transition-image-pair(root) {
 .header-persistent > * {
   animation-name: none !important;
 }
+
+/* Hide sidebar placeholder when React sidebar is loaded */
+.sidebar-persistent:has(aside.mobile-sidebar) #sidebar-placeholder {
+  display: none !important;
+}

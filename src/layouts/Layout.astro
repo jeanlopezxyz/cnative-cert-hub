@@ -425,6 +425,17 @@ const hreflangUrls = {
     <div class="min-h-screen">
       {showSidebar && (
         <div transition:persist={`sidebar-${lang}`} transition:animate="none" class="sidebar-persistent">
+          {/* Static sidebar shell - visible immediately while React loads */}
+          <aside
+            id="sidebar-placeholder"
+            class="fixed top-0 h-screen z-40 w-[280px] bg-neutral-100 dark:bg-neutral-900 hidden lg:block"
+          >
+            <div class="h-16 px-5 flex items-center border-b border-neutral-200 dark:border-neutral-800 lg:border-0">
+              <span class="text-3xl font-bold text-neutral-900 dark:text-white">CN</span>
+              <span class="text-3xl font-bold text-primary-600">Cert</span>
+              <span class="text-3xl font-bold text-neutral-900 dark:text-white">Hub</span>
+            </div>
+          </aside>
           <Sidebar client:only="react" lang={lang} />
         </div>
       )}
