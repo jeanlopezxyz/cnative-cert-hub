@@ -49,19 +49,33 @@ export default function CertificationFilter({
   const levelFilters = filters.slice(1);
 
   return (
-    <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
-      {/* All filters with same size */}
-      {filters.map(({ value, label, activeClasses, inactiveClasses }) => (
+    <div className="flex flex-col sm:flex-row items-center justify-center gap-2 mb-8">
+      {/* All Levels - top on mobile */}
+      <div className="sm:contents">
         <button
-          key={value}
-          onClick={() => onFilterChange(value)}
-          className={`px-4 py-2 min-h-[40px] min-w-[90px] rounded-lg text-sm font-medium transition-all text-center ${
-            currentFilter === value ? activeClasses : inactiveClasses
+          onClick={() => onFilterChange(allFilter.value)}
+          className={`px-4 py-2.5 min-h-[44px] rounded-lg text-base font-medium transition-all text-center ${
+            currentFilter === allFilter.value ? allFilter.activeClasses : allFilter.inactiveClasses
           }`}
         >
-          {label}
+          {allFilter.label}
         </button>
-      ))}
+      </div>
+
+      {/* Level filters - below on mobile, centered */}
+      <div className="flex justify-center gap-2 w-full sm:w-auto">
+        {levelFilters.map(({ value, label, activeClasses, inactiveClasses }) => (
+          <button
+            key={value}
+            onClick={() => onFilterChange(value)}
+            className={`flex-1 basis-0 sm:flex-none sm:basis-auto px-4 py-2.5 min-h-[44px] rounded-lg text-base font-medium transition-all text-center ${
+              currentFilter === value ? activeClasses : inactiveClasses
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
