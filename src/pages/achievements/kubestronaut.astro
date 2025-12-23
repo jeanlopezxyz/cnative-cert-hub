@@ -4,7 +4,7 @@ import { getLangFromUrl, useTranslations } from '../../i18n/utils';
 import { certifications } from '../../data/certifications';
 import { APP_CONFIG } from '../../constants';
 import { TYPOGRAPHY } from '../../config/app.config';
-import AchievementCertificationGrid from '../../components/achievements/AchievementCertificationGrid';
+import AchievementCertificationGrid from '../../components/achievements/AchievementCertificationGrid.astro';
 import AchievementHero from '../../components/achievements/AchievementHero.astro';
 import AchievementSteps from '../../components/achievements/AchievementSteps.astro';
 import AchievementCTA from '../../components/achievements/AchievementCTA.astro';
@@ -65,7 +65,6 @@ const steps = [
         lang={lang}
         aria-label={t('achievements.kubestronaut.requiredCerts')}
         variant="kubestronaut"
-        client:visible
       />
     </div>
 

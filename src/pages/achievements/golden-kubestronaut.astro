@@ -3,7 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
 import { certifications } from '../../data/certifications';
 import { APP_CONFIG } from '../../constants';
-import AchievementCertificationGrid from '../../components/achievements/AchievementCertificationGrid';
+import AchievementCertificationGrid from '../../components/achievements/AchievementCertificationGrid.astro';
 import AchievementHero from '../../components/achievements/AchievementHero.astro';
 import AchievementSteps from '../../components/achievements/AchievementSteps.astro';
 import AchievementCTA from '../../components/achievements/AchievementCTA.astro';
@@ -87,7 +87,6 @@ const steps = [
         lang={lang}
         aria-label={t('achievements.golden.step1Title')}
         variant="kubestronaut"
-        client:visible
       />
     </div>
 
@@ -103,7 +102,6 @@ const steps = [
         lang={lang}
         aria-label={t('achievements.golden.step2Title')}
         variant="cncf"
-        client:visible
       />
     </div>
 
