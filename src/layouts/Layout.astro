@@ -6,7 +6,7 @@ import { APP_CONFIG } from '../constants/index';
 import LanguageSelector from '../components/language/LanguageSelector.astro';
 import Logo from '../components/Logo';
 import SearchBar from '../components/search/SearchBar';
-import Sidebar from '../components/sidebar/Sidebar';
+import Sidebar from '../components/sidebar/Sidebar.astro';
 import ThemeToggleAstro from '../components/theme/ThemeToggleAstro.astro';
 import '../styles/global.css';
 
@@ -436,7 +436,7 @@ const hreflangUrls = {
               <span class="text-3xl font-bold text-neutral-900 dark:text-white">Hub</span>
             </div>
           </aside>
-          <Sidebar client:only="react" lang={lang} />
+          <Sidebar lang={lang} />
         </div>
       )}
 
