@@ -58,7 +58,7 @@ export default function CertificationGrid({
           >
             {/* WowDash Card - colored background based on level, no borders */}
             <div className={`card h-full rounded-xl overflow-hidden border-0 ${colors.bg} text-center transition-all duration-300`}>
-              <div className="card-body p-4 sm:p-5">
+              <div className="card-body p-4 sm:p-5 h-full flex flex-col">
                 {/* Icon */}
                 <div className={`w-10 h-10 sm:w-12 sm:h-12 mx-auto inline-flex items-center justify-center ${colors.icon} text-white mb-3 rounded-xl`}>
                   <svg className="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -70,9 +70,12 @@ export default function CertificationGrid({
                 <h3 className={`text-base sm:text-lg font-bold mb-1 ${colors.text}`}>{cert?.acronym}</h3>
 
                 {/* Name */}
-                <p className="text-neutral-600 dark:text-neutral-300 text-base mb-3 line-clamp-2 min-h-[40px]">
+                <p className="text-neutral-600 dark:text-neutral-300 text-base mb-3">
                   {cert?.name}
                 </p>
+
+                {/* Spacer to push badge to bottom */}
+                <div className="flex-1" />
 
                 {/* Level Badge */}
                 <span className={`text-base px-3 py-1.5 rounded-lg font-medium ${colors.text} bg-white/60 dark:bg-neutral-900/40`}>

@@ -330,7 +330,7 @@ export default function SimpleQuestionSimulator({
             </div>
             <div>
               <h5 className="font-bold text-lg text-white">{t('quiz.title')}</h5>
-              <p className="text-blue-100 text-sm sm:text-base">{t('quiz.subtitle')}</p>
+              <p className="text-blue-100 text-base">{t('quiz.subtitle')}</p>
             </div>
           </div>
         </div>
@@ -345,7 +345,7 @@ export default function SimpleQuestionSimulator({
                 </svg>
               </div>
               <div className="text-xl sm:text-2xl font-bold text-blue-700 dark:text-blue-400">{questions.length}</div>
-              <div className="text-xs sm:text-sm font-medium text-blue-600 dark:text-blue-300">{t('quiz.questions')}</div>
+              <div className="text-sm sm:text-base font-medium text-blue-600 dark:text-blue-300">{t('quiz.questions')}</div>
             </div>
             <div className="p-3 sm:p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl text-center border border-amber-100 dark:border-amber-800">
               <div className="w-9 h-9 sm:w-10 sm:h-10 mx-auto mb-2 bg-amber-500 rounded-lg flex items-center justify-center">
@@ -354,7 +354,7 @@ export default function SimpleQuestionSimulator({
                 </svg>
               </div>
               <div className="text-xl sm:text-2xl font-bold text-amber-700 dark:text-amber-400">{examDuration}m</div>
-              <div className="text-xs sm:text-sm font-medium text-amber-600 dark:text-amber-300">{t('quiz.duration')}</div>
+              <div className="text-sm sm:text-base font-medium text-amber-600 dark:text-amber-300">{t('quiz.duration')}</div>
             </div>
             <div className="p-3 sm:p-4 bg-green-50 dark:bg-green-900/20 rounded-xl text-center border border-green-100 dark:border-green-800">
               <div className="w-9 h-9 sm:w-10 sm:h-10 mx-auto mb-2 bg-green-600 rounded-lg flex items-center justify-center">
@@ -363,7 +363,7 @@ export default function SimpleQuestionSimulator({
                 </svg>
               </div>
               <div className="text-xl sm:text-2xl font-bold text-green-700 dark:text-green-400">75%</div>
-              <div className="text-xs sm:text-sm font-medium text-green-600 dark:text-green-300">{t('quiz.passing')}</div>
+              <div className="text-sm sm:text-base font-medium text-green-600 dark:text-green-300">{t('quiz.passing')}</div>
             </div>
           </div>
 
@@ -381,7 +381,7 @@ export default function SimpleQuestionSimulator({
                 </div>
                 <div className="flex-1 text-left min-w-0">
                   <div className="font-bold text-green-800 dark:text-green-300">{t('quiz.studyMode')}</div>
-                  <div className="text-sm text-green-700 dark:text-green-400 truncate">{t('quiz.studyModeDesc')}</div>
+                  <div className="text-base text-green-700 dark:text-green-400 truncate">{t('quiz.studyModeDesc')}</div>
                 </div>
                 <div className="px-2 sm:px-3 py-1 bg-green-600 text-white text-xs sm:text-sm font-bold rounded-full flex-shrink-0">
                   {t('quiz.recommended')}
@@ -401,7 +401,7 @@ export default function SimpleQuestionSimulator({
                 </div>
                 <div className="flex-1 text-left min-w-0">
                   <div className="font-bold text-blue-800 dark:text-blue-300">{t('quiz.examMode')}</div>
-                  <div className="text-sm text-blue-700 dark:text-blue-400 truncate">{t('quiz.examModeDesc')}</div>
+                  <div className="text-base text-blue-700 dark:text-blue-400 truncate">{t('quiz.examModeDesc')}</div>
                 </div>
               </div>
             </button>
@@ -441,7 +441,7 @@ export default function SimpleQuestionSimulator({
               </div>
               <h4 className="text-lg sm:text-xl font-bold mb-2">{t('quiz.quizComplete')}</h4>
               <div className="text-4xl sm:text-5xl font-black mb-2">{score}%</div>
-              <p className="text-white/90 font-medium text-sm sm:text-base">
+              <p className="text-white/90 font-medium text-base">
                 {passed ? t('quiz.passed') : t('quiz.failed')} ({t('quiz.threshold')}: 75%)
               </p>
             </div>
@@ -456,7 +456,7 @@ export default function SimpleQuestionSimulator({
                 </svg>
               </div>
               <h3 className="text-xl sm:text-2xl font-bold text-green-700 dark:text-green-400">{correct}</h3>
-              <p className="text-green-600 dark:text-green-300 text-xs sm:text-sm">{t('quiz.correctCount')}</p>
+              <p className="text-green-600 dark:text-green-300 text-sm sm:text-base">{t('quiz.correctCount')}</p>
             </div>
             <div className="rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 p-3 sm:p-4 text-center">
               <div className="w-9 h-9 sm:w-10 sm:h-10 mx-auto mb-2 bg-red-600 text-white rounded-lg flex items-center justify-center">
@@ -465,7 +465,7 @@ export default function SimpleQuestionSimulator({
                 </svg>
               </div>
               <h3 className="text-xl sm:text-2xl font-bold text-red-700 dark:text-red-400">{questions.length - correct}</h3>
-              <p className="text-red-600 dark:text-red-300 text-xs sm:text-sm">{t('quiz.incorrectCount')}</p>
+              <p className="text-red-600 dark:text-red-300 text-sm sm:text-base">{t('quiz.incorrectCount')}</p>
             </div>
             <div className="rounded-xl border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20 p-3 sm:p-4 text-center">
               <div className="w-9 h-9 sm:w-10 sm:h-10 mx-auto mb-2 bg-blue-600 text-white rounded-lg flex items-center justify-center">
@@ -476,7 +476,7 @@ export default function SimpleQuestionSimulator({
               <h3 className="text-xl sm:text-2xl font-bold text-blue-700 dark:text-blue-400">
                 {state.startTime ? Math.floor((Date.now() - state.startTime) / 60000) : 0}m
               </h3>
-              <p className="text-blue-600 dark:text-blue-300 text-xs sm:text-sm">{t('quiz.timeUsed')}</p>
+              <p className="text-blue-600 dark:text-blue-300 text-sm sm:text-base">{t('quiz.timeUsed')}</p>
             </div>
           </div>
 

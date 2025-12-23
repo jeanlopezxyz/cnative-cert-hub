@@ -645,7 +645,7 @@ export default function CertificationStudyGuide({
               <div className="flex flex-wrap gap-2 mb-4 p-1.5 bg-neutral-100 dark:bg-neutral-700/50 rounded-xl">
                 <button
                   onClick={() => setActiveResourceTab('official')}
-                  className={`px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] sm:min-h-[44px] rounded-lg text-sm sm:text-base font-medium transition-all ${
+                  className={`px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] sm:min-h-[44px] rounded-lg text-base font-medium transition-all ${
                     activeResourceTab === 'official'
                       ? 'bg-white dark:bg-neutral-900 text-primary-600 dark:text-primary-400 shadow-sm'
                       : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
@@ -655,7 +655,7 @@ export default function CertificationStudyGuide({
                 </button>
                 <button
                   onClick={() => setActiveResourceTab('courses')}
-                  className={`px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] sm:min-h-[44px] rounded-lg text-sm sm:text-base font-medium transition-all ${
+                  className={`px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] sm:min-h-[44px] rounded-lg text-base font-medium transition-all ${
                     activeResourceTab === 'courses'
                       ? 'bg-white dark:bg-neutral-900 text-primary-600 dark:text-primary-400 shadow-sm'
                       : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
@@ -665,7 +665,7 @@ export default function CertificationStudyGuide({
                 </button>
                 <button
                   onClick={() => setActiveResourceTab('books')}
-                  className={`px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] sm:min-h-[44px] rounded-lg text-sm sm:text-base font-medium transition-all ${
+                  className={`px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] sm:min-h-[44px] rounded-lg text-base font-medium transition-all ${
                     activeResourceTab === 'books'
                       ? 'bg-white dark:bg-neutral-900 text-primary-600 dark:text-primary-400 shadow-sm'
                       : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
@@ -675,7 +675,7 @@ export default function CertificationStudyGuide({
                 </button>
                 <button
                   onClick={() => setActiveResourceTab('labs')}
-                  className={`px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] sm:min-h-[44px] rounded-lg text-sm sm:text-base font-medium transition-all ${
+                  className={`px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] sm:min-h-[44px] rounded-lg text-base font-medium transition-all ${
                     activeResourceTab === 'labs'
                       ? 'bg-white dark:bg-neutral-900 text-primary-600 dark:text-primary-400 shadow-sm'
                       : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
@@ -685,7 +685,7 @@ export default function CertificationStudyGuide({
                 </button>
                 <button
                   onClick={() => setActiveResourceTab('community')}
-                  className={`px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] sm:min-h-[44px] rounded-lg text-sm sm:text-base font-medium transition-all ${
+                  className={`px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] sm:min-h-[44px] rounded-lg text-base font-medium transition-all ${
                     activeResourceTab === 'community'
                       ? 'bg-white dark:bg-neutral-900 text-primary-600 dark:text-primary-400 shadow-sm'
                       : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
@@ -786,7 +786,7 @@ export default function CertificationStudyGuide({
                                           )}
                                         </div>
                                         {resource.description && (
-                                          <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-2">
+                                          <p className="text-base text-neutral-600 dark:text-neutral-400 mt-2">
                                             {resource.description}
                                           </p>
                                         )}

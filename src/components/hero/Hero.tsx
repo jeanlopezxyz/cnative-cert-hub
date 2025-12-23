@@ -23,7 +23,7 @@ export default function Hero({ lang }: HeroProps) {
               </h1>
 
               {/* Description */}
-              <p className="text-sm sm:text-base text-neutral-700 dark:text-neutral-300 leading-relaxed mb-6 max-w-2xl">
+              <p className="text-base text-neutral-700 dark:text-neutral-300 leading-relaxed mb-6 max-w-2xl">
                 {t('hero.description')}
               </p>
 

@@ -31,31 +31,29 @@ export default function CertificationCard({
       {/* WowDash Card Style - no border, rounded-xl, shadow on hover */}
       <div className={`card h-full rounded-xl overflow-hidden border-0 ${colors.bg}`}>
         <div className="card-body p-4 sm:p-5 flex flex-col h-full">
-          {/* Icon */}
-          <div className={`w-10 h-10 sm:w-12 sm:h-12 inline-flex items-center justify-center ${colors.icon} text-white mb-3 rounded-xl`}>
-            <svg className="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" />
-            </svg>
-          </div>
+          {/* Header: Icon on left, View Details on right */}
+          <div className="flex items-start justify-between mb-3">
+            {/* Icon */}
+            <div className={`w-10 h-10 sm:w-12 sm:h-12 inline-flex items-center justify-center ${colors.icon} text-white rounded-xl`}>
+              <svg className="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" />
+              </svg>
+            </div>
 
-          {/* Acronym & Name */}
-          <h3 className={`text-base sm:text-lg font-bold mb-1 ${colors.text}`}>{cert.acronym}</h3>
-          <p className="text-neutral-600 dark:text-neutral-300 text-sm sm:text-base mb-3 line-clamp-2 min-h-[32px]">
-            {cert.name}
-          </p>
-
-          {/* Spacer to push button to bottom */}
-          <div className="flex-1" />
-
-          {/* Read More Link - aligned to bottom right */}
-          <div className="flex justify-end">
-            <span className={`btn ${colors.text} hover:underline px-0 py-0 inline-flex items-center gap-1.5 text-sm sm:text-base font-medium`}>
+            {/* View Details Link */}
+            <span className={`${colors.text} hover:underline inline-flex items-center gap-1 text-base font-medium`}>
               {t('certifications.card.viewDetails')}
               <svg className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
             </span>
           </div>
+
+          {/* Acronym & Name */}
+          <h3 className={`text-base sm:text-lg font-bold mb-1 ${colors.text}`}>{cert.acronym}</h3>
+          <p className="text-neutral-600 dark:text-neutral-300 text-base line-clamp-2">
+            {cert.name}
+          </p>
         </div>
       </div>
     </a>
