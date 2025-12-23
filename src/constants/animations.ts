@@ -3,20 +3,20 @@
  */
 
 export const ANIMATION_DELAYS = {
-  // Stagger delays for lists
-  cardStagger: 50,
-  domainStagger: 100,
-  sectionStagger: 200,
+  // Stagger delays for lists (reduced for snappier feel)
+  cardStagger: 30,
+  domainStagger: 60,
+  sectionStagger: 100,
 
-  // Transition durations
-  fast: 200,
-  normal: 300,
-  slow: 500,
-  verySlow: 600,
+  // Transition durations (faster for better responsiveness)
+  fast: 150,
+  normal: 200,
+  slow: 300,
+  verySlow: 400,
 
   // Specific animations
-  cardFlip: 1000,
-  progressBar: 700,
+  cardFlip: 600,
+  progressBar: 400,
 } as const;
 
 export const ANIMATION_EASING = {

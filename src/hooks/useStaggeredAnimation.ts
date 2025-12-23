@@ -1,6 +1,6 @@
 /**
  * Custom hook for staggered animations
- * Eliminates repeated animation delay logic
+ * Optimized for faster performance on mobile
  */
 
 import { ANIMATION_DELAYS } from '../constants/animations';
@@ -18,8 +18,8 @@ export function useStaggeredAnimation(
 ) {
   const {
     baseDelay = 0,
-    multiplier = ANIMATION_DELAYS.cardStagger || 100,
-    maxDelay = 1000,
+    multiplier = ANIMATION_DELAYS.cardStagger || 30,
+    maxDelay = 300, // Reduced max delay for snappier feel
     easing = 'ease-out'
   } = options;
 
@@ -37,10 +37,11 @@ export function useStaggeredAnimation(
 
 /**
  * Hook for fade-in-up animations with staggering
+ * Optimized with shorter duration for snappier mobile experience
  */
-export function useFadeInUpStagger(index: number, duration = 600) {
+export function useFadeInUpStagger(index: number, duration = 300) {
   const { animationDelay } = useStaggeredAnimation(index);
-  
+
   return {
     className: 'animate-fade-in-up',
     style: {

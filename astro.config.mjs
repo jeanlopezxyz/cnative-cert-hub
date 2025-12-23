@@ -10,6 +10,11 @@ export default defineConfig({
   site: 'https://cncerthub.xyz',
   base: '/',
   output: 'static',
+  prefetch: {
+    // Prefetch links on hover/focus for faster navigation
+    prefetchAll: true,
+    defaultStrategy: 'hover',
+  },
   i18n: {
     defaultLocale: "en",
     locales: ["en", "es", "pt"],

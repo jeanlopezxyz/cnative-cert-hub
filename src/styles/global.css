@@ -160,6 +160,17 @@
     @apply bg-black/60 backdrop-blur-sm visible;
   }
 
+  /* Faster mobile sidebar transition */
+  @media (max-width: 1024px) {
+    .mobile-sidebar {
+      transition: left 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+
+    .mobile-backdrop {
+      transition: background-color 0.15s ease-out, backdrop-filter 0.15s ease-out, visibility 0s !important;
+    }
+  }
+
   html.light ::selection {
     @apply text-neutral-900;
   }
@@ -197,9 +208,10 @@
 }
 
 @layer components {
-  /* WowDash-style Card Component */
+  /* WowDash-style Card Component - Optimized transitions */
   .card {
     @apply bg-white dark:bg-neutral-700 shadow-sm;
+    transition: box-shadow 0.15s ease-out;
   }
 
   .card:hover {
@@ -216,6 +228,13 @@
 
   .card-text {
     @apply text-neutral-600 dark:text-neutral-400;
+  }
+
+  /* Faster transitions on mobile for snappier feel */
+  @media (max-width: 640px) {
+    .card {
+      transition: box-shadow 0.1s ease-out;
+    }
   }
 }
 
@@ -318,11 +337,11 @@
 
   /* View Transitions - moved to end of file for higher specificity */
 
-  /* Fade in up animation - Optimized */
+  /* Fade in up animation - Optimized for mobile */
   @keyframes fade-in-up {
     0% {
       opacity: 0;
-      transform: translate3d(0, 20px, 0);
+      transform: translate3d(0, 12px, 0);
     }
     100% {
       opacity: 1;
@@ -331,8 +350,9 @@
   }
 
   .animate-fade-in-up {
-    animation: fade-in-up 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation: fade-in-up 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     backface-visibility: hidden;
+    will-change: opacity, transform;
   }
 
   /* Fade in animation */
@@ -346,14 +366,15 @@
   }
 
   .animate-fade-in {
-    animation: fade-in 0.6s ease-out forwards;
+    animation: fade-in 0.3s ease-out forwards;
+    will-change: opacity;
   }
 
   /* Scale in animation - Optimized */
   @keyframes scale-in {
     0% {
       opacity: 0;
-      transform: scale3d(0, 0, 1);
+      transform: scale3d(0.95, 0.95, 1);
     }
     100% {
       opacity: 1;
@@ -362,15 +383,16 @@
   }
 
   .animate-scale-in {
-    animation: scale-in 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation: scale-in 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     backface-visibility: hidden;
+    will-change: opacity, transform;
   }
 
   /* Slide in from left animation - Optimized */
   @keyframes slide-in-left {
     0% {
       opacity: 0;
-      transform: translate3d(-20px, 0, 0);
+      transform: translate3d(-12px, 0, 0);
     }
     100% {
       opacity: 1;
@@ -379,8 +401,15 @@
   }
 
   .animate-slide-in-left {
-    animation: slide-in-left 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation: slide-in-left 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     backface-visibility: hidden;
+    will-change: opacity, transform;
+  }
+
+  /* Content visibility for performance - defer off-screen content rendering */
+  .content-visibility-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 500px;
   }
 
   /* 3D rotation utilities */
@@ -433,13 +462,24 @@
     transform: translateZ(0);
   }
 
-  /* Card hover lift */
+  /* Card hover lift - faster transitions */
   .card-lift {
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .card-lift:hover {
-    transform: translateY(-8px) scale(1.02);
+    transform: translateY(-4px) scale(1.01);
+  }
+
+  /* Disable hover effects on touch devices for better performance */
+  @media (hover: none) {
+    .card-lift:hover {
+      transform: none;
+    }
+
+    .card:hover {
+      box-shadow: inherit;
+    }
   }
 
   /* Theme color transitions - only on theme toggle, not navigation */
