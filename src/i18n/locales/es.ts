@@ -370,6 +370,7 @@ export const es = {
   'certification.official': 'Oficial',
   'certification.learning': 'Aprendizaje',
   'certification.community': 'Comunidad',
+  'certification.labs': 'Labs',
   'certification.totalDomains': 'Total de Dominios',
   'certification.totalTopics': 'Total de Temas',
   'certification.by': 'por',

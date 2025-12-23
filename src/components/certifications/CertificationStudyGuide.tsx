@@ -42,7 +42,7 @@ export default function CertificationStudyGuide({
   const [expandedDomains, setExpandedDomains] = useState<string[]>([]);
   const [expandedResourceCategories, setExpandedResourceCategories] = useState<string[]>([]);
   const [activeResourceTab, setActiveResourceTab] = useState<
-    'official' | 'learning' | 'practice' | 'community'
+    'official' | 'courses' | 'books' | 'labs' | 'community'
   >('official');
   const [expandedSections, setExpandedSections] = useState<string[]>([]);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -65,7 +65,7 @@ export default function CertificationStudyGuide({
     );
   };
 
-  // Organized study sections structure
+  // Organized study sections structure - 5 tabs
   const studySections = [
     // OFFICIAL TAB - Official resources and documentation
     {
@@ -93,42 +93,44 @@ export default function CertificationStudyGuide({
       })),
     },
 
-    // LEARNING TAB - All courses, videos, and books
+    // COURSES TAB - Video courses and tutorials
     {
       id: 'courses',
       title: t('certification.sections.courses'),
       type: 'courses' as const,
-      tab: 'learning',
+      tab: 'courses',
       resources: certification.resources.courses || [],
     },
     {
       id: 'videos',
       title: t('certification.sections.videos'),
       type: 'videos' as const,
-      tab: 'learning',
+      tab: 'courses',
       resources: certification.resources.videos || [],
     },
+
+    // BOOKS TAB - Books and reading materials
     {
       id: 'books',
       title: t('certification.sections.books'),
       type: 'books' as const,
-      tab: 'learning',
+      tab: 'books',
       resources: certification.resources.books || [],
     },
 
-    // PRACTICE TAB - Simulators, GitHub repos, and tools
+    // LABS TAB - Practice, simulators, GitHub repos, and tools
     {
       id: 'simulators',
       title: t('certification.sections.practice'),
       type: 'practice' as const,
-      tab: 'practice',
+      tab: 'labs',
       resources: certification.resources.practice || [],
     },
     {
       id: 'github',
       title: t('certification.sections.github'),
       type: 'github' as const,
-      tab: 'practice',
+      tab: 'labs',
       resources: certification.resources.github.map(url => ({
         title: url.split('/').slice(-2).join('/'),
         url,
@@ -139,7 +141,7 @@ export default function CertificationStudyGuide({
       id: 'tools',
       title: t('certification.sections.tools'),
       type: 'tools' as const,
-      tab: 'practice',
+      tab: 'labs',
       resources: certification.resources.tools || [],
     },
 
@@ -639,11 +641,11 @@ export default function CertificationStudyGuide({
           {/* Resources Tab */}
           {activeTab === 'resources' && (
             <div>
-              {/* Resource Tabs */}
+              {/* Resource Tabs - 5 tabs */}
               <div className="flex flex-wrap gap-2 mb-4 p-1.5 bg-neutral-100 dark:bg-neutral-700/50 rounded-xl">
                 <button
                   onClick={() => setActiveResourceTab('official')}
-                  className={`px-4 py-2.5 min-h-[44px] rounded-lg text-base font-medium transition-all ${
+                  className={`px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] sm:min-h-[44px] rounded-lg text-sm sm:text-base font-medium transition-all ${
                     activeResourceTab === 'official'
                       ? 'bg-white dark:bg-neutral-900 text-primary-600 dark:text-primary-400 shadow-sm'
                       : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
@@ -652,28 +654,38 @@ export default function CertificationStudyGuide({
                   {t('certification.official')}
                 </button>
                 <button
-                  onClick={() => setActiveResourceTab('learning')}
-                  className={`px-4 py-2.5 min-h-[44px] rounded-lg text-base font-medium transition-all ${
-                    activeResourceTab === 'learning'
+                  onClick={() => setActiveResourceTab('courses')}
+                  className={`px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] sm:min-h-[44px] rounded-lg text-sm sm:text-base font-medium transition-all ${
+                    activeResourceTab === 'courses'
                       ? 'bg-white dark:bg-neutral-900 text-primary-600 dark:text-primary-400 shadow-sm'
                       : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
                   }`}
                 >
-                  {t('certification.learning')}
+                  {t('certification.courses')}
                 </button>
                 <button
-                  onClick={() => setActiveResourceTab('practice')}
-                  className={`px-4 py-2.5 min-h-[44px] rounded-lg text-base font-medium transition-all ${
-                    activeResourceTab === 'practice'
+                  onClick={() => setActiveResourceTab('books')}
+                  className={`px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] sm:min-h-[44px] rounded-lg text-sm sm:text-base font-medium transition-all ${
+                    activeResourceTab === 'books'
                       ? 'bg-white dark:bg-neutral-900 text-primary-600 dark:text-primary-400 shadow-sm'
                       : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
                   }`}
                 >
-                  {t('certification.practice')}
+                  {t('certification.books')}
+                </button>
+                <button
+                  onClick={() => setActiveResourceTab('labs')}
+                  className={`px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] sm:min-h-[44px] rounded-lg text-sm sm:text-base font-medium transition-all ${
+                    activeResourceTab === 'labs'
+                      ? 'bg-white dark:bg-neutral-900 text-primary-600 dark:text-primary-400 shadow-sm'
+                      : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
+                  }`}
+                >
+                  {t('certification.labs')}
                 </button>
                 <button
                   onClick={() => setActiveResourceTab('community')}
-                  className={`px-4 py-2.5 min-h-[44px] rounded-lg text-base font-medium transition-all ${
+                  className={`px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] sm:min-h-[44px] rounded-lg text-sm sm:text-base font-medium transition-all ${
                     activeResourceTab === 'community'
                       ? 'bg-white dark:bg-neutral-900 text-primary-600 dark:text-primary-400 shadow-sm'
                       : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'
@@ -686,12 +698,13 @@ export default function CertificationStudyGuide({
               {/* Resource Content by Tab */}
               <div className="space-y-3">
                 {/* All Resource Tabs - Compact Style with Tab Colors */}
-                {['official', 'learning', 'practice', 'community'].map(tabName => {
+                {['official', 'courses', 'books', 'labs', 'community'].map(tabName => {
                   // Color per tab type
                   const tabColors: Record<string, { bg: string; icon: string; text: string }> = {
                     official: { bg: 'bg-primary-50 dark:bg-primary-600/20', icon: 'bg-primary-600', text: 'text-primary-600 dark:text-primary-400' },
-                    learning: { bg: 'bg-violet-50 dark:bg-violet-600/20', icon: 'bg-violet-600', text: 'text-violet-600 dark:text-violet-400' },
-                    practice: { bg: 'bg-teal-50 dark:bg-teal-600/20', icon: 'bg-teal-600', text: 'text-teal-600 dark:text-teal-400' },
+                    courses: { bg: 'bg-violet-50 dark:bg-violet-600/20', icon: 'bg-violet-600', text: 'text-violet-600 dark:text-violet-400' },
+                    books: { bg: 'bg-emerald-50 dark:bg-emerald-600/20', icon: 'bg-emerald-600', text: 'text-emerald-600 dark:text-emerald-400' },
+                    labs: { bg: 'bg-teal-50 dark:bg-teal-600/20', icon: 'bg-teal-600', text: 'text-teal-600 dark:text-teal-400' },
                     community: { bg: 'bg-amber-50 dark:bg-amber-600/20', icon: 'bg-amber-600', text: 'text-amber-600 dark:text-amber-400' },
                   };
                   const colors = tabColors[tabName];

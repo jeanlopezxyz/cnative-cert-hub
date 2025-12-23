@@ -374,6 +374,7 @@ export const en = {
   'certification.official': 'Official',
   'certification.learning': 'Learning',
   'certification.community': 'Community',
+  'certification.labs': 'Labs',
   'certification.totalDomains': 'Total Domains',
   'certification.totalTopics': 'Total Topics',
   'certification.by': 'by',

@@ -369,6 +369,7 @@ export const pt = {
   'certification.official': 'Oficial',
   'certification.learning': 'Aprendizagem',
   'certification.community': 'Comunidade',
+  'certification.labs': 'Labs',
   'certification.totalDomains': 'Total de Domínios',
   'certification.totalTopics': 'Total de Tópicos',
   'certification.by': 'por',
