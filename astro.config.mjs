@@ -1,6 +1,5 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
-import react from '@astrojs/react';
 import tailwind from '@astrojs/tailwind';
 import sitemap from '@astrojs/sitemap';
 import path from 'path';
@@ -23,7 +22,6 @@ export default defineConfig({
     }
   },
   integrations: [
-    react(),
     tailwind(),
     sitemap({
       i18n: {
@@ -72,9 +70,6 @@ export default defineConfig({
         output: {
           manualChunks(id) {
             if (id.includes('node_modules')) {
-              if (id.includes('react')) {
-                return 'react-vendor';
-              }
               return 'vendor';
             }
             return undefined;
@@ -87,10 +82,7 @@ export default defineConfig({
       chunkSizeWarningLimit: 200,
       cssCodeSplit: true,
     },
-    optimizeDeps: {
-      include: ['react', 'react-dom'],
-      exclude: ['@astrojs/react'],
-    },
+    optimizeDeps: {},
   },
   build: {
     inlineStylesheets: 'auto',

@@ -1,17 +1,19 @@
+---
 /**
- * Best Practices Page Component
+ * Best Practices Page Component (Astro)
  * Displays Kubernetes best practices with priority levels and code examples
+ * Converted from React to Astro - using vanilla JavaScript for interactivity
  */
 
-import React, { useState } from 'react';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import type { Language } from '../../types';
 import { useTranslations } from '../../i18n/utils';
 
-interface BestPracticesProps {
+interface Props {
   lang: Language;
 }
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
 
 type MainCategoryType = 'infrastructure' | 'applications' | 'networking' | 'security' | 'observability' | 'cicd';
 type SubCategoryType = 'containerization' | 'development' | 'accesscontrol' | 'networkpolicies' | 'observability' | 'storage' | 'gitops' | 'highavailability' | 'costoptimization' | 'servicemesh' | 'operations' | 'multitenancy' | 'stateful' | 'compliance' | 'devsecops';
@@ -30,7 +32,7 @@ interface BestPractice {
   id: string;
   titleKey: string;
   descKey: string;
-  icon: React.ReactNode;
+  iconPath: string;
   color: string;
   bgColor: string;
   iconBg: string;
@@ -40,98 +42,71 @@ interface BestPractice {
 interface MainCategoryConfig {
   id: MainCategoryType;
   labelKey: string;
-  icon: React.ReactNode;
+  iconPath: string;
   color: string;
   subcategories: SubCategoryType[];
 }
 
-// Category Icons as SVG components
-const CategoryIcons = {
-  infrastructure: (
-    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 14.25h13.5m-13.5 0a3 3 0 01-3-3m3 3a3 3 0 100 6h13.5a3 3 0 100-6m-16.5-3a3 3 0 013-3h13.5a3 3 0 013 3m-19.5 0a4.5 4.5 0 01.9-2.7L5.737 5.1a3.375 3.375 0 012.7-1.35h7.126c1.062 0 2.062.5 2.7 1.35l2.587 3.45a4.5 4.5 0 01.9 2.7m0 0a3 3 0 01-3 3m0 3h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008zm-3 6h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008z" />
-    </svg>
-  ),
-  applications: (
-    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M6.429 9.75L2.25 12l4.179 2.25m0-4.5l5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0l4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0l-5.571 3-5.571-3" />
-    </svg>
-  ),
-  networking: (
-    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
-    </svg>
-  ),
-  security: (
-    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-    </svg>
-  ),
-  observability: (
-    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
-    </svg>
-  ),
-  cicd: (
-    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-    </svg>
-  ),
+interface TabConfig {
+  id: SubCategoryType;
+  labelKey: string;
+  iconPath: string;
+  practices: BestPractice[];
+}
+
+const CategoryIconPaths = {
+  infrastructure: "M5.25 14.25h13.5m-13.5 0a3 3 0 01-3-3m3 3a3 3 0 100 6h13.5a3 3 0 100-6m-16.5-3a3 3 0 013-3h13.5a3 3 0 013 3m-19.5 0a4.5 4.5 0 01.9-2.7L5.737 5.1a3.375 3.375 0 012.7-1.35h7.126c1.062 0 2.062.5 2.7 1.35l2.587 3.45a4.5 4.5 0 01.9 2.7m0 0a3 3 0 01-3 3m0 3h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008zm-3 6h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008z",
+  applications: "M6.429 9.75L2.25 12l4.179 2.25m0-4.5l5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0l4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0l-5.571 3-5.571-3",
+  networking: "M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418",
+  security: "M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z",
+  observability: "M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z",
+  cicd: "M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99",
 };
 
-// Main categories structure - ordered by operational flow
 const MAIN_CATEGORIES: MainCategoryConfig[] = [
   {
     id: 'infrastructure',
     labelKey: 'bestPractices.category.infrastructure',
-    icon: CategoryIcons.infrastructure,
+    iconPath: CategoryIconPaths.infrastructure,
     color: 'from-blue-500 to-blue-600',
     subcategories: ['operations', 'highavailability', 'multitenancy'],
   },
   {
     id: 'applications',
     labelKey: 'bestPractices.category.applications',
-    icon: CategoryIcons.applications,
+    iconPath: CategoryIconPaths.applications,
     color: 'from-purple-500 to-purple-600',
     subcategories: ['containerization', 'development', 'stateful'],
   },
   {
     id: 'networking',
     labelKey: 'bestPractices.category.networking',
-    icon: CategoryIcons.networking,
+    iconPath: CategoryIconPaths.networking,
     color: 'from-cyan-500 to-cyan-600',
     subcategories: ['networkpolicies', 'servicemesh'],
   },
   {
     id: 'security',
     labelKey: 'bestPractices.category.security',
-    icon: CategoryIcons.security,
+    iconPath: CategoryIconPaths.security,
     color: 'from-red-500 to-red-600',
     subcategories: ['accesscontrol', 'compliance', 'devsecops'],
   },
   {
     id: 'observability',
     labelKey: 'bestPractices.category.observability',
-    icon: CategoryIcons.observability,
+    iconPath: CategoryIconPaths.observability,
     color: 'from-emerald-500 to-emerald-600',
     subcategories: ['observability', 'storage'],
   },
   {
     id: 'cicd',
     labelKey: 'bestPractices.category.cicd',
-    icon: CategoryIcons.cicd,
+    iconPath: CategoryIconPaths.cicd,
     color: 'from-amber-500 to-amber-600',
     subcategories: ['gitops', 'costoptimization'],
   },
 ];
-
-// Legacy TabConfig for backwards compatibility with existing data
-interface TabConfig {
-  id: SubCategoryType;
-  labelKey: string;
-  icon: React.ReactNode;
-  practices: BestPractice[];
-}
 
 const PRIORITY_CONFIG = {
   critical: {
@@ -157,24 +132,24 @@ const PRIORITY_CONFIG = {
   },
 };
 
+const getPriorityLabel = (priority: Priority) => {
+  const config = PRIORITY_CONFIG[priority];
+  if (lang === 'es') return config.labelEs;
+  if (lang === 'pt') return config.labelPt;
+  return config.label;
+};
 
 const TABS_CONFIG: TabConfig[] = [
-  {
+{
     id: 'containerization',
     labelKey: 'bestPractices.tab.containerization',
-    icon: (
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-    ),
+    iconPath: "M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4",
     practices: [
       {
         id: 'containers-images',
         titleKey: 'bestPractices.containers.images.title',
         descKey: 'bestPractices.containers.images.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
-        ),
+        iconPath: "M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z",
         color: 'text-blue-600 dark:text-blue-400',
         bgColor: 'bg-blue-50 dark:bg-blue-600/20',
         iconBg: 'bg-blue-600',
@@ -217,11 +192,7 @@ cosign verify --key cosign.pub myregistry/myapp:1.0.0` },
         id: 'containers-runtime',
         titleKey: 'bestPractices.containers.runtime.title',
         descKey: 'bestPractices.containers.runtime.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
-          </svg>
-        ),
+        iconPath: "M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01",
         color: 'text-teal-600 dark:text-teal-400',
         bgColor: 'bg-teal-50 dark:bg-teal-600/20',
         iconBg: 'bg-teal-600',
@@ -256,19 +227,13 @@ metadata:
   {
     id: 'development',
     labelKey: 'bestPractices.tab.development',
-    icon: (
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-    ),
+    iconPath: "M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4",
     practices: [
       {
         id: 'dev-applications',
         titleKey: 'bestPractices.dev.applications.title',
         descKey: 'bestPractices.dev.applications.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-          </svg>
-        ),
+        iconPath: "M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z",
         color: 'text-violet-600 dark:text-violet-400',
         bgColor: 'bg-violet-50 dark:bg-violet-600/20',
         iconBg: 'bg-violet-600',
@@ -323,11 +288,7 @@ spec:
         id: 'dev-resources',
         titleKey: 'bestPractices.dev.resources.title',
         descKey: 'bestPractices.dev.resources.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-          </svg>
-        ),
+        iconPath: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
         color: 'text-cyan-600 dark:text-cyan-400',
         bgColor: 'bg-cyan-50 dark:bg-cyan-600/20',
         iconBg: 'bg-cyan-600',
@@ -384,19 +345,13 @@ spec:
   {
     id: 'accesscontrol',
     labelKey: 'bestPractices.tab.accesscontrol',
-    icon: (
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-    ),
+    iconPath: "M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z",
     practices: [
       {
         id: 'sec-cluster',
         titleKey: 'bestPractices.security.cluster.title',
         descKey: 'bestPractices.security.cluster.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-          </svg>
-        ),
+        iconPath: "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z",
         color: 'text-red-600 dark:text-red-400',
         bgColor: 'bg-red-50 dark:bg-red-600/20',
         iconBg: 'bg-red-600',
@@ -454,11 +409,7 @@ spec:
         id: 'sec-workloads',
         titleKey: 'bestPractices.security.workloads.title',
         descKey: 'bestPractices.security.workloads.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.618 5.984A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016zM12 9v2m0 4h.01" />
-          </svg>
-        ),
+        iconPath: "M20.618 5.984A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016zM12 9v2m0 4h.01",
         color: 'text-orange-600 dark:text-orange-400',
         bgColor: 'bg-orange-50 dark:bg-orange-600/20',
         iconBg: 'bg-orange-600',
@@ -490,11 +441,7 @@ automountServiceAccountToken: false` },
         id: 'sec-secrets',
         titleKey: 'bestPractices.security.secrets.title',
         descKey: 'bestPractices.security.secrets.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
-          </svg>
-        ),
+        iconPath: "M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z",
         color: 'text-amber-600 dark:text-amber-400',
         bgColor: 'bg-amber-50 dark:bg-amber-600/20',
         iconBg: 'bg-amber-600',
@@ -536,11 +483,7 @@ spec:
         id: 'sec-tls',
         titleKey: 'bestPractices.security.tls.title',
         descKey: 'bestPractices.security.tls.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-          </svg>
-        ),
+        iconPath: "M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z",
         color: 'text-cyan-600 dark:text-cyan-400',
         bgColor: 'bg-cyan-50 dark:bg-cyan-600/20',
         iconBg: 'bg-cyan-600',
@@ -602,19 +545,13 @@ spec:
   {
     id: 'networkpolicies',
     labelKey: 'bestPractices.tab.networkpolicies',
-    icon: (
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
-    ),
+    iconPath: "M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418",
     practices: [
       {
         id: 'net-policies',
         titleKey: 'bestPractices.networking.policies.title',
         descKey: 'bestPractices.networking.policies.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4" />
-          </svg>
-        ),
+        iconPath: "M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4",
         color: 'text-purple-600 dark:text-purple-400',
         bgColor: 'bg-purple-50 dark:bg-purple-600/20',
         iconBg: 'bg-purple-600',
@@ -651,11 +588,7 @@ spec:
         id: 'net-ingress',
         titleKey: 'bestPractices.networking.ingress.title',
         descKey: 'bestPractices.networking.ingress.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        ),
+        iconPath: "M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
         color: 'text-pink-600 dark:text-pink-400',
         bgColor: 'bg-pink-50 dark:bg-pink-600/20',
         iconBg: 'bg-pink-600',
@@ -738,19 +671,13 @@ spec:
   {
     id: 'observability',
     labelKey: 'bestPractices.tab.observability',
-    icon: (
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
-    ),
+    iconPath: "M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z",
     practices: [
       {
         id: 'obs-metrics',
         titleKey: 'bestPractices.observability.metrics.title',
         descKey: 'bestPractices.observability.metrics.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
-          </svg>
-        ),
+        iconPath: "M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z",
         color: 'text-orange-600 dark:text-orange-400',
         bgColor: 'bg-orange-50 dark:bg-orange-600/20',
         iconBg: 'bg-orange-600',
@@ -792,11 +719,7 @@ spec:
         id: 'obs-logging',
         titleKey: 'bestPractices.observability.logging.title',
         descKey: 'bestPractices.observability.logging.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>
-        ),
+        iconPath: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z",
         color: 'text-emerald-600 dark:text-emerald-400',
         bgColor: 'bg-emerald-50 dark:bg-emerald-600/20',
         iconBg: 'bg-emerald-600',
@@ -819,11 +742,7 @@ spec:
         id: 'obs-external',
         titleKey: 'bestPractices.observability.external.title',
         descKey: 'bestPractices.observability.external.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
-          </svg>
-        ),
+        iconPath: "M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10",
         color: 'text-sky-600 dark:text-sky-400',
         bgColor: 'bg-sky-50 dark:bg-sky-600/20',
         iconBg: 'bg-sky-600',
@@ -884,19 +803,13 @@ remote_write:
   {
     id: 'storage',
     labelKey: 'bestPractices.tab.storage',
-    icon: (
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
-    ),
+    iconPath: "M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125",
     practices: [
       {
         id: 'sto-volumes',
         titleKey: 'bestPractices.storage.volumes.title',
         descKey: 'bestPractices.storage.volumes.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
-          </svg>
-        ),
+        iconPath: "M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4",
         color: 'text-green-600 dark:text-green-400',
         bgColor: 'bg-green-50 dark:bg-green-600/20',
         iconBg: 'bg-green-600',
@@ -934,11 +847,7 @@ spec:
         id: 'sto-backup',
         titleKey: 'bestPractices.storage.backup.title',
         descKey: 'bestPractices.storage.backup.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-          </svg>
-        ),
+        iconPath: "M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12",
         color: 'text-lime-600 dark:text-lime-400',
         bgColor: 'bg-lime-50 dark:bg-lime-600/20',
         iconBg: 'bg-lime-600',
@@ -970,19 +879,13 @@ velero schedule create daily-backup \\
   {
     id: 'gitops',
     labelKey: 'bestPractices.tab.gitops',
-    icon: (
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-    ),
+    iconPath: "M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15",
     practices: [
       {
         id: 'git-workflow',
         titleKey: 'bestPractices.gitops.workflow.title',
         descKey: 'bestPractices.gitops.workflow.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-          </svg>
-        ),
+        iconPath: "M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4",
         color: 'text-orange-600 dark:text-orange-400',
         bgColor: 'bg-orange-50 dark:bg-orange-600/20',
         iconBg: 'bg-orange-600',
@@ -1015,11 +918,7 @@ spec:
         id: 'git-delivery',
         titleKey: 'bestPractices.gitops.delivery.title',
         descKey: 'bestPractices.gitops.delivery.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-          </svg>
-        ),
+        iconPath: "M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z",
         color: 'text-rose-600 dark:text-rose-400',
         bgColor: 'bg-rose-50 dark:bg-rose-600/20',
         iconBg: 'bg-rose-600',
@@ -1050,19 +949,13 @@ spec:
   {
     id: 'highavailability',
     labelKey: 'bestPractices.tab.highavailability',
-    icon: (
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-    ),
+    iconPath: "M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z",
     practices: [
       {
         id: 'ha-redundancy',
         titleKey: 'bestPractices.ha.redundancy.title',
         descKey: 'bestPractices.ha.redundancy.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-          </svg>
-        ),
+        iconPath: "M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z",
         color: 'text-indigo-600 dark:text-indigo-400',
         bgColor: 'bg-indigo-50 dark:bg-indigo-600/20',
         iconBg: 'bg-indigo-600',
@@ -1119,11 +1012,7 @@ description: "Critical production workloads"` },
         id: 'ha-resilience',
         titleKey: 'bestPractices.ha.resilience.title',
         descKey: 'bestPractices.ha.resilience.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-          </svg>
-        ),
+        iconPath: "M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99",
         color: 'text-sky-600 dark:text-sky-400',
         bgColor: 'bg-sky-50 dark:bg-sky-600/20',
         iconBg: 'bg-sky-600',
@@ -1164,19 +1053,13 @@ readinessProbe:
   {
     id: 'costoptimization',
     labelKey: 'bestPractices.tab.costoptimization',
-    icon: (
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-    ),
+    iconPath: "M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
     practices: [
       {
         id: 'cost-resources',
         titleKey: 'bestPractices.cost.resources.title',
         descKey: 'bestPractices.cost.resources.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
-          </svg>
-        ),
+        iconPath: "M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z",
         color: 'text-emerald-600 dark:text-emerald-400',
         bgColor: 'bg-emerald-50 dark:bg-emerald-600/20',
         iconBg: 'bg-emerald-600',
@@ -1227,11 +1110,7 @@ kubectl get pods -A -o json | jq '.items[] | select(.spec.containers[].resources
         id: 'cost-scaling',
         titleKey: 'bestPractices.cost.scaling.title',
         descKey: 'bestPractices.cost.scaling.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z" />
-          </svg>
-        ),
+        iconPath: "M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z",
         color: 'text-yellow-600 dark:text-yellow-400',
         bgColor: 'bg-yellow-50 dark:bg-yellow-600/20',
         iconBg: 'bg-yellow-600',
@@ -1284,11 +1163,7 @@ spec:
         id: 'cost-cleanup',
         titleKey: 'bestPractices.cost.cleanup.title',
         descKey: 'bestPractices.cost.cleanup.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-          </svg>
-        ),
+        iconPath: "M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0",
         color: 'text-red-600 dark:text-red-400',
         bgColor: 'bg-red-50 dark:bg-red-600/20',
         iconBg: 'bg-red-600',
@@ -1325,11 +1200,7 @@ spec:
         id: 'cost-serverless',
         titleKey: 'bestPractices.cost.serverless.title',
         descKey: 'bestPractices.cost.serverless.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-          </svg>
-        ),
+        iconPath: "M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z",
         color: 'text-violet-600 dark:text-violet-400',
         bgColor: 'bg-violet-50 dark:bg-violet-600/20',
         iconBg: 'bg-violet-600',
@@ -1439,19 +1310,13 @@ functions:
   {
     id: 'servicemesh',
     labelKey: 'bestPractices.tab.servicemesh',
-    icon: (
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
-    ),
+    iconPath: "M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5",
     practices: [
       {
         id: 'mesh-security',
         titleKey: 'bestPractices.mesh.security.title',
         descKey: 'bestPractices.mesh.security.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-          </svg>
-        ),
+        iconPath: "M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z",
         color: 'text-violet-600 dark:text-violet-400',
         bgColor: 'bg-violet-50 dark:bg-violet-600/20',
         iconBg: 'bg-violet-600',
@@ -1502,11 +1367,7 @@ spec:
         id: 'mesh-traffic',
         titleKey: 'bestPractices.mesh.traffic.title',
         descKey: 'bestPractices.mesh.traffic.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
-          </svg>
-        ),
+        iconPath: "M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5",
         color: 'text-cyan-600 dark:text-cyan-400',
         bgColor: 'bg-cyan-50 dark:bg-cyan-600/20',
         iconBg: 'bg-cyan-600',
@@ -1584,12 +1445,7 @@ spec:
         id: 'mesh-observability',
         titleKey: 'bestPractices.mesh.observability.title',
         descKey: 'bestPractices.mesh.observability.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
-        ),
+        iconPath: "M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z M15 12a3 3 0 11-6 0 3 3 0 016 0z",
         color: 'text-fuchsia-600 dark:text-fuchsia-400',
         bgColor: 'bg-fuchsia-50 dark:bg-fuchsia-600/20',
         iconBg: 'bg-fuchsia-600',
@@ -1619,19 +1475,13 @@ istioctl dashboard kiali` },
   {
     id: 'operations',
     labelKey: 'bestPractices.tab.operations',
-    icon: (
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z" />
-    ),
+    iconPath: "M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z",
     practices: [
       {
         id: 'ops-upgrades',
         titleKey: 'bestPractices.ops.upgrades.title',
         descKey: 'bestPractices.ops.upgrades.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-          </svg>
-        ),
+        iconPath: "M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5",
         color: 'text-blue-600 dark:text-blue-400',
         bgColor: 'bg-blue-50 dark:bg-blue-600/20',
         iconBg: 'bg-blue-600',
@@ -1666,11 +1516,7 @@ kubectl api-versions | grep -E "v1beta1|v1alpha1"` },
         id: 'ops-troubleshooting',
         titleKey: 'bestPractices.ops.troubleshooting.title',
         descKey: 'bestPractices.ops.troubleshooting.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-          </svg>
-        ),
+        iconPath: "M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z",
         color: 'text-amber-600 dark:text-amber-400',
         bgColor: 'bg-amber-50 dark:bg-amber-600/20',
         iconBg: 'bg-amber-600',
@@ -1712,12 +1558,7 @@ kubectl get nodes -o wide` },
         id: 'ops-maintenance',
         titleKey: 'bestPractices.ops.maintenance.title',
         descKey: 'bestPractices.ops.maintenance.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
-        ),
+        iconPath: "M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z M15 12a3 3 0 11-6 0 3 3 0 016 0z",
         color: 'text-slate-600 dark:text-slate-400',
         bgColor: 'bg-slate-50 dark:bg-slate-600/20',
         iconBg: 'bg-slate-600',
@@ -1748,11 +1589,7 @@ ETCDCTL_API=3 etcdctl defrag --endpoints=https://127.0.0.1:2379` },
         id: 'ops-backup',
         titleKey: 'bestPractices.ops.backup.title',
         descKey: 'bestPractices.ops.backup.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.125l2.25 2.25m0 0l2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
-          </svg>
-        ),
+        iconPath: "M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.125l2.25 2.25m0 0l2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z",
         color: 'text-emerald-600 dark:text-emerald-400',
         bgColor: 'bg-emerald-50 dark:bg-emerald-600/20',
         iconBg: 'bg-emerald-600',
@@ -1810,19 +1647,13 @@ velero backup create full-backup \\
   {
     id: 'multitenancy',
     labelKey: 'bestPractices.tab.multitenancy',
-    icon: (
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
-    ),
+    iconPath: "M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z",
     practices: [
       {
         id: 'tenant-isolation',
         titleKey: 'bestPractices.tenant.isolation.title',
         descKey: 'bestPractices.tenant.isolation.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-          </svg>
-        ),
+        iconPath: "M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z",
         color: 'text-indigo-600 dark:text-indigo-400',
         bgColor: 'bg-indigo-50 dark:bg-indigo-600/20',
         iconBg: 'bg-indigo-600',
@@ -1895,11 +1726,7 @@ spec:
         id: 'tenant-hierarchy',
         titleKey: 'bestPractices.tenant.hierarchy.title',
         descKey: 'bestPractices.tenant.hierarchy.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
-          </svg>
-        ),
+        iconPath: "M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z",
         color: 'text-purple-600 dark:text-purple-400',
         bgColor: 'bg-purple-50 dark:bg-purple-600/20',
         iconBg: 'bg-purple-600',
@@ -1963,19 +1790,13 @@ roleRef:
   {
     id: 'stateful',
     labelKey: 'bestPractices.tab.stateful',
-    icon: (
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
-    ),
+    iconPath: "M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125",
     practices: [
       {
         id: 'stateful-operators',
         titleKey: 'bestPractices.stateful.operators.title',
         descKey: 'bestPractices.stateful.operators.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5.25 14.25h13.5m-13.5 0a3 3 0 01-3-3m3 3a3 3 0 100 6h13.5a3 3 0 100-6m-16.5-3a3 3 0 013-3h13.5a3 3 0 013 3m-19.5 0a4.5 4.5 0 01.9-2.7L5.737 5.1a3.375 3.375 0 012.7-1.35h7.126c1.062 0 2.062.5 2.7 1.35l2.587 3.45a4.5 4.5 0 01.9 2.7m0 0a3 3 0 01-3 3m0 3h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008zm-3 6h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008z" />
-          </svg>
-        ),
+        iconPath: "M5.25 14.25h13.5m-13.5 0a3 3 0 01-3-3m3 3a3 3 0 100 6h13.5a3 3 0 100-6m-16.5-3a3 3 0 013-3h13.5a3 3 0 013 3m-19.5 0a4.5 4.5 0 01.9-2.7L5.737 5.1a3.375 3.375 0 012.7-1.35h7.126c1.062 0 2.062.5 2.7 1.35l2.587 3.45a4.5 4.5 0 01.9 2.7m0 0a3 3 0 01-3 3m0 3h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008zm-3 6h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008z",
         color: 'text-emerald-600 dark:text-emerald-400',
         bgColor: 'bg-emerald-50 dark:bg-emerald-600/20',
         iconBg: 'bg-emerald-600',
@@ -2061,11 +1882,7 @@ spec:
         id: 'stateful-sets',
         titleKey: 'bestPractices.stateful.sets.title',
         descKey: 'bestPractices.stateful.sets.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6.429 9.75L2.25 12l4.179 2.25m0-4.5l5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0l4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0l-5.571 3-5.571-3" />
-          </svg>
-        ),
+        iconPath: "M6.429 9.75L2.25 12l4.179 2.25m0-4.5l5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0l4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0l-5.571 3-5.571-3",
         color: 'text-cyan-600 dark:text-cyan-400',
         bgColor: 'bg-cyan-50 dark:bg-cyan-600/20',
         iconBg: 'bg-cyan-600',
@@ -2156,11 +1973,7 @@ spec:
         id: 'stateful-replication',
         titleKey: 'bestPractices.stateful.replication.title',
         descKey: 'bestPractices.stateful.replication.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
-          </svg>
-        ),
+        iconPath: "M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5",
         color: 'text-orange-600 dark:text-orange-400',
         bgColor: 'bg-orange-50 dark:bg-orange-600/20',
         iconBg: 'bg-orange-600',
@@ -2223,19 +2036,13 @@ spec:
   {
     id: 'compliance',
     labelKey: 'bestPractices.tab.compliance',
-    icon: (
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-    ),
+    iconPath: "M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z",
     practices: [
       {
         id: 'compliance-policy',
         titleKey: 'bestPractices.compliance.policy.title',
         descKey: 'bestPractices.compliance.policy.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-          </svg>
-        ),
+        iconPath: "M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z",
         color: 'text-blue-600 dark:text-blue-400',
         bgColor: 'bg-blue-50 dark:bg-blue-600/20',
         iconBg: 'bg-blue-600',
@@ -2339,11 +2146,7 @@ spec:
         id: 'compliance-audit',
         titleKey: 'bestPractices.compliance.audit.title',
         descKey: 'bestPractices.compliance.audit.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-          </svg>
-        ),
+        iconPath: "M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z",
         color: 'text-amber-600 dark:text-amber-400',
         bgColor: 'bg-amber-50 dark:bg-amber-600/20',
         iconBg: 'bg-amber-600',
@@ -2405,11 +2208,7 @@ helm install falco falcosecurity/falco \\
         id: 'compliance-standards',
         titleKey: 'bestPractices.compliance.standards.title',
         descKey: 'bestPractices.compliance.standards.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m8.9-4.414c.376.023.75.05 1.124.08 1.131.094 1.976 1.057 1.976 2.192V16.5A2.25 2.25 0 0118 18.75h-2.25m-7.5-10.5H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V18.75m-7.5-10.5h6.375c.621 0 1.125.504 1.125 1.125v9.375m-8.25-3l1.5 1.5 3-3.75" />
-          </svg>
-        ),
+        iconPath: "M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m8.9-4.414c.376.023.75.05 1.124.08 1.131.094 1.976 1.057 1.976 2.192V16.5A2.25 2.25 0 0118 18.75h-2.25m-7.5-10.5H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V18.75m-7.5-10.5h6.375c.621 0 1.125.504 1.125 1.125v9.375m-8.25-3l1.5 1.5 3-3.75",
         color: 'text-green-600 dark:text-green-400',
         bgColor: 'bg-green-50 dark:bg-green-600/20',
         iconBg: 'bg-green-600',
@@ -2471,19 +2270,13 @@ rules:
   {
     id: 'devsecops',
     labelKey: 'bestPractices.tab.devsecops',
-    icon: (
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
-    ),
+    iconPath: "M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z",
     practices: [
       {
         id: 'devsecops-scanning',
         titleKey: 'bestPractices.devsecops.scanning.title',
         descKey: 'bestPractices.devsecops.scanning.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-          </svg>
-        ),
+        iconPath: "M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z",
         color: 'text-red-600 dark:text-red-400',
         bgColor: 'bg-red-50 dark:bg-red-600/20',
         iconBg: 'bg-red-600',
@@ -2544,11 +2337,7 @@ repos:
         id: 'devsecops-supplychain',
         titleKey: 'bestPractices.devsecops.supplychain.title',
         descKey: 'bestPractices.devsecops.supplychain.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m9.182 9.182l4.5-4.5a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
-          </svg>
-        ),
+        iconPath: "M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m9.182 9.182l4.5-4.5a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244",
         color: 'text-violet-600 dark:text-violet-400',
         bgColor: 'bg-violet-50 dark:bg-violet-600/20',
         iconBg: 'bg-violet-600',
@@ -2650,11 +2439,7 @@ spec:
         id: 'devsecops-admission',
         titleKey: 'bestPractices.devsecops.admission.title',
         descKey: 'bestPractices.devsecops.admission.desc',
-        icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-          </svg>
-        ),
+        iconPath: "M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z",
         color: 'text-teal-600 dark:text-teal-400',
         bgColor: 'bg-teal-50 dark:bg-teal-600/20',
         iconBg: 'bg-teal-600',
@@ -2732,366 +2517,267 @@ kubectl get polr -A -o jsonpath='{range .items[*]}{.metadata.name}{"\\n"}{range 
   },
 ];
 
-export default function BestPractices({ lang }: BestPracticesProps) {
-  const t = useTranslations(lang);
-  const [activeMainCategory, setActiveMainCategory] = useState<MainCategoryType>('infrastructure');
-  const [activeSubCategory, setActiveSubCategory] = useState<SubCategoryType>('operations');
-  const [expandedPractices, setExpandedPractices] = useState<string[]>([]);
-  const [expandedCode, setExpandedCode] = useState<string[]>([]);
-  const [expandedDetails, setExpandedDetails] = useState<string[]>([]);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+// Pre-compute all translations for use in client-side JavaScript
+const allTranslations: Record<string, string> = {};
 
-  const togglePractice = (practiceKey: string) => {
-    setExpandedPractices(prev =>
-      prev.includes(practiceKey) ? prev.filter(p => p !== practiceKey) : [...prev, practiceKey]
-    );
+// Add all category labels
+MAIN_CATEGORIES.forEach(cat => {
+  allTranslations[cat.labelKey] = t(cat.labelKey);
+});
+
+// Add all tab labels
+TABS_CONFIG.forEach(tab => {
+  allTranslations[tab.labelKey] = t(tab.labelKey);
+  tab.practices.forEach(practice => {
+    allTranslations[practice.titleKey] = t(practice.titleKey);
+    allTranslations[practice.descKey] = t(practice.descKey);
+    practice.items.forEach(item => {
+      allTranslations[item.titleKey] = t(item.titleKey);
+      if (item.whyItMattersKey) allTranslations[item.whyItMattersKey] = t(item.whyItMattersKey);
+      if (item.commonMistakeKey) allTranslations[item.commonMistakeKey] = t(item.commonMistakeKey);
+    });
+  });
+});
+
+const uiTranslations = {
+  copyText: lang === 'es' ? 'Copiar' : lang === 'pt' ? 'Copiar' : 'Copy',
+  showCode: lang === 'es' ? 'Ver código' : lang === 'pt' ? 'Ver código' : 'Show code',
+  hideCode: lang === 'es' ? 'Ocultar código' : lang === 'pt' ? 'Ocultar código' : 'Hide code',
+  whyMatters: lang === 'es' ? '¿Por qué importa?' : lang === 'pt' ? 'Por que importa?' : 'Why it matters?',
+  hideDetails: lang === 'es' ? 'Ocultar detalles' : lang === 'pt' ? 'Ocultar detalhes' : 'Hide details',
+  whyMattersLabel: lang === 'es' ? 'Por qué importa' : lang === 'pt' ? 'Por que importa' : 'Why it matters',
+  commonMistakeLabel: lang === 'es' ? 'Error común' : lang === 'pt' ? 'Erro comum' : 'Common mistake',
+};
+---
+
+<div class="w-full px-4 sm:px-6 lg:px-8 xl:px-8 2xl:px-12 3xl:px-16 py-6 sm:py-8" id="best-practices-root">
+  <div class="mb-6">
+    <h1 class="text-xl font-semibold text-neutral-900 dark:text-white mb-1">
+      {t('bestPractices.title')}
+    </h1>
+    <p class="text-base text-neutral-500 dark:text-neutral-400">
+      {t('bestPractices.subtitle')}
+    </p>
+  </div>
+
+  <div class="mb-4">
+    <div class="sm:hidden relative">
+      <button id="mobile-category-dropdown-btn" class="w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium text-base shadow-md transition-all duration-200">
+        <div class="flex items-center gap-3">
+          <span class="flex-shrink-0" id="mobile-category-icon"></span>
+          <span id="mobile-category-label"></span>
+        </div>
+        <svg id="mobile-dropdown-chevron" class="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      <div id="mobile-category-dropdown" class="hidden absolute z-50 mt-2 w-full rounded-xl bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 shadow-lg overflow-hidden"></div>
+    </div>
+
+    <div class="hidden sm:flex flex-wrap gap-2 p-2 bg-neutral-100 dark:bg-neutral-700/50 rounded-xl shadow-sm dark:shadow-none" id="desktop-categories"></div>
+  </div>
+
+  <div class="mb-4">
+    <div id="subcategories-container" class="flex gap-2 p-2 bg-neutral-100 dark:bg-neutral-700/50 rounded-xl shadow-sm dark:shadow-none overflow-x-auto sm:flex-wrap scrollbar-hide"></div>
+  </div>
+
+  <div id="tab-content-container" class="space-y-6"></div>
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" />
+<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+
+<style>
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  pre[class*="language-"] { margin: 0; padding: 1rem; font-size: 0.75rem; line-height: 1.5; background: #282c34 !important; border-radius: 0 0 0.5rem 0.5rem; }
+  code[class*="language-"] { font-size: 0.75rem; line-height: 1.5; }
+</style>
+
+<script define:vars={{ MAIN_CATEGORIES, TABS_CONFIG, PRIORITY_CONFIG, allTranslations, uiTranslations, lang }}>
+  const state = {
+    activeMainCategory: 'infrastructure',
+    activeSubCategory: 'operations',
+    expandedPractices: [],
+    expandedCode: [],
+    expandedDetails: [],
+    isDropdownOpen: false,
   };
 
-  const toggleCode = (itemId: string) => {
-    setExpandedCode(prev =>
-      prev.includes(itemId) ? prev.filter(i => i !== itemId) : [...prev, itemId]
-    );
-  };
-
-  const toggleDetails = (itemId: string) => {
-    setExpandedDetails(prev =>
-      prev.includes(itemId) ? prev.filter(i => i !== itemId) : [...prev, itemId]
-    );
-  };
-
-  const getPriorityLabel = (priority: Priority) => {
+  function getT(key) { return allTranslations[key] || key; }
+  
+  function getPriorityLabel(priority) {
     const config = PRIORITY_CONFIG[priority];
     if (lang === 'es') return config.labelEs;
     if (lang === 'pt') return config.labelPt;
     return config.label;
-  };
+  }
 
-  // Get current main category and its subcategories
-  const currentMainCategory = MAIN_CATEGORIES.find(c => c.id === activeMainCategory)!;
-  const currentSubCategories = currentMainCategory.subcategories
-    .map(id => TABS_CONFIG.find(tab => tab.id === id)!)
-    .filter(Boolean);
-  const currentTab = TABS_CONFIG.find(tab => tab.id === activeSubCategory);
+  function escapeHtml(text) {
+    return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
 
-  // When main category changes, select first subcategory
-  const handleMainCategoryChange = (categoryId: MainCategoryType) => {
-    setActiveMainCategory(categoryId);
+  function renderMobileBtn() {
+    const category = MAIN_CATEGORIES.find(c => c.id === state.activeMainCategory);
+    if (!category) return;
+    const btn = document.getElementById('mobile-category-dropdown-btn');
+    const icon = document.getElementById('mobile-category-icon');
+    const label = document.getElementById('mobile-category-label');
+    if (btn && category) {
+      btn.className = `w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-gradient-to-r ${category.color} text-white font-medium text-base shadow-md transition-all duration-200`;
+      icon.innerHTML = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="${category.iconPath}" /></svg>`;
+      label.textContent = getT(category.labelKey);
+    }
+  }
+
+  function renderMobileDropdown() {
+    const dropdown = document.getElementById('mobile-category-dropdown');
+    if (!dropdown) return;
+    dropdown.innerHTML = MAIN_CATEGORIES.map(cat => {
+      const isActive = state.activeMainCategory === cat.id;
+      return `<button data-category-id="${cat.id}" class="mobile-category-option w-full flex items-center gap-3 px-4 py-3 text-left text-base font-medium transition-colors ${isActive ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400' : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-700/50'}"><span class="flex-shrink-0 ${isActive ? 'text-primary-500' : 'text-neutral-400'}"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="${cat.iconPath}" /></svg></span><span>${getT(cat.labelKey)}</span>${isActive ? '<svg class="w-4 h-4 ml-auto text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>' : ''}</button>`;
+    }).join('');
+    dropdown.querySelectorAll('.mobile-category-option').forEach(btn => {
+      btn.addEventListener('click', () => {
+        handleMainCategoryChange(btn.dataset.categoryId);
+        state.isDropdownOpen = false;
+        dropdown.classList.add('hidden');
+        document.getElementById('mobile-dropdown-chevron').classList.remove('rotate-180');
+      });
+    });
+  }
+
+  function renderDesktopCategories() {
+    const container = document.getElementById('desktop-categories');
+    if (!container) return;
+    container.innerHTML = MAIN_CATEGORIES.map(cat => {
+      const isActive = state.activeMainCategory === cat.id;
+      return `<button data-category-id="${cat.id}" class="desktop-category-btn flex items-center gap-2 px-4 py-2.5 min-h-[44px] rounded-lg font-medium transition-all duration-200 ${isActive ? `bg-gradient-to-r ${cat.color} text-white shadow-md` : 'bg-white dark:bg-neutral-700/50 text-neutral-600 dark:text-neutral-300 hover:bg-white/80 dark:hover:bg-neutral-700'}"><span class="flex-shrink-0"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="${cat.iconPath}" /></svg></span><span class="text-base font-medium">${getT(cat.labelKey)}</span></button>`;
+    }).join('');
+    container.querySelectorAll('.desktop-category-btn').forEach(btn => {
+      btn.addEventListener('click', () => handleMainCategoryChange(btn.dataset.categoryId));
+    });
+  }
+
+  function renderSubcategories() {
+    const container = document.getElementById('subcategories-container');
+    if (!container) return;
+    const currentCat = MAIN_CATEGORIES.find(c => c.id === state.activeMainCategory);
+    if (!currentCat) return;
+    const subs = currentCat.subcategories.map(id => TABS_CONFIG.find(tab => tab.id === id)).filter(Boolean);
+    container.innerHTML = subs.map(sub => {
+      const isActive = state.activeSubCategory === sub.id;
+      return `<button data-subcategory-id="${sub.id}" class="subcategory-btn flex items-center gap-2 px-4 py-2.5 min-h-[44px] rounded-lg font-medium text-base transition-all whitespace-nowrap flex-shrink-0 ${isActive ? 'bg-white dark:bg-neutral-900 text-primary-600 dark:text-primary-400 shadow-md' : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-white/50 dark:hover:bg-neutral-700/50'}"><svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="${sub.iconPath}" /></svg><span>${getT(sub.labelKey)}</span></button>`;
+    }).join('');
+    container.querySelectorAll('.subcategory-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.activeSubCategory = btn.dataset.subcategoryId;
+        renderSubcategories();
+        renderTabContent();
+      });
+    });
+  }
+
+  function renderTabContent() {
+    const container = document.getElementById('tab-content-container');
+    if (!container) return;
+    const currentTab = TABS_CONFIG.find(tab => tab.id === state.activeSubCategory);
+    if (!currentTab) return;
+    container.innerHTML = currentTab.practices.map(practice => {
+      const isExpanded = state.expandedPractices.includes(practice.id);
+      return `<div class="card rounded-xl overflow-hidden bg-neutral-100 dark:bg-neutral-700/50 shadow-sm transition-all duration-300 hover:shadow-md"><button data-practice-id="${practice.id}" class="practice-toggle-btn w-full p-4 text-left transition-all duration-300"><div class="flex items-center justify-between gap-4"><div class="flex items-center gap-3 flex-1"><div class="w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-700/50 flex items-center justify-center flex-shrink-0 ${practice.color}"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="${practice.iconPath}" /></svg></div><div class="flex-1"><h4 class="text-base font-semibold text-neutral-800 dark:text-neutral-100">${getT(practice.titleKey)}</h4><p class="text-base text-neutral-500 dark:text-neutral-400 mt-0.5">${getT(practice.descKey)}</p></div></div><div class="p-2 rounded-lg bg-white/60 dark:bg-neutral-900/40"><svg class="w-4 h-4 text-neutral-500 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></div></div></button>${isExpanded ? `<div class="bg-neutral-100 dark:bg-neutral-900 p-4 rounded-b-xl"><div class="space-y-3">${practice.items.map(item => {
+        const isCodeExpanded = state.expandedCode.includes(item.id);
+        const isDetailsExpanded = state.expandedDetails.includes(item.id);
+        const priorityConfig = PRIORITY_CONFIG[item.priority];
+        const hasDetails = item.whyItMattersKey || item.commonMistakeKey;
+        return `<div class="rounded-xl transition-all duration-200 bg-white dark:bg-neutral-700/50 shadow-sm"><div class="p-4"><div class="flex items-start gap-3"><div class="flex-1 min-w-0"><div class="flex items-start justify-between gap-3"><p class="text-base leading-relaxed text-neutral-700 dark:text-neutral-300">${getT(item.titleKey)}</p><span class="flex-shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-base font-medium ${priorityConfig.color}"><span class="w-1.5 h-1.5 rounded-full ${priorityConfig.dot}"></span>${getPriorityLabel(item.priority)}</span></div><div class="mt-2 flex flex-wrap gap-2">${hasDetails ? `<button data-details-id="${item.id}" class="details-toggle-btn inline-flex items-center gap-1.5 text-base font-medium text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>${isDetailsExpanded ? uiTranslations.hideDetails : uiTranslations.whyMatters}</button>` : ''}${item.codeExample ? `<button data-code-id="${item.id}" class="code-toggle-btn inline-flex items-center gap-1.5 text-base font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>${isCodeExpanded ? uiTranslations.hideCode : uiTranslations.showCode}</button>` : ''}</div>${hasDetails && isDetailsExpanded ? `<div class="mt-3 ml-9 space-y-3">${item.whyItMattersKey ? `<div class="p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg"><div class="flex items-start gap-2"><span class="text-blue-500 mt-0.5">💡</span><div><span class="text-base font-semibold text-blue-700 dark:text-blue-300 uppercase">${uiTranslations.whyMattersLabel}</span><p class="text-base text-blue-800 dark:text-blue-200 mt-1">${getT(item.whyItMattersKey)}</p></div></div></div>` : ''}${item.commonMistakeKey ? `<div class="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg"><div class="flex items-start gap-2"><span class="text-red-500 mt-0.5">⚠️</span><div><span class="text-base font-semibold text-red-700 dark:text-red-300 uppercase">${uiTranslations.commonMistakeLabel}</span><p class="text-base text-red-800 dark:text-red-200 mt-1">${getT(item.commonMistakeKey)}</p></div></div></div>` : ''}</div>` : ''}${item.codeExample && isCodeExpanded ? `<div class="mt-3"><div class="rounded-lg overflow-hidden"><div class="flex items-center justify-between px-4 py-2 bg-[#282c34]"><div class="flex items-center gap-2"><div class="flex gap-1.5"><div class="w-3 h-3 rounded-full bg-red-500"></div><div class="w-3 h-3 rounded-full bg-yellow-500"></div><div class="w-3 h-3 rounded-full bg-green-500"></div></div><span class="text-base text-neutral-400 ml-2 font-mono">YAML / Bash</span></div><button data-copy-code="${item.id}" class="copy-code-btn flex items-center gap-1.5 px-2 py-1 text-base text-neutral-400 hover:text-white hover:bg-neutral-700 rounded transition-colors" title="${uiTranslations.copyText}"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>${uiTranslations.copyText}</button></div><pre class="language-yaml"><code class="language-yaml">${escapeHtml(item.codeExample)}</code></pre></div></div>` : ''}</div></div></div></div>`;
+      }).join('')}</div></div>` : ''}</div>`;
+    }).join('');
+
+    container.querySelectorAll('.practice-toggle-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const practiceId = btn.dataset.practiceId;
+        const idx = state.expandedPractices.indexOf(practiceId);
+        if (idx > -1) state.expandedPractices.splice(idx, 1);
+        else state.expandedPractices.push(practiceId);
+        renderTabContent();
+      });
+    });
+
+    container.querySelectorAll('.code-toggle-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const codeId = btn.dataset.codeId;
+        const idx = state.expandedCode.indexOf(codeId);
+        if (idx > -1) state.expandedCode.splice(idx, 1);
+        else state.expandedCode.push(codeId);
+        renderTabContent();
+      });
+    });
+
+    container.querySelectorAll('.details-toggle-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const detailsId = btn.dataset.detailsId;
+        const idx = state.expandedDetails.indexOf(detailsId);
+        if (idx > -1) state.expandedDetails.splice(idx, 1);
+        else state.expandedDetails.push(detailsId);
+        renderTabContent();
+      });
+    });
+
+    container.querySelectorAll('.copy-code-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const itemId = btn.dataset.copyCode;
+        const item = currentTab.practices.flatMap(p => p.items).find(i => i.id === itemId);
+        if (item && item.codeExample) {
+          navigator.clipboard.writeText(item.codeExample);
+        }
+      });
+    });
+
+    if (window.Prism) {
+      window.Prism.highlightAll();
+    }
+  }
+
+  function handleMainCategoryChange(categoryId) {
+    state.activeMainCategory = categoryId;
     const category = MAIN_CATEGORIES.find(c => c.id === categoryId);
     if (category && category.subcategories.length > 0) {
-      setActiveSubCategory(category.subcategories[0]);
+      state.activeSubCategory = category.subcategories[0];
     }
-  };
+    renderMobileBtn();
+    renderMobileDropdown();
+    renderDesktopCategories();
+    renderSubcategories();
+    renderTabContent();
+  }
 
-  return (
-    <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-8 2xl:px-12 3xl:px-16 py-6 sm:py-8">
-      {/* Header Section */}
-      <div className="mb-6">
-        <h1 className="text-xl font-semibold text-neutral-900 dark:text-white mb-1">
-          {t('bestPractices.title')}
-        </h1>
-        <p className="text-base text-neutral-500 dark:text-neutral-400">
-          {t('bestPractices.subtitle')}
-        </p>
-      </div>
+  document.getElementById('mobile-category-dropdown-btn')?.addEventListener('click', () => {
+    state.isDropdownOpen = !state.isDropdownOpen;
+    const dropdown = document.getElementById('mobile-category-dropdown');
+    const chevron = document.getElementById('mobile-dropdown-chevron');
+    if (dropdown) dropdown.classList.toggle('hidden', !state.isDropdownOpen);
+    if (chevron) chevron.classList.toggle('rotate-180', state.isDropdownOpen);
+  });
 
-      {/* Main Categories - Dropdown on mobile, Pills on desktop */}
-      <div className="mb-4">
-        {/* Mobile: Custom Dropdown */}
-        <div className="sm:hidden relative">
-          <button
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className={`w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-gradient-to-r ${currentMainCategory.color} text-white font-medium text-base shadow-md transition-all duration-200`}
-          >
-            <div className="flex items-center gap-3">
-              <span className="flex-shrink-0">{currentMainCategory.icon}</span>
-              <span>{t(currentMainCategory.labelKey)}</span>
-            </div>
-            <svg
-              className={`w-5 h-5 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-          {isDropdownOpen && (
-            <div className="absolute z-50 mt-2 w-full rounded-xl bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 shadow-lg overflow-hidden">
-              {MAIN_CATEGORIES.map(category => {
-                const isActive = activeMainCategory === category.id;
-                return (
-                  <button
-                    key={category.id}
-                    onClick={() => {
-                      handleMainCategoryChange(category.id);
-                      setIsDropdownOpen(false);
-                    }}
-                    className={`w-full flex items-center gap-3 px-4 py-3 text-left text-base font-medium transition-colors ${
-                      isActive
-                        ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400'
-                        : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-700/50'
-                    }`}
-                  >
-                    <span className={`flex-shrink-0 ${isActive ? 'text-primary-500' : 'text-neutral-400'}`}>
-                      {category.icon}
-                    </span>
-                    <span>{t(category.labelKey)}</span>
-                    {isActive && (
-                      <svg className="w-4 h-4 ml-auto text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          )}
-        </div>
-        {/* Desktop: Pills */}
-        <div className="hidden sm:flex flex-wrap gap-2 p-2 bg-neutral-100 dark:bg-neutral-700/50 rounded-xl shadow-sm dark:shadow-none">
-          {MAIN_CATEGORIES.map(category => {
-            const isActive = activeMainCategory === category.id;
-            return (
-              <button
-                key={category.id}
-                onClick={() => handleMainCategoryChange(category.id)}
-                className={`group flex items-center gap-2 px-4 py-2.5 min-h-[44px] rounded-lg font-medium transition-all duration-200 ${
-                  isActive
-                    ? `bg-gradient-to-r ${category.color} text-white shadow-md`
-                    : 'bg-white dark:bg-neutral-700/50 text-neutral-600 dark:text-neutral-300 hover:bg-white/80 dark:hover:bg-neutral-700'
-                }`}
-              >
-                <span className="flex-shrink-0">{category.icon}</span>
-                <span className="text-base font-medium">{t(category.labelKey)}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
+  document.addEventListener('click', (e) => {
+    const dropdownBtn = document.getElementById('mobile-category-dropdown-btn');
+    const dropdown = document.getElementById('mobile-category-dropdown');
+    if (state.isDropdownOpen && dropdown && !dropdown.contains(e.target) && !dropdownBtn?.contains(e.target)) {
+      state.isDropdownOpen = false;
+      dropdown.classList.add('hidden');
+      document.getElementById('mobile-dropdown-chevron')?.classList.remove('rotate-180');
+    }
+  });
 
-      {/* Subcategories - Horizontal scroll on mobile, wrap on desktop */}
-      <div className="mb-4">
-        <div className="flex gap-2 p-2 bg-neutral-100 dark:bg-neutral-700/50 rounded-xl shadow-sm dark:shadow-none overflow-x-auto sm:flex-wrap scrollbar-hide">
-          {currentSubCategories.map(subcat => {
-            const isActive = activeSubCategory === subcat.id;
-
-            return (
-              <button
-                key={subcat.id}
-                onClick={() => setActiveSubCategory(subcat.id)}
-                className={`flex items-center gap-2 px-4 py-2.5 min-h-[44px] rounded-lg font-medium text-base transition-all whitespace-nowrap flex-shrink-0 ${
-                  isActive
-                    ? 'bg-white dark:bg-neutral-900 text-primary-600 dark:text-primary-400 shadow-md'
-                    : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-white/50 dark:hover:bg-neutral-700/50'
-                }`}
-              >
-                <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  {subcat.icon}
-                </svg>
-                <span>{t(subcat.labelKey)}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Tab Content */}
-      {currentTab && (
-        <div className="space-y-6">
-          {currentTab.practices.map((practice) => {
-            const isExpanded = expandedPractices.includes(practice.id);
-
-            return (
-              <div
-                key={practice.id}
-                className="card rounded-xl overflow-hidden bg-neutral-100 dark:bg-neutral-700/50 shadow-sm transition-all duration-300 hover:shadow-md"
-              >
-                <button
-                  className="w-full p-4 text-left transition-all duration-300"
-                  onClick={() => togglePractice(practice.id)}
-                >
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-3 flex-1">
-                      <div className={`w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-700/50 flex items-center justify-center flex-shrink-0 ${practice.color}`}>
-                        {practice.icon}
-                      </div>
-                      <div className="flex-1">
-                        <h4 className={`text-base font-semibold text-neutral-800 dark:text-neutral-100`}>
-                          {t(practice.titleKey)}
-                        </h4>
-                        <p className="text-base text-neutral-500 dark:text-neutral-400 mt-0.5">
-                          {t(practice.descKey)}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="p-2 rounded-lg bg-white/60 dark:bg-neutral-900/40">
-                      <svg
-                        className={`w-4 h-4 text-neutral-500 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </div>
-                  </div>
-                </button>
-
-                {isExpanded && (
-                  <div className="bg-neutral-100 dark:bg-neutral-900 p-4 rounded-b-xl">
-                    <div className="space-y-3">
-                      {practice.items.map((item) => {
-                        const isCodeExpanded = expandedCode.includes(item.id);
-                        const isDetailsExpanded = expandedDetails.includes(item.id);
-                        const priorityConfig = PRIORITY_CONFIG[item.priority];
-                        const hasDetails = item.whyItMattersKey || item.commonMistakeKey;
-
-                        return (
-                          <div
-                            key={item.id}
-                            className="rounded-xl transition-all duration-200 bg-white dark:bg-neutral-700/50 shadow-sm"
-                          >
-                            <div className="p-4">
-                              <div className="flex items-start gap-3">
-                                <div className="flex-1 min-w-0">
-                                  <div className="flex items-start justify-between gap-3">
-                                    <p className="text-base leading-relaxed text-neutral-700 dark:text-neutral-300">
-                                      {t(item.titleKey)}
-                                    </p>
-                                    {/* Priority badge */}
-                                    <span className={`flex-shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-base font-medium ${priorityConfig.color}`}>
-                                      <span className={`w-1.5 h-1.5 rounded-full ${priorityConfig.dot}`} />
-                                      {getPriorityLabel(item.priority)}
-                                    </span>
-                                  </div>
-
-                                  {/* Action buttons */}
-                                  <div className="mt-2 flex flex-wrap gap-2">
-                                    {/* Details toggle (why it matters / common mistakes) */}
-                                    {hasDetails && (
-                                      <button
-                                        onClick={() => toggleDetails(item.id)}
-                                        className="inline-flex items-center gap-1.5 text-base font-medium text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300"
-                                      >
-                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                        </svg>
-                                        {isDetailsExpanded
-                                          ? (lang === 'es' ? 'Ocultar detalles' : lang === 'pt' ? 'Ocultar detalhes' : 'Hide details')
-                                          : (lang === 'es' ? '¿Por qué importa?' : lang === 'pt' ? 'Por que importa?' : 'Why it matters?')}
-                                      </button>
-                                    )}
-                                    {/* Code example toggle */}
-                                    {item.codeExample && (
-                                      <button
-                                        onClick={() => toggleCode(item.id)}
-                                        className="inline-flex items-center gap-1.5 text-base font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300"
-                                      >
-                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                                        </svg>
-                                        {isCodeExpanded ? (lang === 'es' ? 'Ocultar código' : lang === 'pt' ? 'Ocultar código' : 'Hide code') : (lang === 'es' ? 'Ver código' : lang === 'pt' ? 'Ver código' : 'Show code')}
-                                      </button>
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
-
-                              {/* Why it matters & Common mistakes */}
-                              {hasDetails && isDetailsExpanded && (
-                                <div className="mt-3 ml-9 space-y-3">
-                                  {item.whyItMattersKey && (
-                                    <div className="p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-                                      <div className="flex items-start gap-2">
-                                        <span className="text-blue-500 mt-0.5">💡</span>
-                                        <div>
-                                          <span className="text-base font-semibold text-blue-700 dark:text-blue-300 uppercase">
-                                            {lang === 'es' ? 'Por qué importa' : lang === 'pt' ? 'Por que importa' : 'Why it matters'}
-                                          </span>
-                                          <p className="text-base text-blue-800 dark:text-blue-200 mt-1">
-                                            {t(item.whyItMattersKey)}
-                                          </p>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  )}
-                                  {item.commonMistakeKey && (
-                                    <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-                                      <div className="flex items-start gap-2">
-                                        <span className="text-red-500 mt-0.5">⚠️</span>
-                                        <div>
-                                          <span className="text-base font-semibold text-red-700 dark:text-red-300 uppercase">
-                                            {lang === 'es' ? 'Error común' : lang === 'pt' ? 'Erro comum' : 'Common mistake'}
-                                          </span>
-                                          <p className="text-base text-red-800 dark:text-red-200 mt-1">
-                                            {t(item.commonMistakeKey)}
-                                          </p>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  )}
-                                </div>
-                              )}
-
-                              {/* Code example */}
-                              {item.codeExample && isCodeExpanded && (
-                                <div className="mt-3">
-                                  <div className="rounded-lg overflow-hidden">
-                                    {/* Header bar */}
-                                    <div className="flex items-center justify-between px-4 py-2 bg-[#282c34]">
-                                      <div className="flex items-center gap-2">
-                                        <div className="flex gap-1.5">
-                                          <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                                          <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                                          <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                                        </div>
-                                        <span className="text-base text-neutral-400 ml-2 font-mono">YAML / Bash</span>
-                                      </div>
-                                      <button
-                                        onClick={() => {
-                                          navigator.clipboard.writeText(item.codeExample || '');
-                                        }}
-                                        className="flex items-center gap-1.5 px-2 py-1 text-base text-neutral-400 hover:text-white hover:bg-neutral-700 rounded transition-colors"
-                                        title={lang === 'es' ? 'Copiar código' : lang === 'pt' ? 'Copiar código' : 'Copy code'}
-                                      >
-                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                        </svg>
-                                        {lang === 'es' ? 'Copiar' : lang === 'pt' ? 'Copiar' : 'Copy'}
-                                      </button>
-                                    </div>
-                                    {/* Code content with syntax highlighting */}
-                                    <SyntaxHighlighter
-                                      language="yaml"
-                                      style={oneDark}
-                                      customStyle={{
-                                        margin: 0,
-                                        padding: '1rem',
-                                        fontSize: '0.75rem',
-                                        lineHeight: '1.5',
-                                        background: '#282c34',
-                                        boxShadow: 'none',
-                                        border: 'none',
-                                      }}
-                                      showLineNumbers={false}
-                                    >
-                                      {item.codeExample}
-                                    </SyntaxHighlighter>
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </div>
-  );
-}
+  renderMobileBtn();
+  renderMobileDropdown();
+  renderDesktopCategories();
+  renderSubcategories();
+  renderTabContent();
+</script>

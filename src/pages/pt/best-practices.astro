@@ -1,12 +1,12 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
-import BestPractices from '../../components/docs/BestPractices';
+import BestPractices from '../../components/docs/BestPractices.astro';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 ---
 
 <Layout title={t('bestPractices.title')} lang={lang} showSidebar={true}>
-  <BestPractices lang={lang} client:load />
+  <BestPractices lang={lang} />
 </Layout>
