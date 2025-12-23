@@ -505,3 +505,17 @@ html.light ::view-transition-group(root),
 html.light ::view-transition-image-pair(root) {
   background-color: #e5e5e5 !important; /* neutral-200 for light mode */
 }
+
+/* Sidebar and Header - never participate in page animations */
+.sidebar-persistent,
+.header-persistent {
+  view-transition-name: none !important;
+}
+
+/* Prevent fade animations on persistent elements (but allow CSS transitions for mobile menu) */
+.sidebar-persistent,
+.sidebar-persistent > *,
+.header-persistent,
+.header-persistent > * {
+  animation-name: none !important;
+}
