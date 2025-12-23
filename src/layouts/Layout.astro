@@ -7,7 +7,7 @@ import LanguageSelector from '../components/language/LanguageSelector';
 import Logo from '../components/Logo';
 import SearchBar from '../components/search/SearchBar';
 import Sidebar from '../components/sidebar/Sidebar';
-import ThemeToggle from '../components/theme/ThemeToggle';
+import ThemeToggleAstro from '../components/theme/ThemeToggleAstro.astro';
 import '../styles/global.css';
 
 export interface Props {
@@ -327,8 +327,8 @@ const hreflangUrls = {
             <SearchBar client:idle lang={lang} />
           </div>
 
-          <!-- Theme Toggle -->
-          <ThemeToggle client:only="react" />
+          <!-- Theme Toggle - Pure Astro (no React) -->
+          <ThemeToggleAstro />
 
           <!-- Language Selector -->
           <LanguageSelector client:idle currentLang={lang} />
