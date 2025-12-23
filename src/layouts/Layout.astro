@@ -84,7 +84,7 @@ const hreflangUrls = {
     <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()" />
 
     <!-- Content Security Policy - Note: frame-ancestors only works via HTTP headers (see public/_headers) -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https:; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests" />
+    <!-- CSP handled via HTTP headers in public/_headers for better security -->
 
     <!-- Primary Meta Tags -->
     <title>{title} | Cloud Native Certification Resources Hub</title>
@@ -456,7 +456,7 @@ const hreflangUrls = {
               <div class="flex flex-col sm:flex-row items-center gap-4">
                 <div class="flex items-center">
                   <span class="text-xl sm:text-2xl font-bold text-neutral-900 dark:text-white">CN</span>
-                  <span class="text-xl sm:text-2xl font-bold text-primary-600">Cert</span>
+                  <span class="text-xl sm:text-2xl font-bold text-primary-800">Cert</span>
                   <span class="text-xl sm:text-2xl font-bold text-neutral-900 dark:text-white">Hub</span>
                 </div>
                 <div class="hidden sm:block w-px h-8 bg-neutral-300 dark:bg-neutral-600"></div>

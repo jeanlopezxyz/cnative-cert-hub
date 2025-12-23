@@ -38,7 +38,7 @@ export default function Hero({ lang }: HeroProps) {
                       window.scrollTo({ top, behavior: 'smooth' });
                     }
                   }}
-                  className="inline-flex items-center justify-center px-6 py-3 bg-primary-700 hover:bg-primary-800 text-white font-bold rounded-xl transition-all duration-200 hover:scale-105 shadow-lg shadow-primary-700/30"
+                  className="inline-flex items-center justify-center px-6 py-3 bg-primary-800 hover:bg-primary-900 text-white font-bold rounded-xl transition-all duration-200 hover:scale-105 shadow-lg shadow-primary-800/30"
                 >
                   {t('hero.cta.programs')}
                 </button>
@@ -51,7 +51,7 @@ export default function Hero({ lang }: HeroProps) {
                       window.scrollTo({ top, behavior: 'smooth' });
                     }
                   }}
-                  className="inline-flex items-center justify-center px-6 py-3 border-2 border-primary-600 bg-white dark:bg-primary-900 text-primary-700 dark:text-white font-bold rounded-xl hover:bg-primary-50 dark:hover:bg-primary-800 transition-all duration-200"
+                  className="inline-flex items-center justify-center px-6 py-3 border-2 border-primary-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white font-bold rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-all duration-200"
                 >
                   {t('hero.cta.certifications')}
                 </button>
@@ -59,7 +59,7 @@ export default function Hero({ lang }: HeroProps) {
                   href="https://www.cncf.io/training/certification/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 font-semibold rounded-xl hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-all duration-200"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white font-semibold rounded-xl hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-all duration-200"
                 >
                   {t('hero.cta.official')}
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
