@@ -41,7 +41,7 @@ export default function AchievementPrograms({ lang }: AchievementProgramsProps) 
     <section className="pb-6 sm:pb-8">
       <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-8 2xl:px-12 3xl:px-16">
         {/* Section Header - Same style as CertificationGrid */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 animate-fade-in-up">
           <h2 id="achievements" className="text-xl sm:text-2xl font-bold mb-2 text-neutral-900 dark:text-white scroll-section">
             {t('achievements.programs.title')}
           </h2>
@@ -51,7 +51,7 @@ export default function AchievementPrograms({ lang }: AchievementProgramsProps) 
         </div>
 
         {/* Programs Grid */}
-        <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
+        <div className="grid md:grid-cols-2 gap-4 sm:gap-6 animate-fade-in">
           {programs.map((program) => (
             <a
               key={program.id}

@@ -10,7 +10,7 @@ export default function Hero({ lang }: HeroProps) {
   const t = useTranslations(lang);
 
   return (
-    <section className="py-6 sm:py-8">
+    <section className="py-6 sm:py-8 animate-fade-in-up">
       <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-8 2xl:px-12 3xl:px-16">
         {/* Hero Card - WowDash Style with gradient accent */}
         <div className="card shadow-none bg-primary-50 dark:bg-primary-900/20 rounded-xl overflow-hidden">
