@@ -1,0 +1,1040 @@
+---
+import { useTranslations } from '../../i18n/utils';
+import type { Language } from '../../types';
+
+interface Question {
+  id: string;
+  domain: string;
+  question: string;
+  options: string[];
+  correctAnswer: number;
+  explanation: string;
+  difficulty: 'easy' | 'medium' | 'hard';
+}
+
+interface Props {
+  questions: Question[];
+  examDuration: number;
+  certificationId: string;
+  lang: Language;
+}
+
+const { questions, examDuration, certificationId, lang } = Astro.props;
+const t = useTranslations(lang);
+
+// Pre-compute all translation keys needed by JavaScript
+const translations = {
+  title: t('quiz.title'),
+  subtitle: t('quiz.subtitle'),
+  comingSoon: t('quiz.comingSoon'),
+  questions: t('quiz.questions'),
+  duration: t('quiz.duration'),
+  passing: t('quiz.passing'),
+  studyMode: t('quiz.studyMode'),
+  studyModeDesc: t('quiz.studyModeDesc'),
+  recommended: t('quiz.recommended'),
+  examMode: t('quiz.examMode'),
+  examModeDesc: t('quiz.examModeDesc'),
+  quizComplete: t('quiz.quizComplete'),
+  passed: t('quiz.passed'),
+  failed: t('quiz.failed'),
+  threshold: t('quiz.threshold'),
+  correctCount: t('quiz.correctCount'),
+  incorrectCount: t('quiz.incorrectCount'),
+  timeUsed: t('quiz.timeUsed'),
+  takeAnother: t('quiz.takeAnother'),
+  shareResult: t('quiz.shareResult'),
+  generating: t('quiz.generating'),
+  downloadImage: t('quiz.downloadImage'),
+  copyResult: t('quiz.copyResult'),
+  copied: t('quiz.copied'),
+  imageDownloaded: t('quiz.imageDownloaded'),
+  question: t('quiz.question'),
+  of: t('quiz.of'),
+  finish: t('quiz.finish'),
+  reset: t('quiz.reset'),
+  progress: t('quiz.progress'),
+  answered: t('quiz.answered'),
+  correct: t('quiz.correct'),
+  incorrect: t('quiz.incorrect'),
+  explanation: t('quiz.explanation'),
+  correctAnswer: t('quiz.correctAnswer'),
+  previous: t('quiz.previous'),
+  next: t('quiz.next'),
+  finishQuiz: t('quiz.finishQuiz'),
+};
+
+// Serialize data for client-side JS
+const quizData = JSON.stringify({
+  questions,
+  examDuration,
+  certificationId,
+  lang,
+  translations,
+});
+---
+
+<div
+  class="quiz-simulator"
+  data-quiz={quizData}
+  data-cert-id={certificationId}
+>
+  {questions.length === 0 ? (
+    <!-- No questions state -->
+    <div class="rounded-xl border-2 border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 overflow-hidden">
+      <div class="p-8 text-center">
+        <div class="w-16 h-16 mx-auto mb-4 rounded-xl bg-blue-600 flex items-center justify-center">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
+        </div>
+        <h5 class="text-lg font-bold text-neutral-900 dark:text-white mb-2">
+          {translations.title}
+        </h5>
+        <p class="text-neutral-600 dark:text-neutral-400 text-base">
+          {translations.comingSoon}
+        </p>
+      </div>
+    </div>
+  ) : (
+    <!-- Quiz container - will be controlled by JS -->
+    <div class="quiz-container">
+      <!-- Start Screen -->
+      <div class="quiz-screen quiz-start" data-screen="start">
+        <div class="rounded-xl border-2 border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 overflow-hidden">
+          <div class="bg-blue-600 p-5 sm:p-6">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 sm:w-14 sm:h-14 bg-white/20 rounded-xl flex items-center justify-center">
+                <svg class="w-6 h-6 sm:w-7 sm:h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <h5 class="font-bold text-lg text-white">{translations.title}</h5>
+                <p class="text-blue-100 text-base">{translations.subtitle}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-4 sm:p-6">
+            <div class="grid grid-cols-3 gap-2 sm:gap-4 mb-6">
+              <div class="p-3 sm:p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl text-center border border-blue-100 dark:border-blue-800">
+                <div class="w-9 h-9 sm:w-10 sm:h-10 mx-auto mb-2 bg-blue-600 rounded-lg flex items-center justify-center">
+                  <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div class="text-xl sm:text-2xl font-bold text-blue-700 dark:text-blue-400">{questions.length}</div>
+                <div class="text-sm sm:text-base font-medium text-blue-600 dark:text-blue-300">{translations.questions}</div>
+              </div>
+              <div class="p-3 sm:p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl text-center border border-amber-100 dark:border-amber-800">
+                <div class="w-9 h-9 sm:w-10 sm:h-10 mx-auto mb-2 bg-amber-500 rounded-lg flex items-center justify-center">
+                  <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div class="text-xl sm:text-2xl font-bold text-amber-700 dark:text-amber-400">{examDuration}m</div>
+                <div class="text-sm sm:text-base font-medium text-amber-600 dark:text-amber-300">{translations.duration}</div>
+              </div>
+              <div class="p-3 sm:p-4 bg-green-50 dark:bg-green-900/20 rounded-xl text-center border border-green-100 dark:border-green-800">
+                <div class="w-9 h-9 sm:w-10 sm:h-10 mx-auto mb-2 bg-green-600 rounded-lg flex items-center justify-center">
+                  <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <div class="text-xl sm:text-2xl font-bold text-green-700 dark:text-green-400">75%</div>
+                <div class="text-sm sm:text-base font-medium text-green-600 dark:text-green-300">{translations.passing}</div>
+              </div>
+            </div>
+
+            <div class="space-y-3">
+              <button
+                class="quiz-start-btn w-full p-4 rounded-xl border-2 border-green-200 dark:border-green-700 bg-green-50 dark:bg-green-900/20 hover:border-green-400 dark:hover:border-green-500 hover:bg-green-100 dark:hover:bg-green-900/30 transition-all"
+                data-mode="study"
+              >
+                <div class="flex items-center gap-3 sm:gap-4">
+                  <div class="w-11 h-11 sm:w-12 sm:h-12 bg-green-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                  </div>
+                  <div class="flex-1 text-left min-w-0">
+                    <div class="font-bold text-green-800 dark:text-green-300">{translations.studyMode}</div>
+                    <div class="text-base text-green-700 dark:text-green-400 truncate">{translations.studyModeDesc}</div>
+                  </div>
+                  <div class="px-2 sm:px-3 py-1 bg-green-600 text-white text-xs sm:text-sm font-bold rounded-full flex-shrink-0">
+                    {translations.recommended}
+                  </div>
+                </div>
+              </button>
+
+              <button
+                class="quiz-start-btn w-full p-4 rounded-xl border-2 border-blue-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-all"
+                data-mode="exam"
+              >
+                <div class="flex items-center gap-3 sm:gap-4">
+                  <div class="w-11 h-11 sm:w-12 sm:h-12 bg-blue-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <div class="flex-1 text-left min-w-0">
+                    <div class="font-bold text-blue-800 dark:text-blue-300">{translations.examMode}</div>
+                    <div class="text-base text-blue-700 dark:text-blue-400 truncate">{translations.examModeDesc}</div>
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quiz Screen (will be populated by JS) -->
+      <div class="quiz-screen quiz-active hidden" data-screen="quiz">
+        <!-- Dynamically populated -->
+      </div>
+
+      <!-- Results Screen (will be populated by JS) -->
+      <div class="quiz-screen quiz-results hidden" data-screen="results">
+        <!-- Dynamically populated -->
+      </div>
+    </div>
+  )}
+</div>
+
+<script>
+  import { optimizedStorage } from '../../utils/storage';
+
+  interface QuizQuestion {
+    id: string;
+    domain: string;
+    question: string;
+    options: string[];
+    correctAnswer: number;
+    explanation: string;
+    difficulty: 'easy' | 'medium' | 'hard';
+  }
+
+  interface QuizState {
+    isActive: boolean;
+    mode: 'exam' | 'study' | null;
+    currentQuestion: number;
+    answers: (number | null)[];
+    startTime: number | null;
+    showResults: boolean;
+  }
+
+  interface QuizData {
+    questions: QuizQuestion[];
+    examDuration: number;
+    certificationId: string;
+    lang: string;
+    translations: Record<string, string>;
+  }
+
+  class QuizSimulator {
+    private container: HTMLElement;
+    private data: QuizData;
+    private state: QuizState;
+    private html2canvasLoaded: boolean = false;
+
+    constructor(container: HTMLElement) {
+      this.container = container;
+      this.data = JSON.parse(container.dataset.quiz || '{}');
+      this.state = this.loadState();
+      this.init();
+    }
+
+    private loadState(): QuizState {
+      const saved = optimizedStorage.getItem(`simple-quiz-${this.data.certificationId}`);
+      if (saved) {
+        try {
+          return JSON.parse(saved);
+        } catch {
+          // Invalid state, return default
+        }
+      }
+      return {
+        isActive: false,
+        mode: null,
+        currentQuestion: 0,
+        answers: new Array(this.data.questions.length).fill(null),
+        startTime: null,
+        showResults: false,
+      };
+    }
+
+    private saveState(): void {
+      if (this.state.isActive || this.state.showResults) {
+        optimizedStorage.setBatched(
+          `simple-quiz-${this.data.certificationId}`,
+          JSON.stringify(this.state)
+        );
+      }
+    }
+
+    private init(): void {
+      // Restore state if quiz was in progress
+      if (this.state.isActive) {
+        this.showQuizScreen();
+      } else if (this.state.showResults) {
+        this.showResultsScreen();
+      } else {
+        this.showStartScreen();
+      }
+
+      this.bindEvents();
+    }
+
+    private bindEvents(): void {
+      // Start buttons
+      this.container.querySelectorAll('.quiz-start-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const mode = (e.currentTarget as HTMLElement).dataset.mode as 'exam' | 'study';
+          this.startQuiz(mode);
+        });
+      });
+    }
+
+    private showScreen(screenName: string): void {
+      this.container.querySelectorAll('.quiz-screen').forEach(screen => {
+        screen.classList.add('hidden');
+      });
+      const target = this.container.querySelector(`[data-screen="${screenName}"]`);
+      if (target) {
+        target.classList.remove('hidden');
+      }
+    }
+
+    private showStartScreen(): void {
+      this.showScreen('start');
+    }
+
+    private startQuiz(mode: 'exam' | 'study'): void {
+      this.state = {
+        isActive: true,
+        mode,
+        currentQuestion: 0,
+        answers: new Array(this.data.questions.length).fill(null),
+        startTime: Date.now(),
+        showResults: false,
+      };
+      this.saveState();
+      this.showQuizScreen();
+    }
+
+    private showQuizScreen(): void {
+      const screen = this.container.querySelector('[data-screen="quiz"]');
+      if (!screen) return;
+
+      screen.innerHTML = this.renderQuizContent();
+      this.showScreen('quiz');
+      this.bindQuizEvents();
+    }
+
+    private renderQuizContent(): string {
+      const { translations: t } = this.data;
+      const q = this.data.questions[this.state.currentQuestion];
+      const isStudyMode = this.state.mode === 'study';
+      const hasAnswered = this.state.answers[this.state.currentQuestion] !== null;
+      const userAnswer = this.state.answers[this.state.currentQuestion];
+      const isCorrect = hasAnswered && userAnswer === q.correctAnswer;
+      const isLastQuestion = this.state.currentQuestion === this.data.questions.length - 1;
+      const answeredCount = this.state.answers.filter(a => a !== null).length;
+      const progress = Math.round(((this.state.currentQuestion + 1) / this.data.questions.length) * 100);
+
+      return `
+        <div class="w-full space-y-4">
+          <!-- Header -->
+          <div class="rounded-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 overflow-hidden shadow-sm">
+            <div class="h-1.5 ${isStudyMode ? 'bg-green-600' : 'bg-blue-600'}"></div>
+            <div class="p-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <div class="w-12 h-12 rounded-xl flex items-center justify-center font-bold text-white ${isStudyMode ? 'bg-green-600' : 'bg-blue-600'}">
+                    ${this.state.currentQuestion + 1}
+                  </div>
+                  <div>
+                    <h4 class="text-base font-bold text-neutral-900 dark:text-white">
+                      ${t.question} ${this.state.currentQuestion + 1} ${t.of} ${this.data.questions.length}
+                    </h4>
+                    <div class="flex items-center gap-2 mt-0.5">
+                      <span class="text-base font-medium px-2 py-0.5 rounded-full ${isStudyMode ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300' : 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300'}">
+                        ${isStudyMode ? t.studyMode : t.examMode}
+                      </span>
+                      <span class="text-base text-neutral-600 dark:text-neutral-300">${q.domain}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex gap-2">
+                  <button class="quiz-finish-btn px-3 py-2 bg-rose-100 dark:bg-rose-900/30 hover:bg-rose-200 dark:hover:bg-rose-900/50 text-rose-700 dark:text-rose-300 text-base font-semibold rounded-lg transition-colors">
+                    ${t.finish}
+                  </button>
+                  <button class="quiz-reset-btn px-3 py-2 bg-neutral-100 dark:bg-neutral-700 hover:bg-neutral-200 dark:hover:bg-neutral-600 text-neutral-700 dark:text-neutral-300 text-base font-semibold rounded-lg transition-colors">
+                    ${t.reset}
+                  </button>
+                </div>
+              </div>
+              <div class="mt-4">
+                <div class="flex items-center justify-between text-base text-neutral-600 dark:text-neutral-300 mb-2">
+                  <span>${t.progress}: ${progress}%</span>
+                  <span>${answeredCount} ${t.answered}</span>
+                </div>
+                <div class="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-2.5 overflow-hidden">
+                  <div class="h-2.5 rounded-full transition-all duration-500 ${isStudyMode ? 'bg-green-600' : 'bg-blue-600'}" style="width: ${progress}%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Question Card -->
+          <div class="rounded-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 overflow-hidden shadow-sm">
+            <div class="p-5">
+              <h5 class="text-base font-semibold text-neutral-900 dark:text-white mb-5 leading-relaxed">
+                ${q.question}
+              </h5>
+              <div class="space-y-3">
+                ${q.options.map((option, index) => this.renderOption(option, index, q, isStudyMode, hasAnswered, userAnswer)).join('')}
+              </div>
+
+              ${isStudyMode && hasAnswered ? this.renderExplanation(q, isCorrect, userAnswer) : ''}
+            </div>
+          </div>
+
+          <!-- Navigation -->
+          <div class="rounded-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 overflow-hidden shadow-sm">
+            <div class="p-4">
+              <div class="flex items-center justify-between gap-3">
+                ${isStudyMode ? `
+                  <button class="quiz-prev-btn px-4 py-3 bg-neutral-100 dark:bg-neutral-700 hover:bg-neutral-200 dark:hover:bg-neutral-600 disabled:opacity-40 disabled:cursor-not-allowed text-neutral-700 dark:text-neutral-200 font-semibold rounded-xl transition-colors inline-flex items-center gap-2" ${this.state.currentQuestion === 0 ? 'disabled' : ''}>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                    <span class="hidden sm:inline">${t.previous}</span>
+                  </button>
+                ` : '<div></div>'}
+                <span class="text-base font-medium text-neutral-600 dark:text-neutral-300">
+                  ${this.state.currentQuestion + 1} / ${this.data.questions.length}
+                </span>
+                ${isLastQuestion ? `
+                  <button class="quiz-complete-btn px-5 py-3 font-semibold rounded-xl transition-all inline-flex items-center gap-2 ${isStudyMode ? 'bg-green-600 hover:bg-green-700' : 'bg-blue-600 hover:bg-blue-700'} text-white">
+                    <span>${t.finishQuiz}</span>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </button>
+                ` : `
+                  <button class="quiz-next-btn px-5 py-3 font-semibold rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-2 ${isStudyMode ? 'bg-green-600 hover:bg-green-700' : 'bg-blue-600 hover:bg-blue-700'} text-white" ${this.state.mode === 'exam' && userAnswer === null ? 'disabled' : ''}>
+                    <span class="hidden sm:inline">${t.next}</span>
+                    <span class="sm:hidden">${t.next}</span>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                `}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    private renderOption(option: string, index: number, q: QuizQuestion, isStudyMode: boolean, hasAnswered: boolean, userAnswer: number | null): string {
+      const isSelected = userAnswer === index;
+      const isCorrectOption = index === q.correctAnswer;
+      const showFeedback = isStudyMode && hasAnswered;
+      const letter = String.fromCharCode(65 + index);
+
+      let optionClasses = '';
+      let iconHtml = '';
+
+      if (showFeedback) {
+        if (isCorrectOption) {
+          optionClasses = 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/30 ring-2 ring-emerald-500/20';
+          iconHtml = `<div class="w-7 h-7 rounded-full bg-emerald-500 flex items-center justify-center">
+            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>`;
+        } else if (isSelected && !isCorrectOption) {
+          optionClasses = 'border-rose-500 bg-rose-50 dark:bg-rose-900/30 ring-2 ring-rose-500/20';
+          iconHtml = `<div class="w-7 h-7 rounded-full bg-rose-500 flex items-center justify-center">
+            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </div>`;
+        } else {
+          optionClasses = 'border-neutral-200 dark:border-neutral-600 bg-neutral-50 dark:bg-neutral-700/50 opacity-60';
+          iconHtml = `<div class="w-7 h-7 rounded-full bg-neutral-200 dark:bg-neutral-600 flex items-center justify-center">
+            <span class="text-sm font-bold text-neutral-600 dark:text-neutral-300">${letter}</span>
+          </div>`;
+        }
+      } else {
+        if (isSelected) {
+          optionClasses = 'border-primary-500 bg-primary-50 dark:bg-primary-900/30 ring-2 ring-primary-500/20';
+          iconHtml = `<div class="w-7 h-7 rounded-full bg-primary-500 flex items-center justify-center">
+            <span class="text-sm font-bold text-white">${letter}</span>
+          </div>`;
+        } else {
+          optionClasses = 'border-neutral-200 dark:border-neutral-600 hover:border-primary-300 dark:hover:border-primary-500 bg-white dark:bg-neutral-800';
+          iconHtml = `<div class="w-7 h-7 rounded-full border-2 border-neutral-300 dark:border-neutral-500 flex items-center justify-center group-hover:border-primary-400 transition-colors">
+            <span class="text-sm font-bold text-neutral-600 dark:text-neutral-300 group-hover:text-primary-500 transition-colors">${letter}</span>
+          </div>`;
+        }
+      }
+
+      const textClasses = showFeedback
+        ? isCorrectOption
+          ? 'text-emerald-800 dark:text-emerald-200 font-medium'
+          : isSelected
+            ? 'text-rose-800 dark:text-rose-200'
+            : 'text-neutral-600 dark:text-neutral-300'
+        : 'text-neutral-700 dark:text-neutral-200';
+
+      return `
+        <button
+          class="quiz-option w-full text-left p-4 rounded-xl border-2 transition-all duration-300 group ${optionClasses} ${showFeedback ? 'cursor-default' : 'cursor-pointer'}"
+          data-index="${index}"
+          ${showFeedback ? 'disabled' : ''}
+        >
+          <div class="flex items-start gap-3">
+            ${iconHtml}
+            <span class="text-base leading-relaxed ${textClasses}">${option}</span>
+          </div>
+        </button>
+      `;
+    }
+
+    private renderExplanation(q: QuizQuestion, isCorrect: boolean, userAnswer: number | null): string {
+      const { translations: t } = this.data;
+      const letter = String.fromCharCode(65 + q.correctAnswer);
+
+      return `
+        <div class="mt-5 p-4 rounded-xl border-2 ${isCorrect
+          ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-700'
+          : 'bg-rose-50 dark:bg-rose-900/20 border-rose-200 dark:border-rose-700'}">
+          <div class="flex items-center gap-2 mb-3 ${isCorrect ? 'text-emerald-700 dark:text-emerald-300' : 'text-rose-700 dark:text-rose-300'}">
+            ${isCorrect ? `
+              <div class="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <span class="font-bold text-base">${t.correct}!</span>
+            ` : `
+              <div class="w-8 h-8 rounded-lg bg-rose-500 flex items-center justify-center">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </div>
+              <span class="font-bold text-base">${t.incorrect}</span>
+            `}
+          </div>
+          <div class="bg-white/60 dark:bg-neutral-800/60 rounded-lg p-3 mb-3">
+            <p class="text-neutral-700 dark:text-neutral-300 text-base leading-relaxed">
+              <span class="font-semibold text-neutral-900 dark:text-white">${t.explanation}:</span> ${q.explanation}
+            </p>
+          </div>
+          ${!isCorrect ? `
+            <div class="flex items-center gap-2 p-3 bg-emerald-100 dark:bg-emerald-900/40 rounded-lg">
+              <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <p class="text-base text-emerald-700 dark:text-emerald-300">
+                <span class="font-semibold">${t.correctAnswer}:</span> ${letter}) ${q.options[q.correctAnswer]}
+              </p>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    private bindQuizEvents(): void {
+      const screen = this.container.querySelector('[data-screen="quiz"]');
+      if (!screen) return;
+
+      // Option selection
+      screen.querySelectorAll('.quiz-option').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const index = parseInt((e.currentTarget as HTMLElement).dataset.index || '0');
+          this.selectAnswer(index);
+        });
+      });
+
+      // Navigation
+      screen.querySelector('.quiz-prev-btn')?.addEventListener('click', () => this.prevQuestion());
+      screen.querySelector('.quiz-next-btn')?.addEventListener('click', () => this.nextQuestion());
+      screen.querySelector('.quiz-complete-btn')?.addEventListener('click', () => this.finishQuiz());
+      screen.querySelector('.quiz-finish-btn')?.addEventListener('click', () => this.finishQuiz());
+      screen.querySelector('.quiz-reset-btn')?.addEventListener('click', () => this.resetQuiz());
+    }
+
+    private selectAnswer(index: number): void {
+      this.state.answers[this.state.currentQuestion] = index;
+      this.saveState();
+      this.showQuizScreen();
+    }
+
+    private prevQuestion(): void {
+      if (this.state.currentQuestion > 0) {
+        this.state.currentQuestion--;
+        this.saveState();
+        this.showQuizScreen();
+      }
+    }
+
+    private nextQuestion(): void {
+      if (this.state.currentQuestion < this.data.questions.length - 1) {
+        this.state.currentQuestion++;
+        this.saveState();
+        this.showQuizScreen();
+      }
+    }
+
+    private finishQuiz(): void {
+      this.state.isActive = false;
+      this.state.showResults = true;
+      this.saveState();
+      this.showResultsScreen();
+    }
+
+    private resetQuiz(): void {
+      optimizedStorage.removeItem(`simple-quiz-${this.data.certificationId}`);
+      this.state = {
+        isActive: false,
+        mode: null,
+        currentQuestion: 0,
+        answers: new Array(this.data.questions.length).fill(null),
+        startTime: null,
+        showResults: false,
+      };
+      this.showStartScreen();
+    }
+
+    private calculateScore(): { score: number; correct: number; total: number } {
+      const correct = this.state.answers.filter((ans, idx) =>
+        ans === this.data.questions[idx]?.correctAnswer
+      ).length;
+      const total = this.data.questions.length;
+      const score = Math.round((correct / total) * 100);
+      return { score, correct, total };
+    }
+
+    private showResultsScreen(): void {
+      const screen = this.container.querySelector('[data-screen="results"]');
+      if (!screen) return;
+
+      screen.innerHTML = this.renderResultsContent();
+      this.showScreen('results');
+      this.bindResultsEvents();
+    }
+
+    private renderResultsContent(): string {
+      const { translations: t, certificationId } = this.data;
+      const { score, correct, total } = this.calculateScore();
+      const passed = score >= 75;
+      const timeUsed = this.state.startTime ? Math.floor((Date.now() - this.state.startTime) / 60000) : 0;
+
+      return `
+        <div class="space-y-4">
+          <!-- Shareable Result Card -->
+          <div class="quiz-results-card space-y-4 p-4 bg-white dark:bg-neutral-900 rounded-xl border-2 border-neutral-200 dark:border-neutral-700">
+            <div class="rounded-xl overflow-hidden ${passed ? 'bg-green-600' : 'bg-red-600'}">
+              <div class="p-5 sm:p-6 text-white text-center">
+                <div class="text-sm font-bold uppercase tracking-wider opacity-90 mb-3">
+                  ${certificationId.toUpperCase()} Practice Quiz
+                </div>
+                <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 rounded-xl bg-white/20 flex items-center justify-center">
+                  ${passed ? `
+                    <svg class="w-8 h-8 sm:w-10 sm:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                  ` : `
+                    <svg class="w-8 h-8 sm:w-10 sm:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  `}
+                </div>
+                <h4 class="text-lg sm:text-xl font-bold mb-2">${t.quizComplete}</h4>
+                <div class="text-4xl sm:text-5xl font-black mb-2">${score}%</div>
+                <p class="text-white/90 font-medium text-base">
+                  ${passed ? t.passed : t.failed} (${t.threshold}: 75%)
+                </p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2 sm:gap-3">
+              <div class="rounded-xl border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 p-3 sm:p-4 text-center">
+                <div class="w-9 h-9 sm:w-10 sm:h-10 mx-auto mb-2 bg-green-600 text-white rounded-lg flex items-center justify-center">
+                  <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h3 class="text-xl sm:text-2xl font-bold text-green-700 dark:text-green-400">${correct}</h3>
+                <p class="text-green-600 dark:text-green-300 text-sm sm:text-base">${t.correctCount}</p>
+              </div>
+              <div class="rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 p-3 sm:p-4 text-center">
+                <div class="w-9 h-9 sm:w-10 sm:h-10 mx-auto mb-2 bg-red-600 text-white rounded-lg flex items-center justify-center">
+                  <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </div>
+                <h3 class="text-xl sm:text-2xl font-bold text-red-700 dark:text-red-400">${total - correct}</h3>
+                <p class="text-red-600 dark:text-red-300 text-sm sm:text-base">${t.incorrectCount}</p>
+              </div>
+              <div class="rounded-xl border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20 p-3 sm:p-4 text-center">
+                <div class="w-9 h-9 sm:w-10 sm:h-10 mx-auto mb-2 bg-blue-600 text-white rounded-lg flex items-center justify-center">
+                  <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 class="text-xl sm:text-2xl font-bold text-blue-700 dark:text-blue-400">${timeUsed}m</h3>
+                <p class="text-blue-600 dark:text-blue-300 text-sm sm:text-base">${t.timeUsed}</p>
+              </div>
+            </div>
+
+            <div class="text-center text-sm text-neutral-500 dark:text-neutral-400 pt-2">
+              cncerthub.xyz
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="rounded-xl border-2 border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 p-4">
+            <div class="flex flex-col sm:flex-row gap-3">
+              <button class="results-restart-btn flex-1 px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all inline-flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                ${t.takeAnother}
+              </button>
+              <div class="relative flex-1">
+                <button class="results-share-btn w-full px-5 py-3 bg-green-600 hover:bg-green-700 disabled:opacity-70 disabled:cursor-wait text-white font-semibold rounded-xl transition-all inline-flex items-center justify-center gap-2">
+                  <svg class="w-5 h-5 share-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                  </svg>
+                  <svg class="w-5 h-5 spinner-icon hidden animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  <span class="share-text">${t.shareResult}</span>
+                </button>
+
+                <!-- Share Menu -->
+                <div class="share-menu hidden absolute bottom-full left-0 right-0 mb-2 z-50 bg-white dark:bg-neutral-800 rounded-xl border border-neutral-200 dark:border-neutral-700 shadow-xl overflow-hidden">
+                  <div class="p-2 space-y-1">
+                    <button class="share-whatsapp w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors">
+                      <div class="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                        </svg>
+                      </div>
+                      <span class="font-medium text-neutral-700 dark:text-neutral-200">WhatsApp</span>
+                    </button>
+                    <button class="share-linkedin w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
+                      <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                        </svg>
+                      </div>
+                      <span class="font-medium text-neutral-700 dark:text-neutral-200">LinkedIn</span>
+                    </button>
+                    <button class="share-twitter w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors">
+                      <div class="w-10 h-10 rounded-full bg-neutral-800 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                        </svg>
+                      </div>
+                      <span class="font-medium text-neutral-700 dark:text-neutral-200">X (Twitter)</span>
+                    </button>
+                    <div class="border-t border-neutral-200 dark:border-neutral-700 my-1"></div>
+                    <button class="share-download w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors">
+                      <div class="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                      </div>
+                      <span class="font-medium text-neutral-700 dark:text-neutral-200">${t.downloadImage}</span>
+                    </button>
+                    <button class="share-copy w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors">
+                      <div class="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white copy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <svg class="w-5 h-5 text-white check-icon hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <span class="font-medium text-neutral-700 dark:text-neutral-200 copy-text">${t.copyResult}</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Backdrop for share menu -->
+                <div class="share-backdrop hidden fixed inset-0 z-40"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Toast notification -->
+          <div class="share-toast hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-50 animate-pulse">
+            <div class="flex items-center gap-3 px-5 py-3 bg-amber-500 text-white rounded-xl shadow-lg">
+              <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span class="font-medium text-base toast-message"></span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    private bindResultsEvents(): void {
+      const screen = this.container.querySelector('[data-screen="results"]');
+      if (!screen) return;
+
+      screen.querySelector('.results-restart-btn')?.addEventListener('click', () => this.resetQuiz());
+
+      const shareBtn = screen.querySelector('.results-share-btn');
+      const shareMenu = screen.querySelector('.share-menu');
+      const shareBackdrop = screen.querySelector('.share-backdrop');
+
+      shareBtn?.addEventListener('click', () => this.handleShare());
+
+      // Close menu when clicking backdrop
+      shareBackdrop?.addEventListener('click', () => {
+        shareMenu?.classList.add('hidden');
+        shareBackdrop?.classList.add('hidden');
+      });
+
+      // Share buttons
+      screen.querySelector('.share-whatsapp')?.addEventListener('click', () => this.shareToWhatsApp());
+      screen.querySelector('.share-linkedin')?.addEventListener('click', () => this.shareToLinkedIn());
+      screen.querySelector('.share-twitter')?.addEventListener('click', () => this.shareToTwitter());
+      screen.querySelector('.share-download')?.addEventListener('click', () => this.downloadImage());
+      screen.querySelector('.share-copy')?.addEventListener('click', () => this.copyToClipboard());
+    }
+
+    private async loadHtml2Canvas(): Promise<typeof import('html2canvas').default | null> {
+      if (this.html2canvasLoaded) {
+        return (window as any).html2canvas;
+      }
+
+      try {
+        const module = await import('html2canvas');
+        (window as any).html2canvas = module.default;
+        this.html2canvasLoaded = true;
+        return module.default;
+      } catch {
+        console.warn('Failed to load html2canvas');
+        return null;
+      }
+    }
+
+    private async generateResultImage(): Promise<Blob | null> {
+      const html2canvas = await this.loadHtml2Canvas();
+      if (!html2canvas) return null;
+
+      const resultsCard = this.container.querySelector('.quiz-results-card');
+      if (!resultsCard) return null;
+
+      try {
+        const canvas = await html2canvas(resultsCard as HTMLElement, {
+          backgroundColor: '#ffffff',
+          scale: 2,
+          logging: false,
+          useCORS: true,
+        });
+
+        return new Promise((resolve) => {
+          canvas.toBlob((blob) => resolve(blob), 'image/png', 1.0);
+        });
+      } catch {
+        return null;
+      }
+    }
+
+    private getShareText(): string {
+      const { score, correct, total } = this.calculateScore();
+      const passed = score >= 75;
+      const status = passed ? '✅ PASSED' : '❌ FAILED';
+      const { certificationId, lang } = this.data;
+      return `${status} - I scored ${score}% (${correct}/${total}) on the ${certificationId.toUpperCase()} Practice Quiz!\n\n🎯 Test your knowledge: https://cncf-certification-hub.pages.dev/${lang}/certifications/${certificationId}\n\n#CloudNative #CNCF #${certificationId.toUpperCase()} #Kubernetes`;
+    }
+
+    private canShareFiles(): boolean {
+      if (typeof window === 'undefined' || typeof navigator === 'undefined') return false;
+      if (!navigator.share || !navigator.canShare) return false;
+      try {
+        const testFile = new File(['test'], 'test.png', { type: 'image/png' });
+        return navigator.canShare({ files: [testFile] });
+      } catch {
+        return false;
+      }
+    }
+
+    private async handleShare(): Promise<void> {
+      const shareMenu = this.container.querySelector('.share-menu');
+      const shareBackdrop = this.container.querySelector('.share-backdrop');
+
+      // Try native share first
+      const imageBlob = await this.generateResultImage();
+      if (navigator.share && imageBlob) {
+        try {
+          const file = new File([imageBlob], `${this.data.certificationId}-quiz-result.png`, { type: 'image/png' });
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              title: `${this.data.certificationId.toUpperCase()} Quiz Results`,
+              text: this.getShareText(),
+              files: [file],
+            });
+            return;
+          }
+        } catch {
+          // Fall through to menu
+        }
+      }
+
+      // Show share menu
+      shareMenu?.classList.remove('hidden');
+      shareBackdrop?.classList.remove('hidden');
+    }
+
+    private async shareWithImage(platform: 'whatsapp' | 'linkedin' | 'twitter'): Promise<void> {
+      const shareMenu = this.container.querySelector('.share-menu');
+      const shareBackdrop = this.container.querySelector('.share-backdrop');
+      shareMenu?.classList.add('hidden');
+      shareBackdrop?.classList.add('hidden');
+
+      const imageBlob = await this.generateResultImage();
+      if (!imageBlob) return;
+
+      const file = new File([imageBlob], `${this.data.certificationId}-quiz-result.png`, { type: 'image/png' });
+      const shareText = this.getShareText();
+
+      if (this.canShareFiles()) {
+        try {
+          await navigator.share({
+            text: shareText,
+            files: [file],
+          });
+          return;
+        } catch {
+          // Fall through
+        }
+      }
+
+      // Fallback: download and open URL
+      await this.downloadImage();
+      this.showToast(this.data.translations.imageDownloaded);
+
+      const text = encodeURIComponent(shareText);
+      const url = encodeURIComponent(`https://cncf-certification-hub.pages.dev/${this.data.lang}/certifications/${this.data.certificationId}`);
+
+      switch (platform) {
+        case 'whatsapp':
+          window.open(`https://wa.me/?text=${text}`, '_blank');
+          break;
+        case 'linkedin':
+          window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
+          break;
+        case 'twitter':
+          window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
+          break;
+      }
+    }
+
+    private shareToWhatsApp(): void { this.shareWithImage('whatsapp'); }
+    private shareToLinkedIn(): void { this.shareWithImage('linkedin'); }
+    private shareToTwitter(): void { this.shareWithImage('twitter'); }
+
+    private async downloadImage(): Promise<boolean> {
+      const shareMenu = this.container.querySelector('.share-menu');
+      const shareBackdrop = this.container.querySelector('.share-backdrop');
+      shareMenu?.classList.add('hidden');
+      shareBackdrop?.classList.add('hidden');
+
+      const imageBlob = await this.generateResultImage();
+      if (imageBlob) {
+        const url = URL.createObjectURL(imageBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${this.data.certificationId}-quiz-result.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        return true;
+      }
+      return false;
+    }
+
+    private async copyToClipboard(): Promise<void> {
+      const shareMenu = this.container.querySelector('.share-menu');
+      const shareBackdrop = this.container.querySelector('.share-backdrop');
+      const copyIcon = this.container.querySelector('.copy-icon');
+      const checkIcon = this.container.querySelector('.check-icon');
+      const copyText = this.container.querySelector('.copy-text');
+
+      try {
+        const imageBlob = await this.generateResultImage();
+        if (imageBlob) {
+          await navigator.clipboard.write([
+            new ClipboardItem({ 'image/png': imageBlob })
+          ]);
+        } else {
+          throw new Error('No image');
+        }
+      } catch {
+        // Fallback: copy text
+        try {
+          await navigator.clipboard.writeText(this.getShareText());
+        } catch {
+          return;
+        }
+      }
+
+      // Show success state
+      copyIcon?.classList.add('hidden');
+      checkIcon?.classList.remove('hidden');
+      if (copyText) copyText.textContent = this.data.translations.copied;
+
+      setTimeout(() => {
+        copyIcon?.classList.remove('hidden');
+        checkIcon?.classList.add('hidden');
+        if (copyText) copyText.textContent = this.data.translations.copyResult;
+        shareMenu?.classList.add('hidden');
+        shareBackdrop?.classList.add('hidden');
+      }, 2000);
+    }
+
+    private showToast(message: string): void {
+      const toast = this.container.querySelector('.share-toast');
+      const toastMessage = toast?.querySelector('.toast-message');
+      if (toast && toastMessage) {
+        toastMessage.textContent = message;
+        toast.classList.remove('hidden');
+        setTimeout(() => toast.classList.add('hidden'), 4000);
+      }
+    }
+  }
+
+  // Initialize all quiz simulators
+  function initQuizSimulators(): void {
+    document.querySelectorAll('.quiz-simulator[data-quiz]').forEach(container => {
+      if (!(container as any)._quizInit) {
+        new QuizSimulator(container as HTMLElement);
+        (container as any)._quizInit = true;
+      }
+    });
+  }
+
+  // Initialize on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initQuizSimulators);
+  } else {
+    initQuizSimulators();
+  }
+
+  // Re-initialize after Astro page transitions
+  document.addEventListener('astro:after-swap', initQuizSimulators);
+</script>

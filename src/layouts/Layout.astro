@@ -5,7 +5,7 @@ import { EXTERNAL_URLS, TYPOGRAPHY } from '../config/app.config';
 import { APP_CONFIG } from '../constants/index';
 import LanguageSelector from '../components/language/LanguageSelector.astro';
 import Logo from '../components/Logo';
-import SearchBar from '../components/search/SearchBar';
+import SearchBar from '../components/search/SearchBar.astro';
 import Sidebar from '../components/sidebar/Sidebar.astro';
 import ThemeToggleAstro from '../components/theme/ThemeToggleAstro.astro';
 import '../styles/global.css';
@@ -316,7 +316,7 @@ const hreflangUrls = {
         {/* Center: Search Bar - Always centered */}
         <div class="hidden sm:flex flex-1 justify-center mx-2">
           <div class="w-full max-w-md">
-            <SearchBar client:idle lang={lang} />
+            <SearchBar lang={lang} />
           </div>
         </div>
 
@@ -324,7 +324,7 @@ const hreflangUrls = {
         <div class="flex items-center gap-1 sm:gap-2 flex-shrink-0 ms-auto">
           {/* Mobile Search - Only visible below sm (640px) */}
           <div class="sm:hidden">
-            <SearchBar client:idle lang={lang} />
+            <SearchBar lang={lang} />
           </div>
 
           <!-- Theme Toggle - Pure Astro (no React) -->

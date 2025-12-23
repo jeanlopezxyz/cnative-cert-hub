@@ -1,0 +1,874 @@
+---
+import { useTranslations, translateCertificationValue } from '../../i18n/utils';
+import type { Certification } from '../../types';
+import type { ui } from '../../i18n/ui';
+import SimpleQuestionSimulator from '../quiz/SimpleQuestionSimulator.astro';
+
+interface Props {
+  certification: Certification;
+  lang: keyof typeof ui;
+}
+
+const { certification, lang } = Astro.props;
+const t = useTranslations(lang);
+
+// Pre-compute translations for client-side JS
+const translations = {
+  overview: t('certification.overview'),
+  domains: t('certification.domains'),
+  studyResources: t('certification.studyResources'),
+  practiceQuestions: t('certification.practiceQuestions'),
+  tapToChange: t('certification.tapToChange'),
+  selectSection: t('certification.selectSection'),
+  examOverview: t('certification.examOverview'),
+  examType: t('certification.examType'),
+  performance: t('certification.performance'),
+  multipleChoice: t('certification.multipleChoice'),
+  duration: t('certification.duration'),
+  minutes: t('certification.minutes'),
+  level: t('certification.level'),
+  beginner: t('certification.beginner'),
+  intermediate: t('certification.intermediate'),
+  advanced: t('certification.advanced'),
+  kubernetesVersion: t('certification.kubernetesVersion'),
+  prerequisites: t('certification.prerequisites'),
+  examAttempts: t('certification.examAttempts'),
+  attemptsIncluded: t('certification.attemptsIncluded'),
+  requiredFor: t('certification.requiredFor'),
+  practiceSimulatorIncluded: t('certification.practiceSimulatorIncluded'),
+  practiceEnvironmentIncluded: t('certification.practiceEnvironmentIncluded'),
+  access: t('certification.access'),
+  registerForExam: t('certification.registerForExam'),
+  officialRegistration: t('certification.officialRegistration'),
+  topics: t('certification.topics'),
+  official: t('certification.official'),
+  courses: t('certification.courses'),
+  books: t('certification.books'),
+  labs: t('certification.labs'),
+  community: t('certification.community'),
+  by: t('certification.by'),
+  paid: t('certification.paid'),
+  showMore: t('certification.showMore'),
+  showLess: t('certification.showLess'),
+};
+
+// Build study sections data
+interface StudyResource {
+  title: string;
+  url: string;
+  description?: string;
+  author?: string;
+  isPaid?: boolean;
+  difficulty?: string;
+  duration?: string;
+}
+
+interface StudySection {
+  id: string;
+  title: string;
+  type: string;
+  tab: string;
+  resources: StudyResource[];
+}
+
+const studySections: StudySection[] = [
+  {
+    id: 'official',
+    title: t('certification.sections.official'),
+    type: 'official',
+    tab: 'official',
+    resources: [{
+      title: t('certification.resource.officialPage'),
+      url: certification.resources.official,
+      description: t('certification.resource.officialDesc'),
+    }],
+  },
+  {
+    id: 'documentation',
+    title: t('certification.sections.documentation'),
+    type: 'documentation',
+    tab: 'official',
+    resources: (certification.resources.documentation || []).map(doc => ({
+      title: doc.title || t('certification.resource.projectDocs'),
+      url: doc.url,
+      description: doc.description || t('certification.resource.projectDocsDesc'),
+    })),
+  },
+  {
+    id: 'courses',
+    title: t('certification.sections.courses'),
+    type: 'courses',
+    tab: 'courses',
+    resources: certification.resources.courses || [],
+  },
+  {
+    id: 'videos',
+    title: t('certification.sections.videos'),
+    type: 'videos',
+    tab: 'courses',
+    resources: certification.resources.videos || [],
+  },
+  {
+    id: 'books',
+    title: t('certification.sections.books'),
+    type: 'books',
+    tab: 'books',
+    resources: certification.resources.books || [],
+  },
+  {
+    id: 'simulators',
+    title: t('certification.sections.practice'),
+    type: 'practice',
+    tab: 'labs',
+    resources: certification.resources.practice || [],
+  },
+  {
+    id: 'github',
+    title: t('certification.sections.github'),
+    type: 'github',
+    tab: 'labs',
+    resources: certification.resources.github.map(url => ({
+      title: url.split('/').slice(-2).join('/'),
+      url,
+      description: t('certification.resource.githubDesc'),
+    })),
+  },
+  {
+    id: 'tools',
+    title: t('certification.sections.tools'),
+    type: 'tools',
+    tab: 'labs',
+    resources: certification.resources.tools || [],
+  },
+  {
+    id: 'blogs',
+    title: t('certification.sections.blogs'),
+    type: 'blogs',
+    tab: 'community',
+    resources: certification.resources.blogs || [],
+  },
+  {
+    id: 'communities',
+    title: t('certification.sections.communities'),
+    type: 'communities',
+    tab: 'community',
+    resources: certification.resources.communities || [],
+  },
+].filter(section => section.resources.length > 0);
+
+// Group sections by tab
+const sectionsByTab = {
+  official: studySections.filter(s => s.tab === 'official'),
+  courses: studySections.filter(s => s.tab === 'courses'),
+  books: studySections.filter(s => s.tab === 'books'),
+  labs: studySections.filter(s => s.tab === 'labs'),
+  community: studySections.filter(s => s.tab === 'community'),
+};
+
+// Pre-compute certification values
+const examType = certification.type === 'performance' ? translations.performance : translations.multipleChoice;
+const level = certification.level === 'entry' ? translations.beginner : certification.level === 'intermediate' ? translations.intermediate : translations.advanced;
+const kubernetesVersion = certification.kubernetesVersion ? translateCertificationValue(certification.kubernetesVersion, lang) : null;
+const prerequisites = certification.prerequisites ? translateCertificationValue(certification.prerequisites, lang) : null;
+const simulatorAccess = certification.simulatorAccess ? translateCertificationValue(certification.simulatorAccess, lang) : null;
+const requiredFor = certification.requiredFor ? certification.requiredFor.map(item => translateCertificationValue(item, lang)).join(', ') : null;
+
+// Serialize data for client-side JS
+const guideData = JSON.stringify({
+  translations,
+  sectionsByTab,
+});
+---
+
+<div class="study-guide" data-guide={guideData}>
+  <div class="w-full px-4 sm:px-6 lg:px-8 xl:px-8 2xl:px-12 3xl:px-16 py-6 sm:py-8">
+    <!-- Header Section -->
+    <div class="mb-6">
+      <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-primary-600 dark:text-primary-400 mb-2">
+        {certification.acronym}
+      </h1>
+      <p class="text-base sm:text-lg text-neutral-700 dark:text-neutral-300">
+        {certification.name}
+      </p>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="mb-6">
+      <!-- Mobile Dropdown -->
+      <div class="sm:hidden relative">
+        <button
+          class="mobile-menu-btn w-full flex items-center justify-between gap-3 px-4 py-3.5 bg-white dark:bg-neutral-800 border-2 rounded-2xl shadow-sm transition-all duration-200 border-neutral-200 dark:border-neutral-700"
+        >
+          <div class="flex items-center gap-3">
+            <div class="tab-icon w-10 h-10 rounded-xl flex items-center justify-center shadow-sm transition-colors bg-gradient-to-br from-sky-500 to-sky-600" data-tab="overview">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <div class="text-left">
+              <span class="current-tab-label block font-semibold text-base text-neutral-800 dark:text-neutral-100">
+                {translations.overview}
+              </span>
+              <span class="block text-xs text-neutral-600 dark:text-neutral-300 mt-0.5">
+                {translations.tapToChange}
+              </span>
+            </div>
+          </div>
+          <div class="menu-arrow w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 bg-neutral-100 dark:bg-neutral-700">
+            <svg class="w-4 h-4 transition-transform duration-200 text-neutral-500 dark:text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+        </button>
+
+        <!-- Dropdown Menu -->
+        <div class="mobile-menu hidden absolute top-full left-0 right-0 mt-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-2xl shadow-2xl shadow-neutral-900/10 dark:shadow-black/30 z-20 overflow-hidden">
+          <div class="px-4 py-3 bg-neutral-50 dark:bg-neutral-900/50 border-b border-neutral-200 dark:border-neutral-700">
+            <p class="text-sm font-semibold text-neutral-600 dark:text-neutral-300 uppercase tracking-wider">
+              {translations.selectSection}
+            </p>
+          </div>
+          <div class="p-2">
+            {[
+              { id: 'overview', label: translations.overview, color: 'from-sky-500 to-sky-600', bgActive: 'bg-sky-50 dark:bg-sky-900/20', iconPath: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
+              { id: 'domains', label: translations.domains, color: 'from-violet-500 to-violet-600', bgActive: 'bg-violet-50 dark:bg-violet-900/20', iconPath: 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z' },
+              { id: 'resources', label: translations.studyResources, color: 'from-emerald-500 to-emerald-600', bgActive: 'bg-emerald-50 dark:bg-emerald-900/20', iconPath: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253' },
+              { id: 'path', label: translations.practiceQuestions, color: 'from-amber-500 to-amber-600', bgActive: 'bg-amber-50 dark:bg-amber-900/20', iconPath: 'M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
+            ].map((tab, index) => (
+              <button
+                class={`mobile-tab-btn w-full flex items-center gap-3 px-3 py-3 text-left rounded-xl transition-all duration-200 hover:bg-neutral-50 dark:hover:bg-neutral-700/50 ${index > 0 ? 'mt-1' : ''}`}
+                data-tab={tab.id}
+                data-color={tab.color}
+                data-bg-active={tab.bgActive}
+              >
+                <div class={`w-10 h-10 rounded-xl flex items-center justify-center shadow-sm bg-gradient-to-br ${tab.color}`}>
+                  <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={tab.iconPath} />
+                  </svg>
+                </div>
+                <div class="flex-1">
+                  <span class="font-semibold text-base text-neutral-700 dark:text-neutral-300">
+                    {tab.label}
+                  </span>
+                </div>
+                <div class="tab-check hidden w-6 h-6 rounded-full bg-primary-600 flex items-center justify-center">
+                  <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <!-- Mobile menu backdrop -->
+        <div class="mobile-backdrop hidden fixed inset-0 z-10 bg-black/20 backdrop-blur-sm"></div>
+      </div>
+
+      <!-- Desktop Tabs -->
+      <nav class="hidden sm:flex flex-wrap gap-2 p-1 bg-neutral-100 dark:bg-neutral-700/50 rounded-xl">
+        {[
+          { id: 'overview', label: translations.overview, iconPath: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
+          { id: 'domains', label: translations.domains, iconPath: 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z' },
+          { id: 'resources', label: translations.studyResources, iconPath: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253' },
+          { id: 'path', label: translations.practiceQuestions, iconPath: 'M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
+        ].map(tab => (
+          <button
+            class={`desktop-tab-btn flex items-center gap-2 px-4 py-2.5 min-h-[44px] rounded-xl font-medium text-base transition-all whitespace-nowrap ${tab.id === 'overview' ? 'bg-white dark:bg-neutral-900 text-primary-600 dark:text-primary-400 shadow-sm' : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'}`}
+            data-tab={tab.id}
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={tab.iconPath} />
+            </svg>
+            <span>{tab.label}</span>
+          </button>
+        ))}
+      </nav>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+      <!-- Overview Tab -->
+      <div class="tab-panel" data-panel="overview">
+        <div class="grid lg:grid-cols-3 gap-4">
+          <div class="lg:col-span-2 space-y-4">
+            <!-- Basic Exam Information -->
+            <div class="card rounded-xl overflow-hidden border border-neutral-200 dark:border-neutral-700 bg-sky-50 dark:bg-sky-600/20">
+              <div class="p-5 sm:p-6">
+                <div class="flex items-center gap-3 mb-5">
+                  <div class="w-10 h-10 inline-flex items-center justify-center bg-sky-600 text-white rounded-xl">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                    </svg>
+                  </div>
+                  <h3 class="text-base sm:text-lg font-semibold text-sky-600 dark:text-sky-400">
+                    {translations.examOverview}
+                  </h3>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4">
+                  <div class="space-y-3">
+                    <div class="p-3 sm:p-4 bg-white/60 dark:bg-neutral-900/40 rounded-xl">
+                      <div class="text-base text-sky-600 dark:text-sky-400 font-medium mb-1">{translations.examType}</div>
+                      <div class="text-base text-neutral-800 dark:text-neutral-100">{examType}</div>
+                    </div>
+                    <div class="p-3 sm:p-4 bg-white/60 dark:bg-neutral-900/40 rounded-xl">
+                      <div class="text-base text-sky-600 dark:text-sky-400 font-medium mb-1">{translations.duration}</div>
+                      <div class="text-base text-neutral-800 dark:text-neutral-100">{certification.duration} {translations.minutes}</div>
+                    </div>
+                    <div class="p-3 sm:p-4 bg-white/60 dark:bg-neutral-900/40 rounded-xl">
+                      <div class="text-base text-sky-600 dark:text-sky-400 font-medium mb-1">{translations.level}</div>
+                      <div class="text-base text-neutral-800 dark:text-neutral-100 capitalize">{level}</div>
+                    </div>
+                    {kubernetesVersion && (
+                      <div class="p-3 sm:p-4 bg-white/60 dark:bg-neutral-900/40 rounded-xl">
+                        <div class="text-base text-sky-600 dark:text-sky-400 font-medium mb-1">{translations.kubernetesVersion}</div>
+                        <div class="text-base text-neutral-800 dark:text-neutral-100">{kubernetesVersion}</div>
+                      </div>
+                    )}
+                  </div>
+                  <div class="space-y-3">
+                    {prerequisites && (
+                      <div class="p-3 sm:p-4 bg-amber-100/60 dark:bg-amber-900/30 rounded-xl">
+                        <div class="text-base text-amber-600 dark:text-amber-400 font-medium mb-1">{translations.prerequisites}</div>
+                        <div class="text-base text-neutral-800 dark:text-neutral-100">{prerequisites}</div>
+                      </div>
+                    )}
+                    {certification.examAttempts && (
+                      <div class="p-3 sm:p-4 bg-emerald-100/60 dark:bg-emerald-900/30 rounded-xl">
+                        <div class="text-base text-emerald-600 dark:text-emerald-400 font-medium mb-1">{translations.examAttempts}</div>
+                        <div class="text-base text-neutral-800 dark:text-neutral-100">{certification.examAttempts} {translations.attemptsIncluded}</div>
+                      </div>
+                    )}
+                    {requiredFor && (
+                      <div class="p-3 sm:p-4 bg-purple-100/60 dark:bg-purple-900/30 rounded-xl">
+                        <div class="text-base text-purple-600 dark:text-purple-400 font-medium mb-1">{translations.requiredFor}</div>
+                        <div class="text-base text-neutral-800 dark:text-neutral-100">{requiredFor}</div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Practice Simulator Section -->
+            {certification.type === 'performance' && certification.simulatorProvider && (
+              <div class="card rounded-xl overflow-hidden border border-neutral-200 dark:border-neutral-700 bg-emerald-50 dark:bg-emerald-600/20">
+                <div class="p-5 sm:p-6">
+                  <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 inline-flex items-center justify-center bg-emerald-600 text-white rounded-xl">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <h3 class="text-base sm:text-lg font-semibold text-emerald-600 dark:text-emerald-400">
+                      {translations.practiceSimulatorIncluded}
+                    </h3>
+                  </div>
+                  <div class="p-3 sm:p-4 bg-white/60 dark:bg-neutral-900/40 rounded-xl">
+                    <div class="font-medium text-emerald-600 dark:text-emerald-400 text-base mb-1">{certification.simulatorProvider}</div>
+                    <div class="text-neutral-600 dark:text-neutral-300 text-base">{translations.practiceEnvironmentIncluded}</div>
+                    {simulatorAccess && (
+                      <div class="text-base text-neutral-500 dark:text-neutral-400 mt-3 pt-3 border-t border-neutral-200 dark:border-neutral-700">
+                        <span class="font-medium">{translations.access}:</span> {simulatorAccess}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <!-- Right Sidebar -->
+          <div class="space-y-4">
+            <div class="card rounded-xl overflow-hidden border border-neutral-200 dark:border-neutral-700 bg-primary-50 dark:bg-primary-600/20">
+              <div class="p-5 sm:p-6">
+                <div class="flex items-center gap-3 mb-4">
+                  <div class="w-10 h-10 inline-flex items-center justify-center bg-primary-600 text-white rounded-xl">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                    </svg>
+                  </div>
+                  <h3 class="text-base sm:text-lg font-semibold text-primary-600 dark:text-primary-400">
+                    {translations.registerForExam}
+                  </h3>
+                </div>
+                <a
+                  href={certification.resources.official}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="group flex items-center justify-between p-3 sm:p-4 bg-primary-600 hover:bg-primary-700 rounded-xl transition-all text-white text-base"
+                >
+                  <span class="font-medium">{translations.officialRegistration}</span>
+                  <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Domains Tab -->
+      <div class="tab-panel hidden" data-panel="domains">
+        <div class="space-y-3">
+          {certification.domains.map((domain, index) => {
+            const domainColors = [
+              { bg: 'bg-primary-50 dark:bg-primary-600/20', icon: 'bg-primary-600', text: 'text-primary-600 dark:text-primary-400', badge: 'bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300' },
+              { bg: 'bg-teal-50 dark:bg-teal-600/20', icon: 'bg-teal-600', text: 'text-teal-600 dark:text-teal-400', badge: 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300' },
+              { bg: 'bg-violet-50 dark:bg-violet-600/20', icon: 'bg-violet-600', text: 'text-violet-600 dark:text-violet-400', badge: 'bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300' },
+            ];
+            const colors = domainColors[index % domainColors.length];
+
+            return (
+              <div class={`domain-card card rounded-xl overflow-hidden border border-neutral-200 dark:border-neutral-700 ${colors.bg} transition-all duration-300`} data-domain={domain.name}>
+                <button class="domain-toggle w-full p-4 text-left transition-all duration-300">
+                  <div class="flex items-start sm:items-center gap-3">
+                    <div class={`w-10 h-10 rounded-lg ${colors.icon} flex items-center justify-center text-white text-base font-bold flex-shrink-0`}>
+                      {index + 1}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                        <h4 class={`text-base sm:text-lg font-semibold ${colors.text} transition-colors`}>
+                          {domain.name}
+                        </h4>
+                        <div class="flex items-center gap-2 flex-shrink-0">
+                          <span class={`inline-flex items-center px-2 py-0.5 ${colors.badge} text-sm font-medium rounded`}>
+                            {domain.weight}%
+                          </span>
+                          <span class="inline-flex items-center px-2 py-0.5 bg-white/60 dark:bg-neutral-900/40 text-neutral-500 dark:text-neutral-400 text-sm rounded">
+                            {domain.topics.length} {translations.topics}
+                          </span>
+                          <div class="p-1.5 rounded-lg bg-white/60 dark:bg-neutral-900/40 transition-colors">
+                            <svg class="domain-arrow w-3.5 h-3.5 text-neutral-500 dark:text-neutral-400 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </button>
+                <div class="domain-content hidden border-t border-neutral-200 dark:border-neutral-700 bg-white/60 dark:bg-neutral-900/30 px-4 py-4">
+                  <div class="grid gap-2.5">
+                    {domain.topics.map((topic, topicIndex) => {
+                      const topicName = typeof topic === 'string' ? topic : topic.name;
+                      const topicUrl = typeof topic === 'object' ? topic.url : undefined;
+
+                      return (
+                        <div class="flex items-start gap-2.5 p-2.5 rounded-lg hover:bg-white dark:hover:bg-neutral-800/50 transition-colors">
+                          <div class={`w-6 h-6 rounded-full ${colors.icon} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                            <span class="text-xs text-white font-medium">{topicIndex + 1}</span>
+                          </div>
+                          {topicUrl ? (
+                            <a href={topicUrl} target="_blank" rel="noopener noreferrer" class={`text-base ${colors.text} leading-relaxed transition-colors underline-offset-2 hover:underline`}>
+                              {topicName}
+                            </a>
+                          ) : (
+                            <span class="text-base text-neutral-700 dark:text-neutral-300 leading-relaxed">{topicName}</span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <!-- Resources Tab -->
+      <div class="tab-panel hidden" data-panel="resources">
+        <!-- Resource Tabs -->
+        <div class="flex flex-wrap gap-2 mb-4 p-1.5 bg-neutral-100 dark:bg-neutral-700/50 rounded-xl">
+          {[
+            { id: 'official', label: translations.official },
+            { id: 'courses', label: translations.courses },
+            { id: 'books', label: translations.books },
+            { id: 'labs', label: translations.labs },
+            { id: 'community', label: translations.community },
+          ].map((tab, idx) => (
+            <button
+              class={`resource-tab-btn px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] sm:min-h-[44px] rounded-lg text-base font-medium transition-all ${idx === 0 ? 'bg-white dark:bg-neutral-900 text-primary-600 dark:text-primary-400 shadow-sm' : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200'}`}
+              data-resource-tab={tab.id}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        <!-- Resource Content -->
+        <div class="resource-content space-y-3">
+          {Object.entries(sectionsByTab).map(([tabId, sections]) => (
+            <div class={`resource-panel ${tabId === 'official' ? '' : 'hidden'}`} data-resource-panel={tabId}>
+              {sections.map(section => (
+                <div class="resource-section card rounded-xl overflow-hidden border border-neutral-200 dark:border-neutral-600 bg-white dark:bg-neutral-700 mb-3" data-section={section.id}>
+                  <button class="resource-toggle w-full px-4 py-3 flex items-center justify-between transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-600">
+                    <h4 class="text-base sm:text-lg font-bold text-primary-600 dark:text-primary-400 flex items-center gap-2">
+                      {section.title}
+                      <span class="text-sm text-neutral-400 dark:text-neutral-500 font-normal">({section.resources.length})</span>
+                    </h4>
+                    <svg class="resource-arrow w-4 h-4 text-neutral-500 dark:text-neutral-400 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  <div class="resource-items hidden border-t border-neutral-200 dark:border-neutral-700 bg-white/60 dark:bg-neutral-900/30 p-4">
+                    <div class="grid gap-2.5">
+                      {section.resources.slice(0, 3).map((resource, idx) => (
+                        <a
+                          href={resource.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="group flex items-start gap-3 p-3 bg-white/80 dark:bg-neutral-800/50 hover:bg-white dark:hover:bg-neutral-800 rounded-lg transition-all"
+                        >
+                          <div class="flex-1 min-w-0">
+                            <div class="text-base font-semibold text-neutral-800 dark:text-neutral-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                              {resource.title}
+                            </div>
+                            {resource.author && (
+                              <div class="text-sm text-neutral-500 dark:text-neutral-400 mt-0.5">
+                                {translations.by} {resource.author}
+                              </div>
+                            )}
+                            <div class="flex flex-wrap items-center gap-2 mt-2">
+                              {resource.isPaid && (
+                                <span class="px-2 py-0.5 bg-neutral-200 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300 text-sm font-medium rounded">
+                                  {translations.paid}
+                                </span>
+                              )}
+                              {resource.difficulty && (
+                                <span class="px-2 py-0.5 bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 text-sm font-medium rounded">
+                                  {resource.difficulty === 'beginner' ? translations.beginner : resource.difficulty === 'intermediate' ? translations.intermediate : translations.advanced}
+                                </span>
+                              )}
+                              {resource.duration && (
+                                <span class="text-sm text-neutral-500 dark:text-neutral-400">{resource.duration}</span>
+                              )}
+                            </div>
+                            {resource.description && (
+                              <p class="text-base text-neutral-600 dark:text-neutral-400 mt-2">{resource.description}</p>
+                            )}
+                          </div>
+                          <svg class="w-4 h-4 text-neutral-400 group-hover:text-primary-500 flex-shrink-0 mt-0.5 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </a>
+                      ))}
+                      {section.resources.length > 3 && (
+                        <div class="text-center pt-2">
+                          <button class="show-more-btn text-sm font-medium text-primary-600 dark:text-primary-400 hover:opacity-80 transition-colors" data-total={section.resources.length}>
+                            {translations.showMore} {section.resources.length - 3}...
+                          </button>
+                        </div>
+                      )}
+                      <!-- Hidden items (shown when "show more" clicked) -->
+                      <div class="more-items hidden">
+                        {section.resources.slice(3).map((resource) => (
+                          <a
+                            href={resource.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="group flex items-start gap-3 p-3 bg-white/80 dark:bg-neutral-800/50 hover:bg-white dark:hover:bg-neutral-800 rounded-lg transition-all mt-2.5"
+                          >
+                            <div class="flex-1 min-w-0">
+                              <div class="text-base font-semibold text-neutral-800 dark:text-neutral-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                                {resource.title}
+                              </div>
+                              {resource.author && (
+                                <div class="text-sm text-neutral-500 dark:text-neutral-400 mt-0.5">
+                                  {translations.by} {resource.author}
+                                </div>
+                              )}
+                              {resource.description && (
+                                <p class="text-base text-neutral-600 dark:text-neutral-400 mt-2">{resource.description}</p>
+                              )}
+                            </div>
+                            <svg class="w-4 h-4 text-neutral-400 group-hover:text-primary-500 flex-shrink-0 mt-0.5 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                          </a>
+                        ))}
+                        <div class="text-center pt-2">
+                          <button class="show-less-btn text-sm font-medium text-primary-600 dark:text-primary-400 hover:opacity-80 transition-colors">
+                            {translations.showLess}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Practice Questions Tab -->
+      <div class="tab-panel hidden" data-panel="path">
+        <SimpleQuestionSimulator
+          questions={certification.questions || []}
+          examDuration={certification.duration}
+          certificationId={certification.id}
+          lang={lang}
+        />
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  class StudyGuide {
+    private container: HTMLElement;
+    private activeTab: string = 'overview';
+    private activeResourceTab: string = 'official';
+    private expandedDomains: Set<string> = new Set();
+    private expandedSections: Set<string> = new Set();
+    private expandedMore: Set<string> = new Set();
+
+    constructor(container: HTMLElement) {
+      this.container = container;
+      this.init();
+    }
+
+    private init(): void {
+      this.bindEvents();
+    }
+
+    private bindEvents(): void {
+      // Desktop tab buttons
+      this.container.querySelectorAll('.desktop-tab-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const tab = (e.currentTarget as HTMLElement).dataset.tab;
+          if (tab) this.setActiveTab(tab);
+        });
+      });
+
+      // Mobile menu toggle
+      const mobileMenuBtn = this.container.querySelector('.mobile-menu-btn');
+      const mobileMenu = this.container.querySelector('.mobile-menu');
+      const mobileBackdrop = this.container.querySelector('.mobile-backdrop');
+
+      mobileMenuBtn?.addEventListener('click', () => {
+        mobileMenu?.classList.toggle('hidden');
+        mobileBackdrop?.classList.toggle('hidden');
+        const arrow = mobileMenuBtn.querySelector('.menu-arrow svg');
+        arrow?.classList.toggle('rotate-180');
+      });
+
+      mobileBackdrop?.addEventListener('click', () => {
+        mobileMenu?.classList.add('hidden');
+        mobileBackdrop?.classList.add('hidden');
+        const arrow = mobileMenuBtn?.querySelector('.menu-arrow svg');
+        arrow?.classList.remove('rotate-180');
+      });
+
+      // Mobile tab buttons
+      this.container.querySelectorAll('.mobile-tab-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const tab = (e.currentTarget as HTMLElement).dataset.tab;
+          if (tab) {
+            this.setActiveTab(tab);
+            mobileMenu?.classList.add('hidden');
+            mobileBackdrop?.classList.add('hidden');
+            const arrow = mobileMenuBtn?.querySelector('.menu-arrow svg');
+            arrow?.classList.remove('rotate-180');
+          }
+        });
+      });
+
+      // Domain toggles
+      this.container.querySelectorAll('.domain-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const card = (e.currentTarget as HTMLElement).closest('.domain-card');
+          const domain = card?.getAttribute('data-domain');
+          if (domain) this.toggleDomain(domain);
+        });
+      });
+
+      // Resource tab buttons
+      this.container.querySelectorAll('.resource-tab-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const tab = (e.currentTarget as HTMLElement).dataset.resourceTab;
+          if (tab) this.setActiveResourceTab(tab);
+        });
+      });
+
+      // Resource section toggles
+      this.container.querySelectorAll('.resource-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const section = (e.currentTarget as HTMLElement).closest('.resource-section');
+          const sectionId = section?.getAttribute('data-section');
+          if (sectionId) this.toggleResourceSection(sectionId);
+        });
+      });
+
+      // Show more/less buttons
+      this.container.querySelectorAll('.show-more-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const section = (e.currentTarget as HTMLElement).closest('.resource-section');
+          const sectionId = section?.getAttribute('data-section');
+          if (sectionId) this.toggleShowMore(sectionId);
+        });
+      });
+
+      this.container.querySelectorAll('.show-less-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const section = (e.currentTarget as HTMLElement).closest('.resource-section');
+          const sectionId = section?.getAttribute('data-section');
+          if (sectionId) this.toggleShowMore(sectionId);
+        });
+      });
+    }
+
+    private setActiveTab(tab: string): void {
+      this.activeTab = tab;
+
+      // Update desktop tabs
+      this.container.querySelectorAll('.desktop-tab-btn').forEach(btn => {
+        const isActive = btn.getAttribute('data-tab') === tab;
+        btn.classList.toggle('bg-white', isActive);
+        btn.classList.toggle('dark:bg-neutral-900', isActive);
+        btn.classList.toggle('text-primary-600', isActive);
+        btn.classList.toggle('dark:text-primary-400', isActive);
+        btn.classList.toggle('shadow-sm', isActive);
+        btn.classList.toggle('text-neutral-500', !isActive);
+        btn.classList.toggle('dark:text-neutral-400', !isActive);
+      });
+
+      // Update mobile tabs
+      this.container.querySelectorAll('.mobile-tab-btn').forEach(btn => {
+        const isActive = btn.getAttribute('data-tab') === tab;
+        const check = btn.querySelector('.tab-check');
+        if (isActive) {
+          const bgClasses = (btn.getAttribute('data-bg-active') || '').split(' ').filter(c => c);
+          bgClasses.forEach(c => btn.classList.add(c));
+          btn.querySelector('span')?.classList.add('text-neutral-900', 'dark:text-white');
+          btn.querySelector('span')?.classList.remove('text-neutral-700', 'dark:text-neutral-300');
+          check?.classList.remove('hidden');
+          check?.classList.add('flex');
+        } else {
+          btn.className = btn.className.replace(/bg-\w+-50|dark:bg-\w+-900\/20/g, '');
+          btn.querySelector('span')?.classList.remove('text-neutral-900', 'dark:text-white');
+          btn.querySelector('span')?.classList.add('text-neutral-700', 'dark:text-neutral-300');
+          check?.classList.add('hidden');
+          check?.classList.remove('flex');
+        }
+      });
+
+      // Update mobile menu button label
+      const labels: Record<string, string> = {
+        overview: 'Overview',
+        domains: 'Domains',
+        resources: 'Study Resources',
+        path: 'Practice Questions'
+      };
+      const currentLabel = this.container.querySelector('.current-tab-label');
+      if (currentLabel) {
+        const btn = this.container.querySelector(`.mobile-tab-btn[data-tab="${tab}"]`);
+        currentLabel.textContent = btn?.querySelector('span')?.textContent || labels[tab] || tab;
+      }
+
+      // Update tab icon
+      const iconColors: Record<string, string> = {
+        overview: 'from-sky-500 to-sky-600',
+        domains: 'from-violet-500 to-violet-600',
+        resources: 'from-emerald-500 to-emerald-600',
+        path: 'from-amber-500 to-amber-600'
+      };
+      const tabIcon = this.container.querySelector('.tab-icon');
+      if (tabIcon) {
+        tabIcon.className = `tab-icon w-10 h-10 rounded-xl flex items-center justify-center shadow-sm transition-colors bg-gradient-to-br ${iconColors[tab] || iconColors.overview}`;
+      }
+
+      // Show/hide panels
+      this.container.querySelectorAll('.tab-panel').forEach(panel => {
+        panel.classList.toggle('hidden', panel.getAttribute('data-panel') !== tab);
+      });
+    }
+
+    private toggleDomain(domain: string): void {
+      if (this.expandedDomains.has(domain)) {
+        this.expandedDomains.delete(domain);
+      } else {
+        this.expandedDomains.add(domain);
+      }
+
+      const card = this.container.querySelector(`.domain-card[data-domain="${domain}"]`);
+      const content = card?.querySelector('.domain-content');
+      const arrow = card?.querySelector('.domain-arrow');
+
+      content?.classList.toggle('hidden', !this.expandedDomains.has(domain));
+      arrow?.classList.toggle('rotate-180', this.expandedDomains.has(domain));
+    }
+
+    private setActiveResourceTab(tab: string): void {
+      this.activeResourceTab = tab;
+
+      // Update tab buttons
+      this.container.querySelectorAll('.resource-tab-btn').forEach(btn => {
+        const isActive = btn.getAttribute('data-resource-tab') === tab;
+        btn.classList.toggle('bg-white', isActive);
+        btn.classList.toggle('dark:bg-neutral-900', isActive);
+        btn.classList.toggle('text-primary-600', isActive);
+        btn.classList.toggle('dark:text-primary-400', isActive);
+        btn.classList.toggle('shadow-sm', isActive);
+        btn.classList.toggle('text-neutral-500', !isActive);
+        btn.classList.toggle('dark:text-neutral-400', !isActive);
+      });
+
+      // Show/hide panels
+      this.container.querySelectorAll('.resource-panel').forEach(panel => {
+        panel.classList.toggle('hidden', panel.getAttribute('data-resource-panel') !== tab);
+      });
+    }
+
+    private toggleResourceSection(sectionId: string): void {
+      if (this.expandedSections.has(sectionId)) {
+        this.expandedSections.delete(sectionId);
+      } else {
+        this.expandedSections.add(sectionId);
+      }
+
+      const section = this.container.querySelector(`.resource-section[data-section="${sectionId}"]`);
+      const items = section?.querySelector('.resource-items');
+      const arrow = section?.querySelector('.resource-arrow');
+
+      items?.classList.toggle('hidden', !this.expandedSections.has(sectionId));
+      arrow?.classList.toggle('rotate-180', this.expandedSections.has(sectionId));
+    }
+
+    private toggleShowMore(sectionId: string): void {
+      if (this.expandedMore.has(sectionId)) {
+        this.expandedMore.delete(sectionId);
+      } else {
+        this.expandedMore.add(sectionId);
+      }
+
+      const section = this.container.querySelector(`.resource-section[data-section="${sectionId}"]`);
+      const moreItems = section?.querySelector('.more-items');
+      const showMoreBtn = section?.querySelector('.show-more-btn');
+
+      moreItems?.classList.toggle('hidden', !this.expandedMore.has(sectionId));
+      showMoreBtn?.parentElement?.classList.toggle('hidden', this.expandedMore.has(sectionId));
+    }
+  }
+
+  // Initialize
+  function initStudyGuides(): void {
+    document.querySelectorAll('.study-guide[data-guide]').forEach(container => {
+      if (!(container as any)._guideInit) {
+        new StudyGuide(container as HTMLElement);
+        (container as any)._guideInit = true;
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initStudyGuides);
+  } else {
+    initStudyGuides();
+  }
+
+  document.addEventListener('astro:after-swap', initStudyGuides);
+</script>
