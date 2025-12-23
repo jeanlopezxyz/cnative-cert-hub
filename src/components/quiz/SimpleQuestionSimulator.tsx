@@ -411,7 +411,7 @@ export default function SimpleQuestionSimulator({
     );
   }
 
-  // Results screen - Enhanced design
+  // Results screen - Clean design with solid colors
   if (state.showResults) {
     const score = calculateScore();
     const correct = state.answers.filter((ans, idx) => ans === questions[idx]?.correctAnswer).length;
@@ -420,84 +420,78 @@ export default function SimpleQuestionSimulator({
     return (
       <div className="space-y-4">
         {/* Shareable Result Card */}
-        <div ref={resultsRef} className="space-y-4 p-4 bg-white dark:bg-neutral-900 rounded-2xl">
+        <div ref={resultsRef} className="space-y-4 p-4 bg-white dark:bg-neutral-900 rounded-xl border-2 border-neutral-200 dark:border-neutral-700">
           {/* Result Header */}
-          <div className={`rounded-2xl overflow-hidden ${
-            passed
-              ? 'bg-gradient-to-br from-emerald-500 to-teal-600'
-              : 'bg-gradient-to-br from-rose-500 to-red-600'
-          }`}>
-            <div className="p-6 text-white text-center">
+          <div className={`rounded-xl overflow-hidden ${passed ? 'bg-green-600' : 'bg-red-600'}`}>
+            <div className="p-5 sm:p-6 text-white text-center">
               {/* Certification Badge */}
-              <div className="text-base font-bold uppercase tracking-wider opacity-80 mb-3">
+              <div className="text-sm font-bold uppercase tracking-wider opacity-90 mb-3">
                 {certificationId.toUpperCase()} Practice Quiz
               </div>
-              <div className={`w-20 h-20 mx-auto mb-4 rounded-2xl flex items-center justify-center ${
-                passed ? 'bg-white/20' : 'bg-white/20'
-              }`}>
+              <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 rounded-xl bg-white/20 flex items-center justify-center">
                 {passed ? (
-                  <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                  <svg className="w-8 h-8 sm:w-10 sm:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
                 ) : (
-                  <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <svg className="w-8 h-8 sm:w-10 sm:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 )}
               </div>
-              <h4 className="text-xl font-bold mb-2">{t('quiz.quizComplete')}</h4>
-              <div className="text-5xl font-black mb-2">{score}%</div>
-              <p className="text-white/80 font-medium">
+              <h4 className="text-lg sm:text-xl font-bold mb-2">{t('quiz.quizComplete')}</h4>
+              <div className="text-4xl sm:text-5xl font-black mb-2">{score}%</div>
+              <p className="text-white/90 font-medium text-sm sm:text-base">
                 {passed ? t('quiz.passed') : t('quiz.failed')} ({t('quiz.threshold')}: 75%)
               </p>
             </div>
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-3 gap-3">
-            <div className="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 p-4 text-center">
-              <div className="w-10 h-10 mx-auto mb-2 bg-gradient-to-br from-emerald-500 to-green-600 text-white rounded-lg flex items-center justify-center">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="grid grid-cols-3 gap-2 sm:gap-3">
+            <div className="rounded-xl border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 p-3 sm:p-4 text-center">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 mx-auto mb-2 bg-green-600 text-white rounded-lg flex items-center justify-center">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{correct}</h3>
-              <p className="text-neutral-600 dark:text-neutral-300 text-base">{t('quiz.correctCount')}</p>
+              <h3 className="text-xl sm:text-2xl font-bold text-green-700 dark:text-green-400">{correct}</h3>
+              <p className="text-green-600 dark:text-green-300 text-xs sm:text-sm">{t('quiz.correctCount')}</p>
             </div>
-            <div className="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 p-4 text-center">
-              <div className="w-10 h-10 mx-auto mb-2 bg-gradient-to-br from-rose-500 to-red-600 text-white rounded-lg flex items-center justify-center">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 p-3 sm:p-4 text-center">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 mx-auto mb-2 bg-red-600 text-white rounded-lg flex items-center justify-center">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-bold text-rose-600 dark:text-rose-400">{questions.length - correct}</h3>
-              <p className="text-neutral-600 dark:text-neutral-300 text-base">{t('quiz.incorrectCount')}</p>
+              <h3 className="text-xl sm:text-2xl font-bold text-red-700 dark:text-red-400">{questions.length - correct}</h3>
+              <p className="text-red-600 dark:text-red-300 text-xs sm:text-sm">{t('quiz.incorrectCount')}</p>
             </div>
-            <div className="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 p-4 text-center">
-              <div className="w-10 h-10 mx-auto mb-2 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-lg flex items-center justify-center">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="rounded-xl border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20 p-3 sm:p-4 text-center">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 mx-auto mb-2 bg-blue-600 text-white rounded-lg flex items-center justify-center">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+              <h3 className="text-xl sm:text-2xl font-bold text-blue-700 dark:text-blue-400">
                 {state.startTime ? Math.floor((Date.now() - state.startTime) / 60000) : 0}m
               </h3>
-              <p className="text-neutral-600 dark:text-neutral-300 text-base">{t('quiz.timeUsed')}</p>
+              <p className="text-blue-600 dark:text-blue-300 text-xs sm:text-sm">{t('quiz.timeUsed')}</p>
             </div>
           </div>
 
           {/* Branding for shared image */}
-          <div className="text-center text-base text-neutral-600 dark:text-neutral-400 pt-2">
+          <div className="text-center text-sm text-neutral-500 dark:text-neutral-400 pt-2">
             cncerthub.xyz
           </div>
         </div>
 
         {/* Action Buttons */}
-        <div className="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 p-4">
+        <div className="rounded-xl border-2 border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 p-4">
           <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={resetQuiz}
-              className="flex-1 px-5 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold rounded-xl transition-all shadow-lg shadow-purple-500/25 inline-flex items-center justify-center gap-2"
+              className="flex-1 px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all inline-flex items-center justify-center gap-2"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -508,7 +502,7 @@ export default function SimpleQuestionSimulator({
               <button
                 onClick={handleNativeShare}
                 disabled={isGeneratingImage}
-                className="w-full px-5 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 disabled:opacity-70 disabled:cursor-wait text-white font-semibold rounded-xl transition-all shadow-lg shadow-cyan-500/25 inline-flex items-center justify-center gap-2"
+                className="w-full px-5 py-3 bg-green-600 hover:bg-green-700 disabled:opacity-70 disabled:cursor-wait text-white font-semibold rounded-xl transition-all inline-flex items-center justify-center gap-2"
               >
                 {isGeneratingImage ? (
                   <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -539,7 +533,7 @@ export default function SimpleQuestionSimulator({
                         onClick={() => { shareToWhatsApp(); setShowShareMenu(false); }}
                         className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors group"
                       >
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center">
                           <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
                           </svg>
@@ -552,7 +546,7 @@ export default function SimpleQuestionSimulator({
                         onClick={() => { shareToLinkedIn(); setShowShareMenu(false); }}
                         className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors group"
                       >
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
                           <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
                           </svg>
@@ -565,7 +559,7 @@ export default function SimpleQuestionSimulator({
                         onClick={() => { shareToTwitter(); setShowShareMenu(false); }}
                         className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors group"
                       >
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-neutral-700 to-neutral-900 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-neutral-800 flex items-center justify-center">
                           <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                           </svg>
@@ -581,7 +575,7 @@ export default function SimpleQuestionSimulator({
                         onClick={() => { downloadImage(); setShowShareMenu(false); }}
                         className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors group"
                       >
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center">
                           <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                           </svg>
@@ -594,7 +588,7 @@ export default function SimpleQuestionSimulator({
                         onClick={() => { copyImageToClipboard(); setShowShareMenu(false); }}
                         className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors group"
                       >
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center">
                           {copied ? (
                             <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
@@ -620,7 +614,7 @@ export default function SimpleQuestionSimulator({
         {/* Toast notification */}
         {shareToast && (
           <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 animate-pulse">
-            <div className="flex items-center gap-3 px-5 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl shadow-lg shadow-amber-500/30">
+            <div className="flex items-center gap-3 px-5 py-3 bg-amber-500 text-white rounded-xl shadow-lg">
               <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -646,15 +640,13 @@ export default function SimpleQuestionSimulator({
       {/* Header */}
       <div className="rounded-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 overflow-hidden shadow-sm">
         {/* Mode indicator bar */}
-        <div className={`h-1.5 ${isStudyMode ? 'bg-gradient-to-r from-emerald-500 to-teal-500' : 'bg-gradient-to-r from-purple-500 to-indigo-500'}`} />
+        <div className={`h-1.5 ${isStudyMode ? 'bg-green-600' : 'bg-blue-600'}`} />
 
         <div className="p-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-white shadow-lg ${
-                isStudyMode
-                  ? 'bg-gradient-to-br from-emerald-500 to-teal-600 shadow-emerald-500/25'
-                  : 'bg-gradient-to-br from-purple-500 to-indigo-600 shadow-purple-500/25'
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-white ${
+                isStudyMode ? 'bg-green-600' : 'bg-blue-600'
               }`}>
                 {state.currentQuestion + 1}
               </div>
@@ -665,8 +657,8 @@ export default function SimpleQuestionSimulator({
                 <div className="flex items-center gap-2 mt-0.5">
                   <span className={`text-base font-medium px-2 py-0.5 rounded-full ${
                     isStudyMode
-                      ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300'
-                      : 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300'
+                      ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300'
+                      : 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300'
                   }`}>
                     {isStudyMode ? t('quiz.studyMode') : t('quiz.examMode')}
                   </span>
@@ -699,9 +691,7 @@ export default function SimpleQuestionSimulator({
             <div className="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-2.5 overflow-hidden">
               <div
                 className={`h-2.5 rounded-full transition-all duration-500 ${
-                  isStudyMode
-                    ? 'bg-gradient-to-r from-emerald-500 to-teal-500'
-                    : 'bg-gradient-to-r from-purple-500 to-indigo-500'
+                  isStudyMode ? 'bg-green-600' : 'bg-blue-600'
                 }`}
                 style={{ width: `${((state.currentQuestion + 1) / questions.length) * 100}%` }}
               />
@@ -879,10 +869,10 @@ export default function SimpleQuestionSimulator({
             {isLastQuestion ? (
               <button
                 onClick={finishQuiz}
-                className={`px-5 py-3 font-semibold rounded-xl transition-all shadow-lg inline-flex items-center gap-2 ${
+                className={`px-5 py-3 font-semibold rounded-xl transition-all inline-flex items-center gap-2 ${
                   isStudyMode
-                    ? 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-emerald-500/25'
-                    : 'bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white shadow-purple-500/25'
+                    ? 'bg-green-600 hover:bg-green-700 text-white'
+                    : 'bg-blue-600 hover:bg-blue-700 text-white'
                 }`}
               >
                 <span>{t('quiz.finishQuiz')}</span>
@@ -894,10 +884,10 @@ export default function SimpleQuestionSimulator({
               <button
                 onClick={nextQuestion}
                 disabled={state.mode === 'exam' && !canGoNext}
-                className={`px-5 py-3 font-semibold rounded-xl transition-all shadow-lg disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-2 ${
+                className={`px-5 py-3 font-semibold rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-2 ${
                   isStudyMode
-                    ? 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-emerald-500/25'
-                    : 'bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white shadow-purple-500/25'
+                    ? 'bg-green-600 hover:bg-green-700 text-white'
+                    : 'bg-blue-600 hover:bg-blue-700 text-white'
                 }`}
               >
                 <span className="hidden sm:inline">{t('quiz.next')}</span>
