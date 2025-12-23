@@ -1,7 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/hero/Hero.astro';
-import AchievementPrograms from '../components/achievements/AchievementPrograms';
+import AchievementPrograms from '../components/achievements/AchievementPrograms.astro';
 import CertificationGrid from '../components/certifications/CertificationGrid';
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
 
@@ -14,8 +14,8 @@ const t = useTranslations(lang);
     <!-- Hero Section - Pure Astro, no JS hydration needed -->
     <Hero lang={lang} />
 
-    <!-- Achievement Programs - Below fold, load when visible -->
-    <AchievementPrograms client:visible lang={lang} />
+    <!-- Achievement Programs - Pure Astro, no JS needed -->
+    <AchievementPrograms lang={lang} />
 
     <!-- Certifications Grid - Below fold, load when visible -->
     <CertificationGrid client:visible lang={lang} />
