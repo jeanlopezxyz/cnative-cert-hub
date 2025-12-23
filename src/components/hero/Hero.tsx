@@ -51,7 +51,7 @@ export default function Hero({ lang }: HeroProps) {
                       window.scrollTo({ top, behavior: 'smooth' });
                     }
                   }}
-                  className="inline-flex items-center justify-center px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-xl transition-all duration-200"
+                  className="inline-flex items-center justify-center px-6 py-3 bg-primary-700 hover:bg-primary-800 text-white font-bold rounded-xl transition-all duration-200"
                 >
                   {t('hero.cta.certifications')}
                 </button>
@@ -59,7 +59,7 @@ export default function Hero({ lang }: HeroProps) {
                   href="https://www.cncf.io/training/certification/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary-500 hover:bg-primary-600 text-white font-semibold rounded-xl transition-all duration-200"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary-700 hover:bg-primary-800 text-white font-semibold rounded-xl transition-all duration-200"
                 >
                   {t('hero.cta.official')}
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
