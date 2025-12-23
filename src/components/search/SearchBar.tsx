@@ -49,9 +49,9 @@ export default function SearchBar({ lang }: SearchBarProps) {
     }
   }, []);
 
-  // Close suggestions and mobile search when clicking outside
+  // Close suggestions and mobile search when clicking/touching outside
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setIsFocused(false);
         setSuggestions([]);
@@ -64,8 +64,13 @@ export default function SearchBar({ lang }: SearchBarProps) {
       }
     };
 
+    // Use both mousedown and touchstart for desktop and mobile
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
   }, [isExpanded]);
 
   // Advanced fuzzy search and scoring algorithm
@@ -392,10 +397,29 @@ export default function SearchBar({ lang }: SearchBarProps) {
       </button>
 
       {/* Expanded Search for Mobile / Normal Search for Desktop */}
-      <div 
-        className={`${isExpanded ? 'fixed inset-0 bg-black/50 z-50 sm:relative sm:inset-auto sm:bg-transparent' : 'hidden sm:block'} sm:relative sm:w-full sm:max-w-md sm:mx-auto`}
+      <div
+        className={`${isExpanded ? 'fixed inset-0 z-50 sm:relative sm:inset-auto' : 'hidden sm:block'} sm:relative sm:w-full sm:max-w-md sm:mx-auto`}
         ref={containerRef}
       >
+        {/* Mobile backdrop - clickable to close */}
+        {isExpanded && (
+          <div
+            className="sm:hidden fixed inset-0 bg-black/50 -z-10"
+            onClick={() => {
+              setIsExpanded(false);
+              setQuery('');
+              setSuggestions([]);
+              setFocusedIndex(-1);
+            }}
+            onTouchStart={() => {
+              setIsExpanded(false);
+              setQuery('');
+              setSuggestions([]);
+              setFocusedIndex(-1);
+            }}
+            aria-hidden="true"
+          />
+        )}
         {/* Mobile Search Header - WowDash Style */}
         {isExpanded && (
           <div className="sm:hidden fixed top-0 left-0 right-0 h-16 bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-700 shadow-sm">
