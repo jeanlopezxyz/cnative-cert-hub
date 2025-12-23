@@ -30,44 +30,50 @@
 </button>
 
 <script>
-  function initThemeToggle() {
-    const button = document.getElementById('theme-toggle');
+  // Use event delegation on document body - survives View Transitions
+  function handleThemeToggle(e: Event) {
+    const button = (e.target as Element).closest('#theme-toggle');
     if (!button) return;
 
-    button.addEventListener('click', () => {
-      const isDark = document.documentElement.classList.contains('dark');
-      const newTheme = isDark ? 'light' : 'dark';
+    const isDark = document.documentElement.classList.contains('dark');
+    const newTheme = isDark ? 'light' : 'dark';
 
-      // Save preference
-      try {
-        localStorage.setItem('theme', newTheme);
-      } catch (e) {
-        // localStorage not available
-      }
+    // Save preference
+    try {
+      localStorage.setItem('theme', newTheme);
+    } catch (e) {
+      // localStorage not available
+    }
 
-      // Apply with transition
-      document.documentElement.classList.add('theme-transition');
-      document.documentElement.classList.remove('dark', 'light');
-      document.documentElement.classList.add(newTheme);
+    // Apply with transition
+    document.documentElement.classList.add('theme-transition');
+    document.documentElement.classList.remove('dark', 'light');
+    document.documentElement.classList.add(newTheme);
 
-      // Update aria-label
-      button.setAttribute('aria-label', newTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
-      button.setAttribute('title', newTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+    // Update aria-label
+    button.setAttribute('aria-label', newTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+    button.setAttribute('title', newTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
 
-      setTimeout(() => {
-        document.documentElement.classList.remove('theme-transition');
-      }, 100);
-    });
+    setTimeout(() => {
+      document.documentElement.classList.remove('theme-transition');
+    }, 100);
+  }
 
-    // Set initial aria-label
+  function updateAriaLabel() {
+    const button = document.getElementById('theme-toggle');
+    if (!button) return;
     const isDark = document.documentElement.classList.contains('dark');
     button.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
     button.setAttribute('title', isDark ? 'Switch to light mode' : 'Switch to dark mode');
   }
 
-  // Initialize on page load
-  initThemeToggle();
+  // Only add listener once (persists across View Transitions)
+  if (!(window as any).__themeToggleInit) {
+    document.addEventListener('click', handleThemeToggle);
+    (window as any).__themeToggleInit = true;
+  }
 
-  // Re-initialize after View Transitions
-  document.addEventListener('astro:after-swap', initThemeToggle);
+  // Update aria-label on page load and after View Transitions
+  updateAriaLabel();
+  document.addEventListener('astro:after-swap', updateAriaLabel);
 </script>
