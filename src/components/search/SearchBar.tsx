@@ -49,19 +49,24 @@ export default function SearchBar({ lang }: SearchBarProps) {
     }
   }, []);
 
-  // Close suggestions when clicking outside
+  // Close suggestions and mobile search when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setIsFocused(false);
         setSuggestions([]);
         setFocusedIndex(-1);
+        // Also close expanded mobile search
+        if (isExpanded) {
+          setIsExpanded(false);
+          setQuery('');
+        }
       }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  }, [isExpanded]);
 
   // Advanced fuzzy search and scoring algorithm
   const calculateFuzzyScore = useCallback((text: string, query: string): number => {
