@@ -128,25 +128,8 @@ const hreflangUrls = {
     <link rel="icon" type="image/svg+xml" href={`${baseUrl}favicon.svg`} />
     <link rel="apple-touch-icon" sizes="180x180" href={`${baseUrl}apple-touch-icon.png`} />
 
-    <!-- View Transitions with instant swap (desktop only) -->
+    <!-- View Transitions with instant swap -->
     <ViewTransitions />
-
-    <!-- Disable View Transitions on mobile for better performance -->
-    <script is:inline>
-      (function() {
-        // Check if mobile (width < 1024px or touch device)
-        var isMobile = window.innerWidth < 1024 || 'ontouchstart' in window;
-
-        if (isMobile) {
-          // Force native navigation on mobile by intercepting View Transitions
-          document.addEventListener('astro:before-preparation', function(event) {
-            // Cancel View Transition and use native navigation
-            event.preventDefault();
-            window.location.href = event.to.href;
-          });
-        }
-      })();
-    </script>
 
     <!-- Performance: DNS Prefetch for external resources -->
     <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
