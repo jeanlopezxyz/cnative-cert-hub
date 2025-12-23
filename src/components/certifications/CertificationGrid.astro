@@ -1,0 +1,208 @@
+---
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+import { certifications } from '../../data/certifications';
+import { buildCertificationUrl, getLevelColors } from '../../utils';
+import type { Language } from '../../types';
+
+interface Props {
+  lang?: string;
+}
+
+const { lang: propLang } = Astro.props;
+const lang = (propLang || getLangFromUrl(Astro.url)) as Language;
+const t = useTranslations(lang);
+
+// Define the order: Kubestronaut certs first, then alphabetical, LFCS last
+const kubestronautIds = ['kcna', 'kcsa', 'cka', 'ckad', 'cks'];
+
+const kubestronautCerts = kubestronautIds
+  .map(id => certifications.find(cert => cert.id === id))
+  .filter((cert): cert is (typeof certifications)[0] => cert !== undefined);
+
+const lfcsCert = certifications.filter(cert => cert.id === 'lfcs');
+
+const otherCerts = certifications
+  .filter(cert => !kubestronautIds.includes(cert.id) && cert.id !== 'lfcs')
+  .sort((a, b) => a.acronym.localeCompare(b.acronym));
+
+const sortedCerts = [...kubestronautCerts, ...otherCerts, ...lfcsCert];
+
+// Filter definitions
+const filters = [
+  {
+    value: 'all',
+    label: t('certifications.filter.all'),
+    activeClasses: 'bg-neutral-700 dark:bg-neutral-600 text-white shadow-lg shadow-neutral-500/25',
+    inactiveClasses: 'bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700',
+  },
+  {
+    value: 'entry',
+    label: t('certifications.filter.entry'),
+    activeClasses: 'bg-emerald-600 text-white shadow-lg shadow-emerald-500/25',
+    inactiveClasses: 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-800/40',
+  },
+  {
+    value: 'intermediate',
+    label: t('certifications.filter.intermediate'),
+    activeClasses: 'bg-blue-600 text-white shadow-lg shadow-blue-500/25',
+    inactiveClasses: 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-800/40',
+  },
+  {
+    value: 'advanced',
+    label: t('certifications.filter.advanced'),
+    activeClasses: 'bg-violet-600 text-white shadow-lg shadow-violet-500/25',
+    inactiveClasses: 'bg-violet-50 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 hover:bg-violet-100 dark:hover:bg-violet-800/40',
+  },
+];
+---
+
+<section class="pb-12 sm:pb-16">
+  <div class="w-full px-4 sm:px-6 lg:px-8 xl:px-8 2xl:px-12 3xl:px-16">
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <h2 id="certifications" class="text-xl sm:text-2xl font-bold mb-2 text-neutral-900 dark:text-white scroll-section">
+        {t('certifications.title')}
+      </h2>
+      <p class="text-base text-neutral-600 dark:text-neutral-400 max-w-3xl mx-auto">
+        {t('certifications.subtitle')}
+      </p>
+    </div>
+
+    <!-- Filter Buttons -->
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-2 mb-8" id="cert-filters">
+      <div class="sm:contents">
+        <button
+          type="button"
+          data-filter="all"
+          data-active-class={filters[0].activeClasses}
+          data-inactive-class={filters[0].inactiveClasses}
+          class={`cert-filter-btn px-4 py-2.5 min-h-[44px] rounded-lg text-base font-medium transition-all text-center ${filters[0].activeClasses}`}
+        >
+          {filters[0].label}
+        </button>
+      </div>
+
+      <div class="flex justify-center gap-2 w-full sm:w-auto">
+        {filters.slice(1).map((filter) => (
+          <button
+            type="button"
+            data-filter={filter.value}
+            data-active-class={filter.activeClasses}
+            data-inactive-class={filter.inactiveClasses}
+            class={`cert-filter-btn flex-1 basis-0 sm:flex-none sm:basis-auto px-4 py-2.5 min-h-[44px] rounded-lg text-base font-medium transition-all text-center ${filter.inactiveClasses}`}
+          >
+            {filter.label}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <!-- Certification Grid -->
+    <div
+      id="cert-grid"
+      class="grid gap-4 sm:gap-5 md:gap-6 lg:gap-7 xl:gap-8 mt-8 sm:mt-10 md:mt-12"
+      style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); align-items: stretch;"
+    >
+      {sortedCerts.map((cert, index) => {
+        const certUrl = buildCertificationUrl(cert.id, lang);
+        const colors = getLevelColors(cert.level);
+
+        return (
+          <a
+            href={certUrl}
+            class="cert-card block group animate-fade-in-up"
+            data-level={cert.level}
+            style={`animation-delay: ${index * 30}ms`}
+          >
+            <div class={`card h-full rounded-xl overflow-hidden border-0 ${colors.bg}`}>
+              <div class="card-body p-4 sm:p-5 flex flex-col h-full">
+                <div class="flex items-start justify-between mb-3">
+                  <div class={`w-10 h-10 sm:w-12 sm:h-12 inline-flex items-center justify-center ${colors.icon} text-white rounded-xl`}>
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" />
+                    </svg>
+                  </div>
+                  <span class={`${colors.text} hover:underline inline-flex items-center gap-1 text-base font-medium`}>
+                    {t('certifications.card.viewDetails')}
+                    <svg class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </span>
+                </div>
+                <h3 class={`text-base sm:text-lg font-bold mb-1 ${colors.text}`}>{cert.acronym}</h3>
+                <p class="text-neutral-600 dark:text-neutral-300 text-base line-clamp-2">
+                  {cert.name}
+                </p>
+              </div>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+  </div>
+</section>
+
+<style>
+  .cert-card {
+    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+  }
+  .cert-card.hidden {
+    display: none;
+  }
+</style>
+
+<script>
+  function initCertFilters() {
+    const buttons = document.querySelectorAll('.cert-filter-btn');
+    const cards = document.querySelectorAll('.cert-card');
+    let currentFilter = 'all';
+
+    function updateFilter(newFilter: string) {
+      currentFilter = newFilter;
+
+      // Update button styles
+      buttons.forEach(btn => {
+        const btnFilter = btn.getAttribute('data-filter');
+        const activeClass = btn.getAttribute('data-active-class') || '';
+        const inactiveClass = btn.getAttribute('data-inactive-class') || '';
+
+        // Remove all classes first
+        activeClass.split(' ').forEach(c => c && btn.classList.remove(c));
+        inactiveClass.split(' ').forEach(c => c && btn.classList.remove(c));
+
+        // Add appropriate classes
+        if (btnFilter === currentFilter) {
+          activeClass.split(' ').forEach(c => c && btn.classList.add(c));
+        } else {
+          inactiveClass.split(' ').forEach(c => c && btn.classList.add(c));
+        }
+      });
+
+      // Filter cards
+      let visibleIndex = 0;
+      cards.forEach(card => {
+        const level = card.getAttribute('data-level');
+        const shouldShow = currentFilter === 'all' || level === currentFilter;
+
+        if (shouldShow) {
+          card.classList.remove('hidden');
+          (card as HTMLElement).style.animationDelay = `${visibleIndex * 30}ms`;
+          visibleIndex++;
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+    }
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const filter = btn.getAttribute('data-filter');
+        if (filter) updateFilter(filter);
+      });
+    });
+  }
+
+  // Initialize on load and after navigation
+  initCertFilters();
+  document.addEventListener('astro:after-swap', initCertFilters);
+</script>
