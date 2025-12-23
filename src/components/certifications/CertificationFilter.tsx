@@ -49,7 +49,7 @@ export default function CertificationFilter({
   const levelFilters = filters.slice(1);
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-center gap-2 mb-8 animate-fade-in" style={{ animationDelay: '0.45s' }}>
+    <div className="flex flex-col sm:flex-row items-center justify-center gap-2 mb-8">
       {/* All Levels - own row on mobile, centered */}
       <div className="flex justify-center w-full sm:w-auto">
         <button

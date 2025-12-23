@@ -47,11 +47,10 @@ export default function CertificationGrid({ lang }: CertificationGridProps) {
 
         <div
           key={filter}
-          className="grid gap-4 sm:gap-5 md:gap-6 lg:gap-7 xl:gap-8 mt-8 sm:mt-10 md:mt-12 animate-fade-in"
+          className="grid gap-4 sm:gap-5 md:gap-6 lg:gap-7 xl:gap-8 mt-8 sm:mt-10 md:mt-12"
           style={{
             gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
             alignItems: 'stretch',
-            animationDelay: '0.5s',
           }}
         >
           {filteredCerts.map((cert, index) => (
@@ -68,7 +67,7 @@ export default function CertificationGrid({ lang }: CertificationGridProps) {
  */
 function CertificationHeader({ t }: { t: (key: string) => string }) {
   return (
-    <div className="text-center mb-8 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+    <div className="text-center mb-8">
       <h2 id="certifications" className="text-xl sm:text-2xl font-bold mb-2 text-neutral-900 dark:text-white scroll-section">
         {t('certifications.title')}
       </h2>
