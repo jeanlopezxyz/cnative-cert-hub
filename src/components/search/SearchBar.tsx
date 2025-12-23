@@ -370,7 +370,13 @@ export default function SearchBar({ lang }: SearchBarProps) {
       <button
         onClick={() => {
           setIsExpanded(true);
-          setTimeout(() => inputRef.current?.focus(), 100);
+          // Use requestAnimationFrame to focus immediately after render
+          // This maintains the user gesture context for mobile keyboards
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              inputRef.current?.focus();
+            });
+          });
         }}
         className="sm:hidden inline-flex items-center justify-center w-[37.5px] h-[37.5px] text-neutral-600 dark:text-neutral-400 bg-transparent rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-primary-600 dark:hover:text-primary-400 transition-all duration-200"
         aria-label={t('aria.search')}
@@ -441,6 +447,9 @@ export default function SearchBar({ lang }: SearchBarProps) {
                   className="w-full h-10 pl-9 pr-9 rounded-lg text-sm border outline-none transition-all duration-200 bg-neutral-50 dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-100 placeholder-neutral-400 dark:placeholder-neutral-500 focus:border-primary-500 dark:focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20"
                   aria-label={t('aria.search')}
                   autoComplete="off"
+                  autoFocus={isExpanded}
+                  enterKeyHint="search"
+                  inputMode="search"
                   spellCheck={false}
                   suppressHydrationWarning
                 />
