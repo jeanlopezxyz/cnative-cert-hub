@@ -51,7 +51,7 @@ export default function Hero({ lang }: HeroProps) {
                       window.scrollTo({ top, behavior: 'smooth' });
                     }
                   }}
-                  className="inline-flex items-center justify-center px-6 py-3 bg-primary-100 dark:bg-primary-800/30 text-primary-700 dark:text-primary-300 font-semibold rounded-xl hover:bg-primary-200 dark:hover:bg-primary-800/50 transition-all duration-200"
+                  className="inline-flex items-center justify-center px-6 py-3 bg-primary-100 dark:bg-primary-800/40 text-primary-900 dark:text-white font-semibold rounded-xl hover:bg-primary-200 dark:hover:bg-primary-800/60 transition-all duration-200"
                 >
                   {t('hero.cta.certifications')}
                 </button>
