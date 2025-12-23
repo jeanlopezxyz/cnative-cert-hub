@@ -143,3 +143,6 @@ playwright/.cache/
 cypress/
 cypress.json
 .nyc_output/
+
+# Playwright MCP screenshots
+.playwright-mcp/
