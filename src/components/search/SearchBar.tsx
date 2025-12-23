@@ -435,6 +435,7 @@ export default function SearchBar({ lang }: SearchBarProps) {
                 )}
 
                 {/* Mobile Search Input - WowDash Style */}
+                {/* text-base (16px) prevents iOS auto-zoom on focus */}
                 <input
                   ref={inputRef}
                   type="text"
@@ -444,7 +445,7 @@ export default function SearchBar({ lang }: SearchBarProps) {
                   onFocus={() => setIsFocused(true)}
                   onBlur={() => setTimeout(() => setIsFocused(false), 100)}
                   placeholder={t('search.placeholder')}
-                  className="w-full h-10 pl-9 pr-9 rounded-lg text-sm border outline-none transition-all duration-200 bg-neutral-50 dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-100 placeholder-neutral-400 dark:placeholder-neutral-500 focus:border-primary-500 dark:focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20"
+                  className="w-full h-10 pl-9 pr-9 rounded-lg text-base border outline-none transition-all duration-200 bg-neutral-50 dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-100 placeholder-neutral-400 dark:placeholder-neutral-500 focus:border-primary-500 dark:focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20"
                   aria-label={t('aria.search')}
                   autoComplete="off"
                   autoFocus={isExpanded}
