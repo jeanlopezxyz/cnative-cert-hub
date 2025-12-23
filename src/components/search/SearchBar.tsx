@@ -31,11 +31,26 @@ export default function SearchBar({ lang }: SearchBarProps) {
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const [isFocused, setIsFocused] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const desktopInputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
   const prevQueryRef = useRef<string>('');
+
+  // Smooth close function for mobile search
+  const closeMobileSearch = useCallback(() => {
+    if (!isExpanded || isClosing) return;
+    setIsClosing(true);
+    // Wait for animation to complete before hiding
+    setTimeout(() => {
+      setIsExpanded(false);
+      setIsClosing(false);
+      setQuery('');
+      setSuggestions([]);
+      setFocusedIndex(-1);
+    }, 200); // Match CSS transition duration
+  }, [isExpanded, isClosing]);
 
   // Fix autoCapitalize attribute on mount
   useEffect(() => {
@@ -56,10 +71,9 @@ export default function SearchBar({ lang }: SearchBarProps) {
         setIsFocused(false);
         setSuggestions([]);
         setFocusedIndex(-1);
-        // Also close expanded mobile search
-        if (isExpanded) {
-          setIsExpanded(false);
-          setQuery('');
+        // Also close expanded mobile search with animation
+        if (isExpanded && !isClosing) {
+          closeMobileSearch();
         }
       }
     };
@@ -71,7 +85,7 @@ export default function SearchBar({ lang }: SearchBarProps) {
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('touchstart', handleClickOutside);
     };
-  }, [isExpanded]);
+  }, [isExpanded, isClosing, closeMobileSearch]);
 
   // Advanced fuzzy search and scoring algorithm
   const calculateFuzzyScore = useCallback((text: string, query: string): number => {
@@ -314,8 +328,9 @@ export default function SearchBar({ lang }: SearchBarProps) {
       setIsFocused(false);
       setSuggestions([]);
       setFocusedIndex(-1);
-      setIsExpanded(false);
-      setQuery('');
+      if (isExpanded) {
+        closeMobileSearch();
+      }
       inputRef.current?.blur();
       desktopInputRef.current?.blur();
       return;
@@ -398,38 +413,27 @@ export default function SearchBar({ lang }: SearchBarProps) {
 
       {/* Expanded Search for Mobile / Normal Search for Desktop */}
       <div
-        className={`${isExpanded ? 'fixed inset-0 z-50 sm:relative sm:inset-auto' : 'hidden sm:block'} sm:relative sm:w-full sm:max-w-md sm:mx-auto`}
+        className={`${isExpanded || isClosing ? 'fixed inset-0 z-50 sm:relative sm:inset-auto' : 'hidden sm:block'} sm:relative sm:w-full sm:max-w-md sm:mx-auto`}
         ref={containerRef}
       >
-        {/* Mobile backdrop - clickable to close */}
-        {isExpanded && (
+        {/* Mobile backdrop - clickable to close with smooth animation */}
+        {(isExpanded || isClosing) && (
           <div
-            className="sm:hidden fixed inset-0 bg-black/50 -z-10"
-            onClick={() => {
-              setIsExpanded(false);
-              setQuery('');
-              setSuggestions([]);
-              setFocusedIndex(-1);
-            }}
-            onTouchStart={() => {
-              setIsExpanded(false);
-              setQuery('');
-              setSuggestions([]);
-              setFocusedIndex(-1);
+            className={`sm:hidden fixed inset-0 bg-black/50 -z-10 transition-opacity duration-200 ${isClosing ? 'opacity-0' : 'opacity-100'}`}
+            onClick={closeMobileSearch}
+            onTouchEnd={(e) => {
+              e.preventDefault();
+              closeMobileSearch();
             }}
             aria-hidden="true"
           />
         )}
-        {/* Mobile Search Header - WowDash Style */}
-        {isExpanded && (
-          <div className="sm:hidden fixed top-0 left-0 right-0 h-16 bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-700 shadow-sm">
+        {/* Mobile Search Header - WowDash Style with smooth animation */}
+        {(isExpanded || isClosing) && (
+          <div className={`sm:hidden fixed top-0 left-0 right-0 h-16 bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-700 shadow-sm transition-all duration-200 ${isClosing ? 'opacity-0 -translate-y-2' : 'opacity-100 translate-y-0'}`}>
             <div className="h-full flex items-center px-3 gap-2">
               <button
-                onClick={() => {
-                  setIsExpanded(false);
-                  setQuery('');
-                  setSuggestions([]);
-                }}
+                onClick={closeMobileSearch}
                 className="inline-flex items-center justify-center w-10 h-10 text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all duration-200"
                 aria-label={t('aria.closeSearch')}
               >
@@ -533,9 +537,9 @@ export default function SearchBar({ lang }: SearchBarProps) {
           />
         </div>
 
-        {/* Search Suggestions - Modern Card Style */}
-        {(isFocused || suggestions.length > 0) && suggestions.length > 0 && (
-          <div className={`${isExpanded ? 'fixed top-16 left-3 right-3 mt-3' : 'absolute left-0 right-0 top-full mt-3'} bg-white dark:bg-neutral-800 rounded-xl border border-neutral-200 dark:border-neutral-700 shadow-xl shadow-neutral-200/50 dark:shadow-black/30 overflow-hidden z-50`}>
+        {/* Search Suggestions - Modern Card Style with smooth animation */}
+        {(isFocused || suggestions.length > 0) && suggestions.length > 0 && !isClosing && (
+          <div className={`${isExpanded ? 'fixed top-16 left-3 right-3 mt-3' : 'absolute left-0 right-0 top-full mt-3'} bg-white dark:bg-neutral-800 rounded-xl border border-neutral-200 dark:border-neutral-700 shadow-xl shadow-neutral-200/50 dark:shadow-black/30 overflow-hidden z-50 transition-all duration-200`}>
             {/* Header */}
             <div className="px-4 py-2.5 bg-neutral-50 dark:bg-neutral-900/50 border-b border-neutral-200 dark:border-neutral-700">
               <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wide">
