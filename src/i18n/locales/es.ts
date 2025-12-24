@@ -383,6 +383,7 @@ export const es = {
   'certification.tools': 'Herramientas',
   'certification.communities': 'Comunidades',
   'certification.paid': 'PAGO',
+  'certification.free': 'GRATIS',
   'certification.showMore': 'Ver más',
   'certification.showLess': 'Ver menos',
   'certification.topics': 'temas',

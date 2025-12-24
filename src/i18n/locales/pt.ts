@@ -382,6 +382,7 @@ export const pt = {
   'certification.tools': 'Ferramentas',
   'certification.communities': 'Comunidades',
   'certification.paid': 'PAGO',
+  'certification.free': 'GRÁTIS',
   'certification.showMore': 'Ver mais',
   'certification.showLess': 'Ver menos',
   'certification.topics': 'tópicos',

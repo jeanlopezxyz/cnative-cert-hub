@@ -387,6 +387,7 @@ export const en = {
   'certification.tools': 'Tools',
   'certification.communities': 'Communities',
   'certification.paid': 'PAID',
+  'certification.free': 'FREE',
   'certification.showMore': 'Show more',
   'certification.showLess': 'Show less',
   'certification.topics': 'topics',

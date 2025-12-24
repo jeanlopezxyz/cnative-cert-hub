@@ -57,6 +57,7 @@ const translations = {
   community: t('certification.community'),
   by: t('certification.by'),
   paid: t('certification.paid'),
+  free: t('certification.free'),
   showMore: t('certification.showMore'),
   showLess: t('certification.showLess'),
 };
@@ -174,7 +175,17 @@ const studySections: StudySection[] = [
     tab: 'community',
     resources: certification.resources.communities || [],
   },
-].filter(section => section.resources.length > 0);
+].filter(section => section.resources.length > 0)
+  .map(section => ({
+    ...section,
+    // Sort resources: FREE first, then PAID
+    resources: [...section.resources].sort((a, b) => {
+      const aIsPaid = a.isPaid ?? false;
+      const bIsPaid = b.isPaid ?? false;
+      if (aIsPaid === bIsPaid) return 0;
+      return aIsPaid ? 1 : -1;
+    })
+  }));
 
 // Group sections by tab
 const sectionsByTab = {
@@ -561,6 +572,11 @@ const guideData = JSON.stringify({
                             {/* Right: Tags + Link icon */}
                             <div class="flex flex-col items-end gap-2 flex-shrink-0">
                               <div class="flex items-center gap-1.5">
+                                {!resource.isPaid && (
+                                  <span class="px-2 py-1 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 text-xs font-bold rounded-md uppercase tracking-wide">
+                                    {translations.free}
+                                  </span>
+                                )}
                                 {resource.isPaid && (
                                   <span class="px-2 py-1 bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 text-xs font-bold rounded-md uppercase tracking-wide">
                                     {translations.paid}
@@ -638,6 +654,11 @@ const guideData = JSON.stringify({
                               {/* Right: Tags + Link icon */}
                               <div class="flex flex-col items-end gap-2 flex-shrink-0">
                                 <div class="flex items-center gap-1.5">
+                                  {!resource.isPaid && (
+                                    <span class="px-2 py-1 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 text-xs font-bold rounded-md uppercase tracking-wide">
+                                      {translations.free}
+                                    </span>
+                                  )}
                                   {resource.isPaid && (
                                     <span class="px-2 py-1 bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 text-xs font-bold rounded-md uppercase tracking-wide">
                                       {translations.paid}
