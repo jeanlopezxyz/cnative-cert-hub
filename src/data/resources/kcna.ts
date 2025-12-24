@@ -33,6 +33,58 @@ export const kcnaResources: CertificationResources = {
   ],
 
   books: [
+    // FREE BOOKS
+    {
+      title: 'CI/CD with Kubernetes',
+      url: 'https://www.cncf.io/free-ebook-ci-cd-with-kubernetes/',
+      author: 'CNCF / The New Stack',
+      description: 'FREE - 118-page ebook on CI/CD best practices, Spinnaker, and cloud-native monitoring',
+      isPaid: false,
+      format: 'ebook',
+      year: 2023,
+      difficulty: 'beginner',
+    },
+    {
+      title: 'Kubernetes Deployment and Security Patterns',
+      url: 'https://www.cncf.io/free-ebook-kubernetes-deployment-security-patterns/',
+      author: 'CNCF / The New Stack',
+      description: 'FREE - 90-page guide on deployment patterns, security, and operator surveys',
+      isPaid: false,
+      format: 'ebook',
+      year: 2023,
+      difficulty: 'beginner',
+    },
+    {
+      title: 'Kubernetes for Developers',
+      url: 'https://tanzu.vmware.com/content/ebooks/kubernetes-for-developers',
+      author: 'VMware Tanzu',
+      description: 'FREE - Why developers should care about containers and Kubernetes',
+      isPaid: false,
+      format: 'ebook',
+      year: 2024,
+      difficulty: 'beginner',
+    },
+    {
+      title: 'DevOps with OpenShift',
+      url: 'https://developers.redhat.com/e-books/devops-openshift-cloud-deployments-made-easy',
+      author: 'Red Hat',
+      description: 'FREE - Cloud deployments made easy with OpenShift and Kubernetes',
+      isPaid: false,
+      format: 'ebook',
+      year: 2023,
+      difficulty: 'beginner',
+    },
+    {
+      title: 'Kubernetes Networking and Security',
+      url: 'https://www.tigera.io/lp/kubernetes-networking-ebook/',
+      author: 'Tigera (Calico)',
+      description: 'FREE - From basic networking concepts to advanced eBPF',
+      isPaid: false,
+      format: 'ebook',
+      year: 2024,
+      difficulty: 'intermediate',
+    },
+    // PAID BOOKS
     {
       title: 'Kubernetes: Up and Running, 3rd Edition',
       url: 'https://www.oreilly.com/library/view/kubernetes-up-and/9781098110192/',

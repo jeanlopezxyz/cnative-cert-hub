@@ -31,6 +31,58 @@ export const cnpaResources: CertificationResources = {
   ],
 
   books: [
+    // FREE BOOKS
+    {
+      title: 'Kubernetes for Developers',
+      url: 'https://tanzu.vmware.com/content/ebooks/kubernetes-for-developers',
+      author: 'VMware Tanzu',
+      description: 'FREE - Containers and Kubernetes for building platforms',
+      isPaid: false,
+      format: 'ebook',
+      year: 2024,
+      difficulty: 'beginner',
+    },
+    {
+      title: 'Operating OpenShift: An SRE Approach',
+      url: 'https://developers.redhat.com/e-books/operating-openshift-sre-approach-managing-infrastructure',
+      author: 'Red Hat',
+      description: 'FREE - Managing platform infrastructure with SRE practices',
+      isPaid: false,
+      format: 'ebook',
+      year: 2024,
+      difficulty: 'intermediate',
+    },
+    {
+      title: 'The Modern DevOps Lifecycle',
+      url: 'https://developers.redhat.com/e-books/modern-devops-lifecycle',
+      author: 'Red Hat',
+      description: 'FREE - Shifting CI/CD and application architectures for platforms',
+      isPaid: false,
+      format: 'ebook',
+      year: 2024,
+      difficulty: 'intermediate',
+    },
+    {
+      title: 'CI/CD with Kubernetes',
+      url: 'https://www.cncf.io/free-ebook-ci-cd-with-kubernetes/',
+      author: 'CNCF / The New Stack',
+      description: 'FREE - Best practices for building platform pipelines',
+      isPaid: false,
+      format: 'ebook',
+      year: 2023,
+      difficulty: 'intermediate',
+    },
+    {
+      title: 'State of Kubernetes 2023',
+      url: 'https://tanzu.vmware.com/content/ebooks/state-of-kubernetes-2023-ebook',
+      author: 'VMware Tanzu',
+      description: 'FREE - Industry insights for platform engineers',
+      isPaid: false,
+      format: 'ebook',
+      year: 2023,
+      difficulty: 'beginner',
+    },
+    // PAID BOOKS
     {
       title: 'Platform Engineering on Kubernetes',
       url: 'https://www.manning.com/books/platform-engineering-on-kubernetes',

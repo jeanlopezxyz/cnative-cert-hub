@@ -33,6 +33,38 @@ export const otcaResources: CertificationResources = {
   ],
 
   books: [
+    // FREE BOOKS
+    {
+      title: 'Monitoring Modern Infrastructure',
+      url: 'https://www.datadoghq.com/ebook/monitoring-modern-infrastructure/',
+      author: 'Datadog',
+      description: 'FREE - Collecting metrics, alerting, and investigating performance issues',
+      isPaid: false,
+      format: 'ebook',
+      year: 2024,
+      difficulty: 'intermediate',
+    },
+    {
+      title: 'The Elastic Observability Guide',
+      url: 'https://pages.awscloud.com/rs/112-TZM-766/images/AWS_Marketplace-the-elastic-observability-guide-for-aws.pdf',
+      author: 'Elastic / AWS',
+      description: 'FREE - Unified observability with logs, metrics, and traces',
+      isPaid: false,
+      format: 'ebook',
+      year: 2024,
+      difficulty: 'intermediate',
+    },
+    {
+      title: 'Security Observability with eBPF',
+      url: 'https://isovalent.com/books/security-observability-with-ebpf/',
+      author: 'Isovalent',
+      description: 'FREE - Runtime security observability using eBPF and Tetragon',
+      isPaid: false,
+      format: 'ebook',
+      year: 2024,
+      difficulty: 'advanced',
+    },
+    // PAID BOOKS
     {
       title: 'Observability Engineering',
       url: 'https://www.oreilly.com/library/view/observability-engineering/9781492076438/',

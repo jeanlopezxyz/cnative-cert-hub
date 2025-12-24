@@ -33,6 +33,48 @@ export const pcaResources: CertificationResources = {
   ],
 
   books: [
+    // FREE BOOKS
+    {
+      title: 'Monitoring Modern Infrastructure',
+      url: 'https://www.datadoghq.com/ebook/monitoring-modern-infrastructure/',
+      author: 'Datadog',
+      description: 'FREE - Techniques for collecting metrics, alerting, and investigating issues',
+      isPaid: false,
+      format: 'ebook',
+      year: 2024,
+      difficulty: 'intermediate',
+    },
+    {
+      title: 'Monitoring in the Cloud',
+      url: 'https://www.datadoghq.com/pdf/monitoring-in-the-cloud-ebook.pdf',
+      author: 'Datadog',
+      description: 'FREE - PDF guide to cloud-scale monitoring and analytics',
+      isPaid: false,
+      format: 'ebook',
+      year: 2024,
+      difficulty: 'intermediate',
+    },
+    {
+      title: 'The Elastic Observability Guide for AWS',
+      url: 'https://pages.awscloud.com/rs/112-TZM-766/images/AWS_Marketplace-the-elastic-observability-guide-for-aws.pdf',
+      author: 'Elastic / AWS',
+      description: 'FREE - Unified observability with Elasticsearch on AWS',
+      isPaid: false,
+      format: 'ebook',
+      year: 2024,
+      difficulty: 'intermediate',
+    },
+    {
+      title: 'Security Observability with eBPF',
+      url: 'https://isovalent.com/books/security-observability-with-ebpf/',
+      author: 'Isovalent',
+      description: 'FREE - Runtime security and observability using eBPF',
+      isPaid: false,
+      format: 'ebook',
+      year: 2024,
+      difficulty: 'advanced',
+    },
+    // PAID BOOKS
     {
       title: 'Prometheus: Up & Running, 2nd Edition',
       url: 'https://www.oreilly.com/library/view/prometheus-up/9781098131135/',

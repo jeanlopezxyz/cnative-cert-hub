@@ -43,6 +43,48 @@ export const ckadResources: CertificationResources = {
   ],
 
   books: [
+    // FREE BOOKS
+    {
+      title: 'Kubernetes for Developers',
+      url: 'https://tanzu.vmware.com/content/ebooks/kubernetes-for-developers',
+      author: 'VMware Tanzu',
+      description: 'FREE - Learn how containers and Kubernetes help deliver software faster',
+      isPaid: false,
+      format: 'ebook',
+      year: 2024,
+      difficulty: 'beginner',
+    },
+    {
+      title: 'CI/CD with Kubernetes',
+      url: 'https://www.cncf.io/free-ebook-ci-cd-with-kubernetes/',
+      author: 'CNCF / The New Stack',
+      description: 'FREE - Best practices for building and deploying applications on K8s',
+      isPaid: false,
+      format: 'ebook',
+      year: 2023,
+      difficulty: 'intermediate',
+    },
+    {
+      title: 'DevOps with OpenShift',
+      url: 'https://developers.redhat.com/e-books/devops-openshift-cloud-deployments-made-easy',
+      author: 'Red Hat',
+      description: 'FREE - Container-centric approach with OpenShift',
+      isPaid: false,
+      format: 'ebook',
+      year: 2023,
+      difficulty: 'intermediate',
+    },
+    {
+      title: 'Introducing Istio Service Mesh',
+      url: 'https://developers.redhat.com/e-books/introducing-istio-service-mesh-microservices',
+      author: 'Red Hat',
+      description: 'FREE - Service mesh for microservices on Kubernetes',
+      isPaid: false,
+      format: 'ebook',
+      year: 2021,
+      difficulty: 'intermediate',
+    },
+    // PAID BOOKS
     {
       title: 'Kubernetes: Up and Running, 3rd Edition',
       url: 'https://www.oreilly.com/library/view/kubernetes-up-and/9781098110192/',

@@ -33,6 +33,48 @@ export const cgoaResources: CertificationResources = {
   ],
 
   books: [
+    // FREE BOOKS
+    {
+      title: 'CI/CD with Kubernetes',
+      url: 'https://www.cncf.io/free-ebook-ci-cd-with-kubernetes/',
+      author: 'CNCF / The New Stack',
+      description: 'FREE - Continuous delivery with Spinnaker and cloud-native monitoring',
+      isPaid: false,
+      format: 'ebook',
+      year: 2023,
+      difficulty: 'intermediate',
+    },
+    {
+      title: 'DevOps with OpenShift',
+      url: 'https://developers.redhat.com/e-books/devops-openshift-cloud-deployments-made-easy',
+      author: 'Red Hat',
+      description: 'FREE - GitOps-style deployments with OpenShift',
+      isPaid: false,
+      format: 'ebook',
+      year: 2023,
+      difficulty: 'intermediate',
+    },
+    {
+      title: 'The Modern DevOps Lifecycle',
+      url: 'https://developers.redhat.com/e-books/modern-devops-lifecycle',
+      author: 'Red Hat',
+      description: 'FREE - Shifting CI/CD and application architectures',
+      isPaid: false,
+      format: 'ebook',
+      year: 2024,
+      difficulty: 'intermediate',
+    },
+    {
+      title: 'Kubernetes Deployment and Security Patterns',
+      url: 'https://www.cncf.io/free-ebook-kubernetes-deployment-security-patterns/',
+      author: 'CNCF / The New Stack',
+      description: 'FREE - Deployment patterns including GitOps approaches',
+      isPaid: false,
+      format: 'ebook',
+      year: 2023,
+      difficulty: 'intermediate',
+    },
+    // PAID BOOKS
     {
       title: 'GitOps and Kubernetes',
       url: 'https://www.manning.com/books/gitops-and-kubernetes',
