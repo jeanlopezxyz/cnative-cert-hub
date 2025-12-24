@@ -107,7 +107,6 @@ CONTRIBUTING.md
 LICENSE
 README.md
 terraform/
-lighthouserc.json
 scripts/debug-hydration.js
 scripts/generate-icons.cjs
 scripts/setup-branch-protection.sh
