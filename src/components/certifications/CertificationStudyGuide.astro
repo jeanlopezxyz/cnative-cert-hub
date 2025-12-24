@@ -576,9 +576,12 @@ const guideData = JSON.stringify({
                         </a>
                       ))}
                       {section.resources.length > 3 && (
-                        <div class="text-center pt-2">
-                          <button class="show-more-btn text-sm font-medium text-primary-600 dark:text-primary-400 hover:opacity-80 transition-colors" data-total={section.resources.length}>
-                            {translations.showMore} {section.resources.length - 3}...
+                        <div class="flex justify-center pt-4">
+                          <button class="show-more-btn group inline-flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-lg shadow-sm hover:shadow-md transition-all duration-200" data-total={section.resources.length}>
+                            <svg class="w-4 h-4 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                            {translations.showMore} {section.resources.length - 3}
                           </button>
                         </div>
                       )}
@@ -609,8 +612,11 @@ const guideData = JSON.stringify({
                             </svg>
                           </a>
                         ))}
-                        <div class="text-center pt-2">
-                          <button class="show-less-btn text-sm font-medium text-primary-600 dark:text-primary-400 hover:opacity-80 transition-colors">
+                        <div class="flex justify-center pt-4">
+                          <button class="show-less-btn group inline-flex items-center gap-2 px-4 py-2 bg-neutral-200 dark:bg-neutral-600 hover:bg-neutral-300 dark:hover:bg-neutral-500 text-neutral-700 dark:text-neutral-100 text-sm font-semibold rounded-lg shadow-sm hover:shadow-md transition-all duration-200">
+                            <svg class="w-4 h-4 transition-transform group-hover:-translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                            </svg>
                             {translations.showLess}
                           </button>
                         </div>
