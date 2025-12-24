@@ -1642,6 +1642,91 @@ velero backup create full-backup \\
   --storage-location primary,secondary` },
         ],
       },
+      {
+        id: 'ops-auth',
+        titleKey: 'bestPractices.ops.auth.title',
+        descKey: 'bestPractices.ops.auth.desc',
+        iconPath: "M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z",
+        color: 'text-cyan-600 dark:text-cyan-400',
+        bgColor: 'bg-cyan-50 dark:bg-cyan-600/20',
+        iconBg: 'bg-cyan-600',
+        items: [
+          { id: 'auth-1', titleKey: 'bestPractices.ops.auth.item1', priority: 'critical', codeExample: `# Configure OIDC authentication for API server
+# kube-apiserver flags
+--oidc-issuer-url=https://accounts.google.com
+--oidc-client-id=my-kubernetes-cluster
+--oidc-username-claim=email
+--oidc-groups-claim=groups
+
+# Or with Dex as OIDC provider
+--oidc-issuer-url=https://dex.example.com
+--oidc-client-id=kubernetes
+--oidc-ca-file=/etc/kubernetes/pki/dex-ca.crt` },
+          { id: 'auth-2', titleKey: 'bestPractices.ops.auth.item2', priority: 'critical', codeExample: `# ServiceAccount with bound token (recommended)
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: app-sa
+  namespace: production
+automountServiceAccountToken: false
+---
+# Create bound token with expiration
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-sa-token
+  annotations:
+    kubernetes.io/service-account.name: app-sa
+type: kubernetes.io/service-account-token` },
+          { id: 'auth-3', titleKey: 'bestPractices.ops.auth.item3', priority: 'important', codeExample: `# Audit logging configuration
+apiVersion: audit.k8s.io/v1
+kind: Policy
+rules:
+  # Log authentication failures
+  - level: Metadata
+    users: ["system:anonymous"]
+    verbs: ["*"]
+  # Log secrets access
+  - level: RequestResponse
+    resources:
+      - group: ""
+        resources: ["secrets"]
+  # Log RBAC changes
+  - level: RequestResponse
+    resources:
+      - group: "rbac.authorization.k8s.io"
+        resources: ["*"]` },
+          { id: 'auth-4', titleKey: 'bestPractices.ops.auth.item4', priority: 'important', codeExample: `# Disable anonymous authentication
+# kube-apiserver flags
+--anonymous-auth=false
+--authorization-mode=RBAC,Node
+
+# Audit webhook for external SIEM
+--audit-log-path=/var/log/kubernetes/audit.log
+--audit-log-maxage=30
+--audit-log-maxbackup=10
+--audit-webhook-config-file=/etc/kubernetes/audit-webhook.yaml` },
+          { id: 'auth-5', titleKey: 'bestPractices.ops.auth.item5', priority: 'recommended', codeExample: `# Short-lived kubeconfig with OIDC
+apiVersion: v1
+kind: Config
+clusters:
+  - name: production
+    cluster:
+      server: https://k8s.example.com:6443
+      certificate-authority-data: <base64-ca>
+users:
+  - name: developer
+    user:
+      exec:
+        apiVersion: client.authentication.k8s.io/v1beta1
+        command: kubectl
+        args:
+          - oidc-login
+          - get-token
+          - --oidc-issuer-url=https://dex.example.com
+          - --oidc-client-id=kubernetes` },
+        ],
+      },
     ],
   },
   {
@@ -1720,69 +1805,6 @@ spec:
         - namespaceSelector:
             matchLabels:
               kubernetes.io/metadata.name: kube-system` },
-        ],
-      },
-      {
-        id: 'tenant-hierarchy',
-        titleKey: 'bestPractices.tenant.hierarchy.title',
-        descKey: 'bestPractices.tenant.hierarchy.desc',
-        iconPath: "M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z",
-        color: 'text-purple-600 dark:text-purple-400',
-        bgColor: 'bg-purple-50 dark:bg-purple-600/20',
-        iconBg: 'bg-purple-600',
-        items: [
-          { id: 'tenant-5', titleKey: 'bestPractices.tenant.hierarchy.item1', priority: 'important', codeExample: `# Hierarchical Namespace Controller (HNC)
-# Install HNC
-kubectl apply -f https://github.com/kubernetes-sigs/hierarchical-namespaces/releases/latest/download/default.yaml
-
-# Create parent namespace
-kubectl create ns org-alpha
-
-# Create child namespace with inheritance
-kubectl hns create team-frontend -n org-alpha` },
-          { id: 'tenant-6', titleKey: 'bestPractices.tenant.hierarchy.item2', priority: 'important', codeExample: `# Propagate policies to child namespaces
-apiVersion: hnc.x-k8s.io/v1alpha2
-kind: HierarchyConfiguration
-metadata:
-  name: hierarchy
-  namespace: org-alpha
-spec:
-  children:
-    - team-frontend
-    - team-backend
----
-# NetworkPolicy in parent propagates to children
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: default-deny
-  namespace: org-alpha
-  labels:
-    hnc.x-k8s.io/propagate: "true"` },
-          { id: 'tenant-7', titleKey: 'bestPractices.tenant.hierarchy.item3', priority: 'recommended', codeExample: `# vCluster for strong isolation
-# Install vCluster CLI
-curl -L -o vcluster https://github.com/loft-sh/vcluster/releases/latest/download/vcluster-linux-amd64
-chmod +x vcluster && sudo mv vcluster /usr/local/bin
-
-# Create virtual cluster for tenant
-vcluster create tenant-alpha --namespace host-tenant-alpha
-
-# Connect to virtual cluster
-vcluster connect tenant-alpha -n host-tenant-alpha` },
-          { id: 'tenant-8', titleKey: 'bestPractices.tenant.hierarchy.item4', priority: 'recommended', codeExample: `# RBAC for tenant admins
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: tenant-admin
-  namespace: tenant-alpha
-subjects:
-  - kind: Group
-    name: tenant-alpha-admins
-    apiGroup: rbac.authorization.k8s.io
-roleRef:
-  kind: ClusterRole
-  name: admin
-  apiGroup: rbac.authorization.k8s.io` },
         ],
       },
     ],

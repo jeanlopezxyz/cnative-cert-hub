@@ -1105,6 +1105,14 @@ export const es = {
   'bestPractices.ops.backup.item4': 'Prueba regularmente los procedimientos de restauración en ambientes no productivos',
   'bestPractices.ops.backup.item5': 'Sigue la regla 3-2-1: 3 copias, 2 medios diferentes, 1 fuera del sitio',
 
+  'bestPractices.ops.auth.title': 'Autenticación y Autorización',
+  'bestPractices.ops.auth.desc': 'Asegura el acceso al cluster con mecanismos apropiados de autenticación y autorización',
+  'bestPractices.ops.auth.item1': 'Configura autenticación OIDC para el API server con proveedores de identidad externos',
+  'bestPractices.ops.auth.item2': 'Usa tokens de ServiceAccount con expiración en lugar de tokens estáticos',
+  'bestPractices.ops.auth.item3': 'Habilita audit logging para rastrear eventos de autenticación y autorización',
+  'bestPractices.ops.auth.item4': 'Deshabilita autenticación anónima y fuerza el modo de autorización RBAC',
+  'bestPractices.ops.auth.item5': 'Usa kubeconfig de corta duración con plugins exec OIDC para desarrolladores',
+
   // Multi-tenancy Tab
   'bestPractices.tab.multitenancy': 'Multi-tenancy',
   'bestPractices.tenant.isolation.title': 'Aislamiento de Tenants',
@@ -1113,13 +1121,6 @@ export const es = {
   'bestPractices.tenant.isolation.item2': 'Configura ResourceQuotas para limitar el consumo de recursos por tenant',
   'bestPractices.tenant.isolation.item3': 'Aplica LimitRanges para forzar límites por defecto y máximos',
   'bestPractices.tenant.isolation.item4': 'Implementa NetworkPolicies para prevenir comunicación entre tenants',
-
-  'bestPractices.tenant.hierarchy.title': 'Jerarquía de Namespaces',
-  'bestPractices.tenant.hierarchy.desc': 'Organiza namespaces con estructuras jerárquicas y herencia de políticas',
-  'bestPractices.tenant.hierarchy.item1': 'Usa Hierarchical Namespace Controller (HNC) para relaciones padre-hijo',
-  'bestPractices.tenant.hierarchy.item2': 'Propaga políticas de namespaces padres a hijos automáticamente',
-  'bestPractices.tenant.hierarchy.item3': 'Considera vCluster para aislamiento fuerte con clusters virtuales',
-  'bestPractices.tenant.hierarchy.item4': 'Configura RBAC para dar autonomía a admins de tenant en su namespace',
 
   // Stateful Workloads Tab
   'bestPractices.tab.stateful': 'Cargas Stateful',

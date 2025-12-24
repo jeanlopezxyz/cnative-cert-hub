@@ -1103,6 +1103,14 @@ export const en = {
   'bestPractices.ops.backup.item4': 'Regularly test restore procedures in a non-production environment',
   'bestPractices.ops.backup.item5': 'Follow the 3-2-1 backup rule: 3 copies, 2 different media, 1 offsite',
 
+  'bestPractices.ops.auth.title': 'Authentication & Authorization',
+  'bestPractices.ops.auth.desc': 'Secure cluster access with proper authentication and authorization mechanisms',
+  'bestPractices.ops.auth.item1': 'Configure OIDC authentication for API server with external identity providers',
+  'bestPractices.ops.auth.item2': 'Use bound ServiceAccount tokens with expiration instead of static tokens',
+  'bestPractices.ops.auth.item3': 'Enable audit logging to track authentication and authorization events',
+  'bestPractices.ops.auth.item4': 'Disable anonymous authentication and enforce RBAC authorization mode',
+  'bestPractices.ops.auth.item5': 'Use short-lived kubeconfig with OIDC exec plugins for developers',
+
   // Multi-tenancy Tab
   'bestPractices.tab.multitenancy': 'Multi-tenancy',
   'bestPractices.tenant.isolation.title': 'Tenant Isolation',
@@ -1111,13 +1119,6 @@ export const en = {
   'bestPractices.tenant.isolation.item2': 'Configure ResourceQuotas to limit tenant resource consumption',
   'bestPractices.tenant.isolation.item3': 'Apply LimitRanges to enforce default and maximum resource limits',
   'bestPractices.tenant.isolation.item4': 'Implement NetworkPolicies to prevent cross-tenant communication',
-
-  'bestPractices.tenant.hierarchy.title': 'Namespace Hierarchy',
-  'bestPractices.tenant.hierarchy.desc': 'Organize namespaces with hierarchical structures and policy inheritance',
-  'bestPractices.tenant.hierarchy.item1': 'Use Hierarchical Namespace Controller (HNC) for parent-child relationships',
-  'bestPractices.tenant.hierarchy.item2': 'Propagate policies from parent namespaces to children automatically',
-  'bestPractices.tenant.hierarchy.item3': 'Consider vCluster for strong tenant isolation with virtual clusters',
-  'bestPractices.tenant.hierarchy.item4': 'Configure RBAC to give tenant admins autonomy within their namespace',
 
   // Stateful Workloads Tab
   'bestPractices.tab.stateful': 'Stateful Workloads',
