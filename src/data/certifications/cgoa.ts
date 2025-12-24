@@ -28,7 +28,7 @@ export const cgoa: Certification = {
         { name: 'Continuous', url: 'https://opengitops.dev/#principles' },
         { name: 'Declarative Description', url: 'https://opengitops.dev/#principles' },
         { name: 'Desired State', url: 'https://opengitops.dev/#principles' },
-        { name: 'State Drift', url: 'https://glossary.cncf.io/configuration_drift/' },
+        { name: 'State Drift', url: 'https://glossary.cncf.io/configuration-drift/' },
         { name: 'State Reconciliation', url: 'https://opengitops.dev/#principles' },
         { name: 'GitOps Managed Software System', url: 'https://opengitops.dev/' },
         { name: 'State Store', url: 'https://opengitops.dev/#principles' },
@@ -52,10 +52,10 @@ export const cgoa: Certification = {
       weight: 16,
       documentationUrl: 'https://glossary.cncf.io/',
       topics: [
-        { name: 'Configuration as Code (CaC)', url: 'https://glossary.cncf.io/infrastructure_as_code/' },
-        { name: 'Infrastructure as Code (IaC)', url: 'https://glossary.cncf.io/infrastructure_as_code/' },
+        { name: 'Configuration as Code (CaC)', url: 'https://glossary.cncf.io/infrastructure-as-code/' },
+        { name: 'Infrastructure as Code (IaC)', url: 'https://glossary.cncf.io/infrastructure-as-code/' },
         { name: 'DevOps and DevSecOps', url: 'https://glossary.cncf.io/devops/' },
-        { name: 'CI and CD', url: 'https://glossary.cncf.io/continuous_delivery/' },
+        { name: 'CI and CD', url: 'https://glossary.cncf.io/continuous-delivery/' },
       ],
     },
     {

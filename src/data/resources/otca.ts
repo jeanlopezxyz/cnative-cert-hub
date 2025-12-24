@@ -110,6 +110,24 @@ export const otcaResources: CertificationResources = {
 
   videos: [
     {
+      title: 'Docker for Beginners',
+      url: 'https://kodekloud.com/courses/docker-for-the-absolute-beginner/',
+      author: 'KodeKloud',
+      description: 'Container fundamentals - prerequisite for OTCA',
+      isPaid: true,
+      duration: '4 hours',
+      difficulty: 'beginner',
+    },
+    {
+      title: 'Kubernetes for Beginners',
+      url: 'https://kodekloud.com/courses/kubernetes-for-the-absolute-beginners-hands-on/',
+      author: 'KodeKloud',
+      description: 'Kubernetes basics - prerequisite for OTCA',
+      isPaid: true,
+      duration: '6 hours',
+      difficulty: 'beginner',
+    },
+    {
       title: 'OpenTelemetry Course - Observability',
       url: 'https://www.youtube.com/watch?v=r8UvWSX3KA8',
       author: 'TechWorld with Nana',

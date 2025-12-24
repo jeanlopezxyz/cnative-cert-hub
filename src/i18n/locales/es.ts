@@ -410,6 +410,9 @@ export const es = {
   // Study Resources Sections
   'certification.sections.official': 'Recursos Oficiales',
   'certification.sections.linuxFoundation': 'Linux Foundation',
+  'certification.sections.lfFreeCourses': 'Cursos Gratuitos de Linux Foundation',
+  'certification.sections.lfPaidCourses': 'Formación de Linux Foundation',
+  'certification.sections.examInfo': 'Información del Examen',
   'certification.sections.books': 'Libros Recomendados',
   'certification.sections.courses': 'Cursos en Línea',
   'certification.sections.videos': 'Tutoriales en Video',

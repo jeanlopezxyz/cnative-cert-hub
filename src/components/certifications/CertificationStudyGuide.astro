@@ -3,6 +3,7 @@ import { useTranslations, translateCertificationValue } from '../../i18n/utils';
 import type { Certification } from '../../types';
 import type { ui } from '../../i18n/ui';
 import SimpleQuestionSimulator from '../quiz/SimpleQuestionSimulator.astro';
+import { getCoursesForCertification } from '../../data/resources/lf-free-courses';
 
 interface Props {
   certification: Certification;
@@ -11,6 +12,14 @@ interface Props {
 
 const { certification, lang } = Astro.props;
 const t = useTranslations(lang);
+
+// Get related LF free courses for this certification
+const lfCourses = getCoursesForCertification(certification.id);
+
+// Get non-LF courses (other platforms like Udemy, KodeKloud, etc.)
+const otherCourses = (certification.resources.courses || []).filter(
+  course => course.author !== 'The Linux Foundation' && !course.url.includes('training.linuxfoundation.org')
+);
 
 // Pre-compute translations for client-side JS
 const translations = {
@@ -72,16 +81,21 @@ interface StudySection {
 }
 
 const studySections: StudySection[] = [
+  // Official Tab - LF Training & Documentation
   {
-    id: 'official',
-    title: t('certification.sections.official'),
-    type: 'official',
+    id: 'lf-courses',
+    title: t('certification.sections.linuxFoundation'),
+    type: 'courses',
     tab: 'official',
-    resources: [{
-      title: t('certification.resource.officialPage'),
-      url: certification.resources.official,
-      description: t('certification.resource.officialDesc'),
-    }],
+    resources: lfCourses.map(course => ({
+      title: course.title,
+      url: course.url,
+      description: course.description,
+      author: 'Linux Foundation',
+      isPaid: false,
+      difficulty: course.difficulty,
+      duration: course.duration,
+    })),
   },
   {
     id: 'documentation',
@@ -94,12 +108,13 @@ const studySections: StudySection[] = [
       description: doc.description || t('certification.resource.projectDocsDesc'),
     })),
   },
+  // Courses Tab - Third-party courses
   {
     id: 'courses',
     title: t('certification.sections.courses'),
     type: 'courses',
     tab: 'courses',
-    resources: certification.resources.courses || [],
+    resources: otherCourses,
   },
   {
     id: 'videos',
@@ -113,7 +128,12 @@ const studySections: StudySection[] = [
     title: t('certification.sections.books'),
     type: 'books',
     tab: 'books',
-    resources: certification.resources.books || [],
+    resources: [...(certification.resources.books || [])]
+      .sort((a, b) => (b.year || 0) - (a.year || 0))
+      .map(book => ({
+        ...book,
+        title: book.year ? `${book.title} (${book.year})` : book.title,
+      })),
   },
   {
     id: 'simulators',

@@ -424,6 +424,9 @@ export const en = {
   // Study Resources Sections
   'certification.sections.official': 'Official Resources',
   'certification.sections.linuxFoundation': 'Linux Foundation',
+  'certification.sections.lfFreeCourses': 'Linux Foundation Free Courses',
+  'certification.sections.lfPaidCourses': 'Linux Foundation Training',
+  'certification.sections.examInfo': 'Exam Information',
   'certification.sections.books': 'Recommended Books',
   'certification.sections.courses': 'Online Courses',
   'certification.sections.videos': 'Video Tutorials',

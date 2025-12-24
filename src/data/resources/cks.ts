@@ -43,6 +43,16 @@ export const cksResources: CertificationResources = {
 
   books: [
     {
+      title: 'Certified Kubernetes Security Specialist (CKS) Study Guide',
+      url: 'https://www.oreilly.com/library/view/certified-kubernetes-security/9781098132965/',
+      author: 'Benjamin Muschko',
+      description: 'Complete CKS exam preparation with hands-on exercises',
+      isPaid: true,
+      format: 'paperback',
+      year: 2024,
+      difficulty: 'advanced',
+    },
+    {
       title: 'Kubernetes Security and Observability',
       url: 'https://www.oreilly.com/library/view/kubernetes-security-and/9781098107093/',
       author: 'Brendan Creane, Amit Gupta',
@@ -63,13 +73,13 @@ export const cksResources: CertificationResources = {
       difficulty: 'advanced',
     },
     {
-      title: 'Container Security',
-      url: 'https://www.oreilly.com/library/view/container-security/9781492056690/',
+      title: 'Container Security, 2nd Edition',
+      url: 'https://www.oreilly.com/library/view/container-security-2nd/9798341627697/',
       author: 'Liz Rice',
       description: 'Fundamental technology concepts for securing containers',
       isPaid: true,
       format: 'paperback',
-      year: 2020,
+      year: 2025,
       difficulty: 'intermediate',
     },
     {
@@ -169,12 +179,48 @@ export const cksResources: CertificationResources = {
 
   videos: [
     {
-      title: 'CKS Full Course 2024',
-      url: 'https://www.youtube.com/watch?v=wqsUfvRyYpw',
+      title: 'Linux Basics for Beginners',
+      url: 'https://kodekloud.com/courses/the-linux-basics-course/',
       author: 'KodeKloud',
-      description: 'Complete CKS preparation course',
-      isPaid: false,
+      description: 'Linux fundamentals - prerequisite for CKS',
+      isPaid: true,
       duration: '5 hours',
+      difficulty: 'beginner',
+    },
+    {
+      title: 'Kubernetes for Beginners',
+      url: 'https://kodekloud.com/courses/kubernetes-for-the-absolute-beginners-hands-on/',
+      author: 'KodeKloud',
+      description: 'Kubernetes basics - prerequisite before CKS',
+      isPaid: true,
+      duration: '6 hours',
+      difficulty: 'beginner',
+    },
+    {
+      title: 'CKA Course (Recommended before CKS)',
+      url: 'https://kodekloud.com/courses/certified-kubernetes-administrator-cka/',
+      author: 'KodeKloud',
+      description: 'CKA certification is a prerequisite for CKS exam',
+      isPaid: true,
+      duration: '25 hours',
+      difficulty: 'intermediate',
+    },
+    {
+      title: 'CKS Certification Course',
+      url: 'https://kodekloud.com/courses/certified-kubernetes-security-specialist-cks/',
+      author: 'KodeKloud',
+      description: 'Complete CKS preparation with hands-on security labs',
+      isPaid: true,
+      duration: '20 hours',
+      difficulty: 'advanced',
+    },
+    {
+      title: 'CKS Full Course',
+      url: 'https://www.youtube.com/watch?v=d9xfB5qaOfg',
+      author: 'Kim Wuestkamp',
+      description: 'Complete CKS preparation course - now free on YouTube',
+      isPaid: false,
+      duration: '7 hours',
       difficulty: 'advanced',
     },
     {

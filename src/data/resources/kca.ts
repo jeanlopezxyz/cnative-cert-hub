@@ -15,7 +15,7 @@ export const kcaResources: CertificationResources = {
   practice: [
     {
       title: 'Kyverno Playground',
-      url: 'https://kyverno.io/playground/',
+      url: 'https://playground.kyverno.io/',
       description: 'Online Kyverno policy testing environment',
       isPaid: false,
       type: 'playground',
@@ -23,7 +23,7 @@ export const kcaResources: CertificationResources = {
     },
     {
       title: 'Nirmata Kyverno Labs',
-      url: 'https://nirmata.com/kyverno-learning-path/',
+      url: 'https://nirmata.com/kyverno/',
       description: 'Comprehensive Kyverno learning path with hands-on exercises',
       isPaid: false,
       type: 'lab',
@@ -33,6 +33,16 @@ export const kcaResources: CertificationResources = {
 
   books: [
     {
+      title: 'Policy as Code',
+      url: 'https://www.oreilly.com/library/view/policy-as-code/9781098139179/',
+      author: 'Jimmy Ray',
+      description: 'Implement policy as code with OPA, Kyverno, and other tools',
+      isPaid: true,
+      format: 'paperback',
+      year: 2024,
+      difficulty: 'intermediate',
+    },
+    {
       title: 'Kubernetes Security and Observability',
       url: 'https://www.oreilly.com/library/view/kubernetes-security-and/9781098107093/',
       author: 'Brendan Creane, Amit Gupta',
@@ -41,26 +51,6 @@ export const kcaResources: CertificationResources = {
       format: 'paperback',
       year: 2022,
       difficulty: 'intermediate',
-    },
-    {
-      title: 'Kubernetes: Up and Running, 3rd Edition',
-      url: 'https://www.oreilly.com/library/view/kubernetes-up-and/9781098110192/',
-      author: 'Brendan Burns, Joe Beda, Kelsey Hightower, Lachlan Evenson',
-      description: 'Comprehensive Kubernetes guide',
-      isPaid: true,
-      format: 'paperback',
-      year: 2024,
-      difficulty: 'intermediate',
-    },
-    {
-      title: 'Hacking Kubernetes',
-      url: 'https://www.oreilly.com/library/view/hacking-kubernetes/9781492081722/',
-      author: 'Andrew Martin, Michael Hausenblas',
-      description: 'Threat-driven analysis and policy management',
-      isPaid: true,
-      format: 'paperback',
-      year: 2022,
-      difficulty: 'advanced',
     },
   ],
 
@@ -87,7 +77,7 @@ export const kcaResources: CertificationResources = {
     },
     {
       title: 'Kubernetes Policy Management with Kyverno',
-      url: 'https://nirmata.com/kyverno-learning-path/',
+      url: 'https://nirmata.com/kyverno/',
       author: 'Nirmata',
       description: 'Comprehensive Kyverno learning path',
       isPaid: false,
@@ -98,6 +88,24 @@ export const kcaResources: CertificationResources = {
   ],
 
   videos: [
+    {
+      title: 'Docker for Beginners',
+      url: 'https://kodekloud.com/courses/docker-for-the-absolute-beginner/',
+      author: 'KodeKloud',
+      description: 'Container fundamentals - prerequisite for KCA',
+      isPaid: true,
+      duration: '4 hours',
+      difficulty: 'beginner',
+    },
+    {
+      title: 'Kubernetes for Beginners',
+      url: 'https://kodekloud.com/courses/kubernetes-for-the-absolute-beginners-hands-on/',
+      author: 'KodeKloud',
+      description: 'Kubernetes basics - prerequisite for KCA',
+      isPaid: true,
+      duration: '6 hours',
+      difficulty: 'beginner',
+    },
     {
       title: 'Kyverno Tutorial - Kubernetes Policy Management',
       url: 'https://www.youtube.com/watch?v=DREjzfTzNpA',

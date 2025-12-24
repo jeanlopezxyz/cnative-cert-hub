@@ -27,11 +27,11 @@ export const cnpa: Certification = {
       topics: [
         { name: 'Declarative Resource Management', url: 'https://kubernetes.io/docs/tasks/manage-kubernetes-objects/declarative-config/' },
         { name: 'DevOps Practices in Platform Engineering', url: 'https://glossary.cncf.io/devops/' },
-        { name: 'Application Environments and Infrastructure Concepts', url: 'https://glossary.cncf.io/infrastructure_as_code/' },
+        { name: 'Application Environments and Infrastructure Concepts', url: 'https://glossary.cncf.io/infrastructure-as-code/' },
         { name: 'Platform Architecture and Capabilities', url: 'https://tag-app-delivery.cncf.io/whitepapers/platforms/' },
         { name: 'Platform Engineering Goals, Objectives, and Approaches', url: 'https://tag-app-delivery.cncf.io/whitepapers/platform-eng-maturity-model/' },
-        { name: 'Continuous Integration Fundamentals', url: 'https://glossary.cncf.io/continuous_integration/' },
-        { name: 'Continuous Delivery and GitOps', url: 'https://glossary.cncf.io/continuous_delivery/' },
+        { name: 'Continuous Integration Fundamentals', url: 'https://glossary.cncf.io/continuous-integration/' },
+        { name: 'Continuous Delivery and GitOps', url: 'https://glossary.cncf.io/continuous-delivery/' },
       ],
     },
     {
@@ -40,7 +40,7 @@ export const cnpa: Certification = {
       documentationUrl: 'https://glossary.cncf.io/observability/',
       topics: [
         { name: 'Observability Fundamentals: Traces, Metrics, Logs, and Events', url: 'https://opentelemetry.io/docs/concepts/signals/' },
-        { name: 'Secure Service Communication', url: 'https://glossary.cncf.io/mutual_transport_layer_security/' },
+        { name: 'Secure Service Communication', url: 'https://glossary.cncf.io/mutual-transport-layer-security/' },
         { name: 'Policy Engines for Platform Governance', url: 'https://kyverno.io/docs/introduction/' },
         { name: 'Kubernetes Security Essentials', url: 'https://kubernetes.io/docs/concepts/security/' },
         { name: 'Security in CI/CD Pipelines', url: 'https://glossary.cncf.io/devsecops/' },
@@ -49,11 +49,11 @@ export const cnpa: Certification = {
     {
       name: 'Continuous Delivery & Platform Engineering',
       weight: 16,
-      documentationUrl: 'https://glossary.cncf.io/continuous_delivery/',
+      documentationUrl: 'https://glossary.cncf.io/continuous-delivery/',
       topics: [
-        { name: 'Continuous Integration Pipelines Overview', url: 'https://glossary.cncf.io/continuous_integration/' },
-        { name: 'Incident Response in Platform Engineering', url: 'https://glossary.cncf.io/site_reliability_engineering/' },
-        { name: 'CI/CD Relationship Fundamentals', url: 'https://glossary.cncf.io/continuous_delivery/' },
+        { name: 'Continuous Integration Pipelines Overview', url: 'https://glossary.cncf.io/continuous-integration/' },
+        { name: 'Incident Response in Platform Engineering', url: 'https://glossary.cncf.io/site-reliability-engineering/' },
+        { name: 'CI/CD Relationship Fundamentals', url: 'https://glossary.cncf.io/continuous-delivery/' },
         { name: 'GitOps Basics and Workflows', url: 'https://opengitops.dev/' },
         { name: 'GitOps for Application Environments', url: 'https://argo-cd.readthedocs.io/en/stable/' },
       ],
@@ -77,7 +77,7 @@ export const cnpa: Certification = {
         { name: 'Simplified Access to Platform Capabilities', url: 'https://backstage.io/docs/features/software-catalog/' },
         { name: 'API-Driven Service Catalogs', url: 'https://backstage.io/docs/features/software-catalog/descriptor-format/' },
         { name: 'Developer Portals for Platform Adoption', url: 'https://backstage.io/docs/overview/what-is-backstage/' },
-        { name: 'AI/ML in Platform Automation', url: 'https://glossary.cncf.io/machine_learning_operations/' },
+        { name: 'AI/ML in Platform Automation', url: 'https://glossary.cncf.io/machine-learning-ops/' },
       ],
     },
     {

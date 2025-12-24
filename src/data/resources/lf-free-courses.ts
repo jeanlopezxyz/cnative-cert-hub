@@ -913,36 +913,115 @@ export function getCoursesByTopicArea(topicArea: LFTopicArea): LFFreeCourse[] {
 
 /**
  * Get courses relevant to a specific certification
+ * Maps specific course codes to each certification for accurate recommendations
  */
 export function getCoursesForCertification(certId: string): LFFreeCourse[] {
-  const certMappings: Record<string, LFTopicArea[]> = {
-    // Kubestronaut certifications
-    kcna: ['cloud-containers'],
-    cka: ['cloud-containers', 'networking'],
-    ckad: ['cloud-containers'],
-    cks: ['cloud-containers', 'cybersecurity'],
-    kcsa: ['cybersecurity', 'cloud-containers'],
-    // Additional CNCF certifications
-    cgoa: ['devops-site-reliability'],
-    otca: ['cloud-containers', 'devops-site-reliability'],
-    ica: ['cloud-containers', 'networking'],
-    pca: ['cloud-containers', 'devops-site-reliability'],
-    cca: ['cloud-containers'],
-    capa: ['cloud-containers'],
-    cba: ['blockchain'],
-    kca: ['cloud-containers'],
-    cnpa: ['cloud-containers', 'networking'],
-    cnpe: ['cloud-containers', 'networking'],
-    // Linux Foundation
-    lfcs: ['linux-kernel-development'],
+  // Specific course codes for each certification
+  const certCourseMappings: Record<string, string[]> = {
+    // KCNA - Kubernetes and Cloud Native Associate (Entry level)
+    kcna: [
+      'LFS158', // Introduction to Kubernetes
+      'LFS151', // Introduction to Cloud Infrastructure Technologies
+      'LFS169', // Introduction to GitOps
+    ],
+    // CKA - Certified Kubernetes Administrator
+    cka: [
+      'LFS158', // Introduction to Kubernetes
+      'LFS151', // Introduction to Cloud Infrastructure Technologies
+      'LFS169', // Introduction to GitOps
+    ],
+    // CKAD - Certified Kubernetes Application Developer
+    ckad: [
+      'LFS158', // Introduction to Kubernetes
+      'LFS157', // Introduction to Serverless on Kubernetes
+      'LFS145', // Introduction to Protocol Buffers
+    ],
+    // CKS - Certified Kubernetes Security Specialist
+    cks: [
+      'LFS158', // Introduction to Kubernetes
+      'LFS183', // Introduction to Zero Trust
+      'LFD121', // Developing Secure Software
+      'LFS182', // Securing Your Software Supply Chain with Sigstore
+    ],
+    // KCSA - Kubernetes and Cloud Security Associate
+    kcsa: [
+      'LFS158', // Introduction to Kubernetes
+      'LFS183', // Introduction to Zero Trust
+      'LFD121', // Developing Secure Software
+      'LFC108', // Cybersecurity Essentials
+    ],
+    // CGOA - Certified GitOps Associate
+    cgoa: [
+      'LFS169', // Introduction to GitOps
+      'LFS162', // Introduction to DevOps and SRE
+      'LFS167', // Introduction to Jenkins
+    ],
+    // OTCA - OpenTelemetry Certified Associate
+    otca: [
+      'LFS148', // Getting Started with OpenTelemetry
+      'LFS162', // Introduction to DevOps and SRE
+    ],
+    // ICA - Istio Certified Associate
+    ica: [
+      'LFS144', // Introduction to Istio
+      'LFS158', // Introduction to Kubernetes
+    ],
+    // PCA - Prometheus Certified Associate
+    pca: [
+      'LFS148', // Getting Started with OpenTelemetry (observability)
+      'LFS162', // Introduction to DevOps and SRE
+      'LFS158', // Introduction to Kubernetes
+    ],
+    // CCA - Cilium Certified Associate
+    cca: [
+      'LFS146', // Introduction to Cilium
+      'LFS158', // Introduction to Kubernetes
+    ],
+    // CAPA - Certified Argo Project Associate
+    capa: [
+      'LFS169', // Introduction to GitOps
+      'LFS158', // Introduction to Kubernetes
+    ],
+    // CBA - Certified Backstage Associate
+    cba: [
+      'LFS142', // Introduction to Backstage
+      'LFS158', // Introduction to Kubernetes
+    ],
+    // KCA - Kyverno Certified Associate
+    kca: [
+      'LFS158', // Introduction to Kubernetes
+      'LFS183', // Introduction to Zero Trust
+    ],
+    // CNPA - Cloud Native Platform Architect (expected)
+    cnpa: [
+      'LFS158', // Introduction to Kubernetes
+      'LFS151', // Introduction to Cloud Infrastructure Technologies
+      'LFS146', // Introduction to Cilium
+      'LFS144', // Introduction to Istio
+    ],
+    // CNPE - Cloud Native Platform Engineer (expected)
+    cnpe: [
+      'LFS158', // Introduction to Kubernetes
+      'LFS151', // Introduction to Cloud Infrastructure Technologies
+      'LFS169', // Introduction to GitOps
+      'LFS162', // Introduction to DevOps and SRE
+    ],
+    // LFCS - Linux Foundation Certified System Administrator
+    lfcs: [
+      'LFS101', // Introduction to Linux
+      'LFD103', // A Beginner's Guide to Linux Kernel Development
+      'LFD108x', // Linux Tools for Software Development
+      'LFD107x', // Open Source Software Development: Linux for Developers
+    ],
   };
 
-  const topics = certMappings[certId.toLowerCase()];
-  if (!topics) return [];
+  const courseCodes = certCourseMappings[certId.toLowerCase()];
+  if (!courseCodes) return [];
 
-  return lfFreeCourses.filter((course) =>
-    course.topicAreas.some((area) => topics.includes(area))
-  );
+  // Return courses in the order specified in the mapping
+  return courseCodes
+    .map((code) => lfFreeCourses.find((course) => course.code === code))
+    .filter((course): course is LFFreeCourse => course !== undefined);
 }
 
 /**
