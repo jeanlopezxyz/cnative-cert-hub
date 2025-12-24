@@ -33,6 +33,38 @@ export const icaResources: CertificationResources = {
   ],
 
   books: [
+    // FREE BOOKS
+    {
+      title: 'Istio Succinctly',
+      url: 'https://www.syncfusion.com/succinctly-free-ebooks/istio-succinctly',
+      author: 'Rahul Rai, Tarun Pabbi',
+      description: 'FREE - Practical guide to getting started with Istio, traffic management, security, and observability',
+      isPaid: false,
+      format: 'ebook',
+      year: 2023,
+      difficulty: 'beginner',
+    },
+    {
+      title: 'Introducing Istio Service Mesh for Microservices',
+      url: 'https://developers.redhat.com/e-books/introducing-istio-service-mesh-microservices',
+      author: 'Burr Sutter, Christian Posta',
+      description: 'FREE - Red Hat guide to Istio on Kubernetes and OpenShift',
+      isPaid: false,
+      format: 'ebook',
+      year: 2021,
+      difficulty: 'beginner',
+    },
+    {
+      title: 'The Istio Workshop',
+      url: 'https://www.solo.io/resources/istio-workshop/',
+      author: 'Solo.io',
+      description: 'FREE - Hands-on Istio workshop with practical exercises',
+      isPaid: false,
+      format: 'ebook',
+      year: 2024,
+      difficulty: 'intermediate',
+    },
+    // PAID BOOKS
     {
       title: 'Istio in Action',
       url: 'https://www.manning.com/books/istio-in-action',

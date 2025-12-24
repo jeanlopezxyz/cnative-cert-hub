@@ -42,6 +42,38 @@ export const cksResources: CertificationResources = {
   ],
 
   books: [
+    // FREE BOOKS
+    {
+      title: 'Kubernetes Security and Observability',
+      url: 'https://www.tigera.io/lp/kubernetes-security-and-observability-ebook/',
+      author: 'Tigera / O\'Reilly',
+      description: 'FREE - Modern approaches to security and observability with Calico',
+      isPaid: false,
+      format: 'ebook',
+      year: 2024,
+      difficulty: 'advanced',
+    },
+    {
+      title: 'Kubernetes Networking and Security',
+      url: 'https://www.tigera.io/lp/kubernetes-networking-ebook/',
+      author: 'Alex Pollitt (Tigera CTO)',
+      description: 'FREE - Network security from basics to advanced eBPF with Calico',
+      isPaid: false,
+      format: 'ebook',
+      year: 2024,
+      difficulty: 'intermediate',
+    },
+    {
+      title: 'Security Observability with eBPF',
+      url: 'https://isovalent.com/books/security-observability-with-ebpf/',
+      author: 'Isovalent',
+      description: 'FREE - Runtime security and observability using eBPF and Tetragon',
+      isPaid: false,
+      format: 'ebook',
+      year: 2024,
+      difficulty: 'advanced',
+    },
+    // PAID BOOKS
     {
       title: 'Certified Kubernetes Security Specialist (CKS) Study Guide',
       url: 'https://www.oreilly.com/library/view/certified-kubernetes-security/9781098132965/',
@@ -53,7 +85,7 @@ export const cksResources: CertificationResources = {
       difficulty: 'advanced',
     },
     {
-      title: 'Kubernetes Security and Observability',
+      title: 'Kubernetes Security and Observability (O\'Reilly)',
       url: 'https://www.oreilly.com/library/view/kubernetes-security-and/9781098107093/',
       author: 'Brendan Creane, Amit Gupta',
       description: 'Comprehensive guide to securing Kubernetes clusters',

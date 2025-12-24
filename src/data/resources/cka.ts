@@ -42,6 +42,38 @@ export const ckaResources: CertificationResources = {
   ],
 
   books: [
+    // FREE BOOKS
+    {
+      title: 'Kubernetes Networking and Security',
+      url: 'https://www.tigera.io/lp/kubernetes-networking-ebook/',
+      author: 'Alex Pollitt (Tigera CTO)',
+      description: 'FREE - Complete guide from basic networking to advanced eBPF with Calico',
+      isPaid: false,
+      format: 'ebook',
+      year: 2024,
+      difficulty: 'intermediate',
+    },
+    {
+      title: 'Kubernetes Security and Observability',
+      url: 'https://www.tigera.io/lp/kubernetes-security-and-observability-ebook/',
+      author: 'Tigera / O\'Reilly',
+      description: 'FREE - Modern approaches to security and observability for K8s',
+      isPaid: false,
+      format: 'ebook',
+      year: 2024,
+      difficulty: 'intermediate',
+    },
+    {
+      title: 'Kubernetes Networking and Cilium for Network Engineers',
+      url: 'https://isovalent.com/books/kubernetes-networking-and-cilium/',
+      author: 'Isovalent',
+      description: 'FREE - 56-page guide covering Kubernetes networking fundamentals',
+      isPaid: false,
+      format: 'ebook',
+      year: 2024,
+      difficulty: 'intermediate',
+    },
+    // PAID BOOKS
     {
       title: 'Kubernetes: Up and Running, 3rd Edition',
       url: 'https://www.oreilly.com/library/view/kubernetes-up-and/9781098110192/',
@@ -80,6 +112,16 @@ export const ckaResources: CertificationResources = {
       isPaid: true,
       format: 'paperback',
       year: 2025,
+      difficulty: 'intermediate',
+    },
+    {
+      title: 'Networking and Kubernetes',
+      url: 'https://www.oreilly.com/library/view/networking-and-kubernetes/9781492081647/',
+      author: 'James Strong, Vallery Lancey',
+      description: 'A layered approach to container networking including Calico and Cilium',
+      isPaid: true,
+      format: 'paperback',
+      year: 2021,
       difficulty: 'intermediate',
     },
   ],
