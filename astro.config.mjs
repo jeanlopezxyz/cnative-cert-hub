@@ -51,16 +51,6 @@ export default defineConfig({
         '@/constants': path.resolve('./src/constants'),
       },
     },
-    server: {
-      fs: {
-        // Ignore temporary files
-        ignore: [
-          '**/*.tmp.*',
-          '**/.astro/**',
-          '**/dist/**'
-        ]
-      }
-    },
     build: {
       sourcemap: false,
       minify: 'esbuild',

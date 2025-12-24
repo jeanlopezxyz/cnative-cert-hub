@@ -2,8 +2,10 @@
  * Central type definitions for the CNCF Certification Resources Hub
  */
 
-import type React from 'react';
 import type { Question } from './quiz';
+
+// Generic node type for component children (Astro-compatible)
+type AstroNode = string | number | boolean | null | undefined;
 
 // ============================================================================
 // Core Types
@@ -170,7 +172,7 @@ export interface Achievement {
  */
 export interface BaseComponentProps {
   className?: string;
-  children?: React.ReactNode;
+  children?: AstroNode;
 }
 
 /**
@@ -454,7 +456,7 @@ export interface StudyTip {
   title: string;
   description: string;
   category?: 'preparation' | 'practice' | 'exam' | 'general';
-  icon?: React.ReactNode;
+  icon?: string;
   color?: string;
   points?: string[];
 }

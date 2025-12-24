@@ -34,9 +34,16 @@ export const LEVEL_COLORS: Record<string, LevelColors> = {
   },
 };
 
+// Default colors (intermediate level)
+const DEFAULT_COLORS: LevelColors = {
+  bg: 'bg-blue-50 dark:bg-blue-600/20',
+  text: 'text-blue-700 dark:text-blue-300',
+  icon: 'bg-blue-600',
+};
+
 /**
  * Get colors for a certification level
  */
 export function getLevelColors(level: string): LevelColors {
-  return LEVEL_COLORS[level] || LEVEL_COLORS.intermediate;
+  return LEVEL_COLORS[level] ?? DEFAULT_COLORS;
 }

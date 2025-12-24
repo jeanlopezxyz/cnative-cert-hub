@@ -176,16 +176,17 @@ export function validateCertificationData(cert: Partial<Certification> | null | 
   }
 
   // Check required fields
-  const requiredFields = ['id', 'name', 'acronym', 'level'];
+  const requiredFields = ['id', 'name', 'acronym', 'level'] as const;
   for (const field of requiredFields) {
-    if (!cert[field] || typeof cert[field] !== 'string') {
+    const value = cert[field];
+    if (!value || typeof value !== 'string') {
       return false;
     }
   }
 
   // Validate enum values
   const validLevels = ['entry', 'intermediate', 'advanced'];
-  if (!validLevels.includes(cert.level)) {
+  if (!cert.level || !validLevels.includes(cert.level)) {
     return false;
   }
 

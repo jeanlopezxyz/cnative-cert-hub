@@ -3,7 +3,7 @@
  * This avoids ESLint no-console warnings while keeping debug capabilities
  */
 
-const isDev = import.meta.env.DEV;
+const isDev = import.meta.env?.DEV ?? false;
 
 export const logger = {
   log: (...args: unknown[]): void => {

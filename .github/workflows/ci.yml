@@ -61,7 +61,7 @@ jobs:
         run: npx tsc --noEmit
 
       - name: ESLint
-        run: npx eslint . --ext .ts,.tsx,.astro --max-warnings 10
+        run: npx eslint . --max-warnings 10
 
   # Build the project
   build:
