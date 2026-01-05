@@ -13,10 +13,8 @@ const upcomingCertifications = [
     descKey: 'certifications.upcoming.ckneDesc',
     status: 'development',
     expectedDate: '2026',
-    announcementUrl: 'https://training.linuxfoundation.org/kubernetes-network-engineer-program/',
-    blogUrl: 'https://www.cncf.io/announcements/2025/11/11/cncf-launches-cnpe-certification-to-define-enterprise-scale-platform-engineering-globally/',
-    color: 'violet',
-    icon: 'network',
+    officialUrl: 'https://www.cncf.io/training/certification/',
+    announcementUrl: 'https://www.cncf.io/announcements/2025/11/11/cncf-launches-cnpe-certification-to-define-enterprise-scale-platform-engineering-globally/',
     highlights: [
       'certifications.upcoming.ckneHighlight1',
       'certifications.upcoming.ckneHighlight2',
@@ -24,19 +22,6 @@ const upcomingCertifications = [
     ],
   },
 ];
-
-const getStatusBadge = (status: string) => {
-  if (status === 'available') {
-    return {
-      text: t('certifications.upcoming.statusAvailable'),
-      classes: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300',
-    };
-  }
-  return {
-    text: t('certifications.upcoming.statusDevelopment'),
-    classes: 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300',
-  };
-};
 ---
 
 <Layout title={t('certifications.upcoming.title')} lang={lang} showSidebar={true}>
@@ -51,145 +36,82 @@ const getStatusBadge = (status: string) => {
       </p>
     </div>
 
-    <!-- Certifications Grid -->
-    <div class="space-y-8">
-      {upcomingCertifications.map((cert) => {
-        const statusBadge = getStatusBadge(cert.status);
-        const colorClasses = cert.color === 'violet'
-          ? {
-              iconBg: 'bg-violet-600',
-              title: 'text-violet-600 dark:text-violet-400',
-              link: 'text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300',
-              bullet: 'bg-violet-500',
-              buttonBg: 'bg-violet-600 hover:bg-violet-700',
-            }
-          : {
-              iconBg: 'bg-emerald-600',
-              title: 'text-emerald-600 dark:text-emerald-400',
-              link: 'text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300',
-              bullet: 'bg-emerald-500',
-              buttonBg: 'bg-emerald-600 hover:bg-emerald-700',
-            };
+    <!-- Certifications List -->
+    <div class="space-y-6">
+      {upcomingCertifications.map((cert) => (
+        <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800/50 overflow-hidden">
+          <div class="p-6">
+            <!-- Header -->
+            <div class="flex flex-wrap items-center gap-3 mb-4">
+              <span class="text-xl font-bold text-primary-600 dark:text-primary-400">
+                {cert.acronym}
+              </span>
+              <span class="px-2.5 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-sm font-medium rounded-md">
+                {t('certifications.upcoming.statusDevelopment')}
+              </span>
+              <span class="px-2.5 py-1 bg-neutral-200 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300 text-sm font-medium rounded-md">
+                {t('certifications.upcoming.expected')} {cert.expectedDate}
+              </span>
+            </div>
 
-        return (
-          <div class="rounded-xl bg-neutral-100 dark:bg-neutral-700/50 shadow-sm overflow-hidden">
-            <div class="p-5 sm:p-6">
-              {/* Header Row */}
-              <div class="flex items-center gap-4 mb-5">
-                <div class={`w-12 h-12 flex-shrink-0 inline-flex items-center justify-center ${colorClasses.iconBg} text-white rounded-xl`}>
-                  {cert.icon === 'network' ? (
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.14 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"></path>
-                    </svg>
-                  ) : (
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"></path>
-                    </svg>
-                  )}
-                </div>
-                <div class="flex-1">
-                  <div class="flex flex-wrap items-center gap-2 mb-1">
-                    <span class={`text-lg font-bold ${colorClasses.title}`}>
-                      {cert.acronym}
-                    </span>
-                    <span class={`px-2.5 py-1 ${statusBadge.classes} text-sm font-medium rounded-lg`}>
-                      {statusBadge.text}
-                    </span>
-                    {cert.status === 'development' && (
-                      <span class="px-2.5 py-1 bg-neutral-200 dark:bg-neutral-600 text-neutral-600 dark:text-neutral-300 text-sm font-medium rounded-lg">
-                        {t('certifications.upcoming.expected')} {cert.expectedDate}
-                      </span>
-                    )}
-                  </div>
-                  <h2 class="text-base font-medium text-neutral-700 dark:text-neutral-300">
-                    {t(cert.titleKey)}
-                  </h2>
-                </div>
-              </div>
+            <h2 class="text-lg font-semibold text-neutral-900 dark:text-white mb-3">
+              {t(cert.titleKey)}
+            </h2>
 
-              {/* Description */}
-              <p class="text-base text-neutral-600 dark:text-neutral-300 leading-relaxed mb-6">
-                {t(cert.descKey)}
-              </p>
+            <p class="text-neutral-600 dark:text-neutral-300 leading-relaxed mb-6">
+              {t(cert.descKey)}
+            </p>
 
-              {/* Key Features */}
-              <div class="bg-white dark:bg-neutral-800 rounded-xl p-4 mb-6">
-                <h3 class="text-sm font-semibold text-neutral-600 dark:text-neutral-300 uppercase tracking-wider mb-3">
-                  {t('certifications.upcoming.keyFeatures')}
-                </h3>
-                <div class="space-y-3">
-                  {cert.highlights.map((highlight) => (
-                    <div class="flex items-start gap-3">
-                      <div class={`w-2 h-2 ${colorClasses.bullet} rounded-full flex-shrink-0 mt-2`}></div>
-                      <span class="text-base text-neutral-700 dark:text-neutral-200">
-                        {t(highlight)}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+            <!-- Key Features -->
+            <div class="mb-6">
+              <h3 class="text-sm font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider mb-3">
+                {t('certifications.upcoming.keyFeatures')}
+              </h3>
+              <ul class="space-y-2">
+                {cert.highlights.map((highlight) => (
+                  <li class="flex items-start gap-2 text-neutral-700 dark:text-neutral-200">
+                    <span class="text-primary-600 dark:text-primary-400 mt-1">•</span>
+                    <span>{t(highlight)}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-              {/* Links */}
-              <div class="flex flex-wrap items-center gap-3">
-                <a
-                  href={cert.announcementUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class={`inline-flex items-center gap-2 px-4 py-2 ${colorClasses.buttonBg} text-white text-base font-medium rounded-xl transition-colors`}
-                >
-                  {t('certifications.upcoming.officialPage')}
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
-                </a>
-                <a
-                  href={cert.blogUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class={`inline-flex items-center gap-2 px-4 py-2 bg-neutral-200 dark:bg-neutral-600 text-neutral-700 dark:text-neutral-200 text-base font-medium rounded-xl hover:bg-neutral-300 dark:hover:bg-neutral-500 transition-colors`}
-                >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-                  </svg>
-                  {t('certifications.upcoming.announcement')}
-                </a>
-              </div>
+            <!-- Links -->
+            <div class="flex flex-wrap gap-3">
+              <a
+                href={cert.officialUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-lg transition-colors"
+              >
+                {t('certifications.upcoming.visitCncf')}
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
+              <a
+                href={cert.announcementUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-2 px-4 py-2 border border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-200 text-sm font-medium rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
+              >
+                {t('certifications.upcoming.announcement')}
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
             </div>
           </div>
-        );
-      })}
+        </div>
+      ))}
     </div>
 
-    <!-- Stay Updated Card -->
-    <div class="mt-8 rounded-xl bg-blue-50 dark:bg-blue-900/30 shadow-sm overflow-hidden">
-      <div class="p-5 sm:p-6">
-        <div class="flex items-start gap-4">
-          <div class="w-12 h-12 flex-shrink-0 inline-flex items-center justify-center bg-blue-600 text-white rounded-xl">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <div class="flex-1">
-            <h3 class="text-lg font-semibold text-blue-700 dark:text-blue-400 mb-2">
-              {t('certifications.upcoming.stayUpdated')}
-            </h3>
-            <p class="text-base text-neutral-600 dark:text-neutral-300 mb-4">
-              {t('certifications.upcoming.stayUpdatedDesc')}
-            </p>
-            <a
-              href="https://www.cncf.io/training/certification/"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-base font-medium rounded-xl transition-colors"
-            >
-              {t('certifications.upcoming.visitCncf')}
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-              </svg>
-            </a>
-          </div>
-        </div>
-      </div>
+    <!-- Info Note -->
+    <div class="mt-8 p-4 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800/30">
+      <p class="text-sm text-neutral-600 dark:text-neutral-400">
+        {t('certifications.upcoming.stayUpdatedDesc')}
+      </p>
     </div>
   </div>
 </Layout>

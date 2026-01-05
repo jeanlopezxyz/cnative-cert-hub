@@ -22,8 +22,8 @@ const currentPath = Astro.url.pathname;
 
 const certificationsByCategory = groupCertificationsByCategory(certifications);
 
-// Default open sections
-const defaultOpenSections = ['certifications'];
+// Default open sections (empty = all collapsed)
+const defaultOpenSections: string[] = [];
 ---
 
 <!-- Mobile Backdrop -->
@@ -35,7 +35,7 @@ const defaultOpenSections = ['certifications'];
 <!-- Sidebar -->
 <aside
   id="sidebar"
-  class="fixed top-0 h-screen z-40 w-[300px] lg:w-[280px] bg-neutral-100 dark:bg-neutral-900 shadow-xl lg:shadow-none transition-all duration-300 ease-out -left-full lg:left-0 mobile-sidebar"
+  class="fixed top-0 h-screen z-40 w-[300px] lg:w-[280px] bg-white dark:bg-neutral-900 shadow-xl lg:shadow-none transition-all duration-300 ease-out -left-full lg:left-0 mobile-sidebar"
 >
   <!-- Logo Section -->
   <div class="h-16 px-4 lg:px-5 flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 lg:border-0">
@@ -65,25 +65,25 @@ const defaultOpenSections = ['certifications'];
       <div class="sidebar-section mb-1" data-section="achievements">
         <button
           type="button"
-          class="sidebar-section-toggle w-full flex items-center justify-between px-3 py-2.5 lg:py-3 rounded-xl transition-all duration-200 group text-neutral-900 dark:text-white hover:bg-neutral-200 dark:hover:bg-neutral-800"
+          class="sidebar-section-toggle w-full flex items-center justify-between px-3 py-2.5 lg:py-3 rounded-xl transition-all duration-200 group text-neutral-900 dark:text-white hover:bg-slate-100 dark:hover:bg-neutral-800"
           aria-expanded="false"
           aria-label={`Toggle ${t('sidebar.sections.achievementPaths')} section`}
         >
           <div class="flex items-center gap-3">
-            <span class="section-icon w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 bg-neutral-200 dark:bg-neutral-700 text-neutral-900 dark:text-white group-hover:bg-primary-200 dark:group-hover:bg-primary-800">
+            <span class="section-icon w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 bg-slate-200 dark:bg-neutral-700 text-neutral-900 dark:text-white group-hover:bg-primary-200 dark:group-hover:bg-primary-800">
               <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
               </svg>
             </span>
             <span class="font-semibold text-sm">{t('sidebar.sections.achievementPaths')}</span>
           </div>
-          <div class="chevron-wrap w-6 h-6 rounded-md flex items-center justify-center transition-all duration-200 bg-transparent group-hover:bg-neutral-200 dark:group-hover:bg-neutral-700">
+          <div class="chevron-wrap w-6 h-6 rounded-md flex items-center justify-center transition-all duration-200 bg-transparent group-hover:bg-slate-200 dark:group-hover:bg-neutral-700">
             <svg class="chevron w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
             </svg>
           </div>
         </button>
-        <div class="section-content grid transition-all duration-300 ease-in-out grid-rows-[0fr] opacity-0">
+        <div class="section-content grid transition-all duration-300 ease-in-out grid-rows-[0fr] opacity-0 pointer-events-none">
           <div class="overflow-hidden">
             <div class="pt-1.5 pl-3 lg:pl-4 space-y-0.5">
               {ACHIEVEMENTS_ITEMS.map((item) => {
@@ -95,7 +95,7 @@ const defaultOpenSections = ['certifications'];
                     class={`sidebar-nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                       isActive
                         ? 'bg-primary-600 text-white shadow-md shadow-primary-600/30'
-                        : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-700/50 hover:text-primary-600 dark:hover:text-primary-400'
+                        : 'text-neutral-600 dark:text-neutral-400 hover:bg-slate-100 dark:hover:bg-neutral-700/50 hover:text-primary-600 dark:hover:text-primary-400'
                     }`}
                   >
                     <span class={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-white' : 'bg-primary-500'}`} />
@@ -109,31 +109,31 @@ const defaultOpenSections = ['certifications'];
       </div>
 
       <!-- Separator -->
-      <div class="my-3 mx-2"><div class="h-px bg-neutral-200 dark:bg-neutral-700/60" /></div>
+      <div class="my-3 mx-2"><div class="h-px bg-slate-200 dark:bg-neutral-700/60" /></div>
 
       <!-- Certifications Section -->
       <div class="sidebar-section mb-1" data-section="certifications">
         <button
           type="button"
-          class="sidebar-section-toggle w-full flex items-center justify-between px-3 py-2.5 lg:py-3 rounded-xl transition-all duration-200 group text-neutral-900 dark:text-white hover:bg-neutral-200 dark:hover:bg-neutral-800"
+          class="sidebar-section-toggle w-full flex items-center justify-between px-3 py-2.5 lg:py-3 rounded-xl transition-all duration-200 group text-neutral-900 dark:text-white hover:bg-slate-100 dark:hover:bg-neutral-800"
           aria-expanded="true"
           aria-label={`Toggle ${t('sidebar.certifications')} section`}
         >
           <div class="flex items-center gap-3">
-            <span class="section-icon w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 bg-neutral-200 dark:bg-neutral-700 text-neutral-900 dark:text-white group-hover:bg-primary-200 dark:group-hover:bg-primary-800">
+            <span class="section-icon w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 bg-slate-200 dark:bg-neutral-700 text-neutral-900 dark:text-white group-hover:bg-primary-200 dark:group-hover:bg-primary-800">
               <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
               </svg>
             </span>
             <span class="font-semibold text-sm">{t('sidebar.certifications')}</span>
           </div>
-          <div class="chevron-wrap w-6 h-6 rounded-md flex items-center justify-center transition-all duration-200 bg-transparent group-hover:bg-neutral-200 dark:group-hover:bg-neutral-700">
+          <div class="chevron-wrap w-6 h-6 rounded-md flex items-center justify-center transition-all duration-200 bg-transparent group-hover:bg-slate-200 dark:group-hover:bg-neutral-700">
             <svg class="chevron w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
             </svg>
           </div>
         </button>
-        <div class="section-content grid transition-all duration-300 ease-in-out grid-rows-[0fr] opacity-0">
+        <div class="section-content grid transition-all duration-300 ease-in-out grid-rows-[0fr] opacity-0 pointer-events-none">
           <div class="overflow-hidden">
             <div class="pt-1.5 pl-3 lg:pl-4 space-y-1">
               {CERTIFICATION_CATEGORIES.map((category) => {
@@ -161,14 +161,14 @@ const defaultOpenSections = ['certifications'];
                         <span class={`text-xs font-semibold min-w-[20px] text-center px-1.5 py-0.5 rounded-full ${
                           hasActiveChild
                             ? 'bg-primary-100 dark:bg-primary-900/50 text-primary-600 dark:text-primary-400'
-                            : 'bg-neutral-200 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-400'
+                            : 'bg-slate-200 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-400'
                         }`}>{certs.length}</span>
                         <svg class="category-chevron w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
                       </div>
                     </button>
-                    <div class="category-content grid transition-all duration-300 ease-in-out grid-rows-[0fr] opacity-0">
+                    <div class="category-content grid transition-all duration-300 ease-in-out grid-rows-[0fr] opacity-0 pointer-events-none">
                       <div class="overflow-hidden">
                         <div class="pt-1 pl-3 lg:pl-4 space-y-0.5">
                           {certs.map((cert) => {
@@ -207,31 +207,31 @@ const defaultOpenSections = ['certifications'];
       </div>
 
       <!-- Separator -->
-      <div class="my-3 mx-2"><div class="h-px bg-neutral-200 dark:bg-neutral-700/60" /></div>
+      <div class="my-3 mx-2"><div class="h-px bg-slate-200 dark:bg-neutral-700/60" /></div>
 
       <!-- Documentation Section -->
       <div class="sidebar-section mb-1" data-section="documentation">
         <button
           type="button"
-          class="sidebar-section-toggle w-full flex items-center justify-between px-3 py-2.5 lg:py-3 rounded-xl transition-all duration-200 group text-neutral-900 dark:text-white hover:bg-neutral-200 dark:hover:bg-neutral-800"
+          class="sidebar-section-toggle w-full flex items-center justify-between px-3 py-2.5 lg:py-3 rounded-xl transition-all duration-200 group text-neutral-900 dark:text-white hover:bg-slate-100 dark:hover:bg-neutral-800"
           aria-expanded="false"
           aria-label={`Toggle ${t('sidebar.sections.documentation')} section`}
         >
           <div class="flex items-center gap-3">
-            <span class="section-icon w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 bg-neutral-200 dark:bg-neutral-700 text-neutral-900 dark:text-white group-hover:bg-primary-200 dark:group-hover:bg-primary-800">
+            <span class="section-icon w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 bg-slate-200 dark:bg-neutral-700 text-neutral-900 dark:text-white group-hover:bg-primary-200 dark:group-hover:bg-primary-800">
               <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
               </svg>
             </span>
             <span class="font-semibold text-sm">{t('sidebar.sections.documentation')}</span>
           </div>
-          <div class="chevron-wrap w-6 h-6 rounded-md flex items-center justify-center transition-all duration-200 bg-transparent group-hover:bg-neutral-200 dark:group-hover:bg-neutral-700">
+          <div class="chevron-wrap w-6 h-6 rounded-md flex items-center justify-center transition-all duration-200 bg-transparent group-hover:bg-slate-200 dark:group-hover:bg-neutral-700">
             <svg class="chevron w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
             </svg>
           </div>
         </button>
-        <div class="section-content grid transition-all duration-300 ease-in-out grid-rows-[0fr] opacity-0">
+        <div class="section-content grid transition-all duration-300 ease-in-out grid-rows-[0fr] opacity-0 pointer-events-none">
           <div class="overflow-hidden">
             <div class="pt-1.5 pl-3 lg:pl-4 space-y-0.5">
               {DOCUMENTATION_ITEMS.map((item) => {
@@ -243,7 +243,7 @@ const defaultOpenSections = ['certifications'];
                     class={`sidebar-nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                       isActive
                         ? 'bg-primary-600 text-white shadow-md shadow-primary-600/30'
-                        : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-700/50 hover:text-primary-600 dark:hover:text-primary-400'
+                        : 'text-neutral-600 dark:text-neutral-400 hover:bg-slate-100 dark:hover:bg-neutral-700/50 hover:text-primary-600 dark:hover:text-primary-400'
                     }`}
                   >
                     <span class={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-white' : 'bg-indigo-500'}`} />
@@ -257,31 +257,31 @@ const defaultOpenSections = ['certifications'];
       </div>
 
       <!-- Separator -->
-      <div class="my-3 mx-2"><div class="h-px bg-neutral-200 dark:bg-neutral-700/60" /></div>
+      <div class="my-3 mx-2"><div class="h-px bg-slate-200 dark:bg-neutral-700/60" /></div>
 
       <!-- External Resources Section -->
       <div class="sidebar-section mb-1" data-section="resources">
         <button
           type="button"
-          class="sidebar-section-toggle w-full flex items-center justify-between px-3 py-2.5 lg:py-3 rounded-xl transition-all duration-200 group text-neutral-900 dark:text-white hover:bg-neutral-200 dark:hover:bg-neutral-800"
+          class="sidebar-section-toggle w-full flex items-center justify-between px-3 py-2.5 lg:py-3 rounded-xl transition-all duration-200 group text-neutral-900 dark:text-white hover:bg-slate-100 dark:hover:bg-neutral-800"
           aria-expanded="false"
           aria-label={`Toggle ${t('sidebar.sections.externalResources')} section`}
         >
           <div class="flex items-center gap-3">
-            <span class="section-icon w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 bg-neutral-200 dark:bg-neutral-700 text-neutral-900 dark:text-white group-hover:bg-primary-200 dark:group-hover:bg-primary-800">
+            <span class="section-icon w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 bg-slate-200 dark:bg-neutral-700 text-neutral-900 dark:text-white group-hover:bg-primary-200 dark:group-hover:bg-primary-800">
               <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
               </svg>
             </span>
             <span class="font-semibold text-sm">{t('sidebar.sections.externalResources')}</span>
           </div>
-          <div class="chevron-wrap w-6 h-6 rounded-md flex items-center justify-center transition-all duration-200 bg-transparent group-hover:bg-neutral-200 dark:group-hover:bg-neutral-700">
+          <div class="chevron-wrap w-6 h-6 rounded-md flex items-center justify-center transition-all duration-200 bg-transparent group-hover:bg-slate-200 dark:group-hover:bg-neutral-700">
             <svg class="chevron w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
             </svg>
           </div>
         </button>
-        <div class="section-content grid transition-all duration-300 ease-in-out grid-rows-[0fr] opacity-0">
+        <div class="section-content grid transition-all duration-300 ease-in-out grid-rows-[0fr] opacity-0 pointer-events-none">
           <div class="overflow-hidden">
             <div class="pt-1.5 pl-3 lg:pl-4 space-y-0.5">
               {QUICK_LINKS_ITEMS.map((item) => (
@@ -289,7 +289,7 @@ const defaultOpenSections = ['certifications'];
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="sidebar-nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-700/50 hover:text-primary-600 dark:hover:text-primary-400 transition-all duration-200 group"
+                  class="sidebar-nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-neutral-600 dark:text-neutral-400 hover:bg-slate-100 dark:hover:bg-neutral-700/50 hover:text-primary-600 dark:hover:text-primary-400 transition-all duration-200 group"
                 >
                   <span class="w-1.5 h-1.5 rounded-full bg-amber-500" />
                   <span class="flex-1">{t(item.translationKey)}</span>
@@ -309,7 +309,7 @@ const defaultOpenSections = ['certifications'];
 
 <script>
   function initSidebar() {
-    const DEFAULT_OPEN_SECTIONS = ['certifications'];
+    const DEFAULT_OPEN_SECTIONS: string[] = [];
 
     // Get stored values
     function getStoredValue<T>(key: string, defaultValue: T): T {
@@ -340,11 +340,11 @@ const defaultOpenSections = ['certifications'];
 
       if (content) {
         if (isOpen) {
-          content.classList.remove('grid-rows-[0fr]', 'opacity-0');
-          content.classList.add('grid-rows-[1fr]', 'opacity-100');
+          content.classList.remove('grid-rows-[0fr]', 'opacity-0', 'pointer-events-none');
+          content.classList.add('grid-rows-[1fr]', 'opacity-100', 'pointer-events-auto');
         } else {
-          content.classList.add('grid-rows-[0fr]', 'opacity-0');
-          content.classList.remove('grid-rows-[1fr]', 'opacity-100');
+          content.classList.add('grid-rows-[0fr]', 'opacity-0', 'pointer-events-none');
+          content.classList.remove('grid-rows-[1fr]', 'opacity-100', 'pointer-events-auto');
         }
       }
 
@@ -355,31 +355,31 @@ const defaultOpenSections = ['certifications'];
 
       if (toggle) {
         if (isOpen) {
-          toggle.classList.add('bg-primary-800', 'text-white', 'shadow-md');
-          toggle.classList.remove('text-neutral-900', 'dark:text-white', 'hover:bg-neutral-200', 'dark:hover:bg-neutral-800');
+          toggle.classList.add('sidebar-section-open');
+          toggle.classList.remove('text-neutral-900', 'dark:text-white', 'hover:bg-slate-100', 'dark:hover:bg-neutral-800');
         } else {
-          toggle.classList.remove('bg-primary-800', 'text-white', 'shadow-md');
-          toggle.classList.add('text-neutral-900', 'dark:text-white', 'hover:bg-neutral-200', 'dark:hover:bg-neutral-800');
+          toggle.classList.remove('sidebar-section-open');
+          toggle.classList.add('text-neutral-900', 'dark:text-white', 'hover:bg-slate-100', 'dark:hover:bg-neutral-800');
         }
       }
 
       if (icon) {
         if (isOpen) {
-          icon.classList.add('bg-white/20', 'text-white');
-          icon.classList.remove('bg-neutral-200', 'dark:bg-neutral-700', 'text-neutral-900', 'dark:text-white');
+          icon.classList.add('sidebar-icon-open');
+          icon.classList.remove('bg-slate-200', 'dark:bg-neutral-700', 'text-neutral-900', 'dark:text-white', 'group-hover:bg-primary-200', 'dark:group-hover:bg-primary-800');
         } else {
-          icon.classList.remove('bg-white/20', 'text-white');
-          icon.classList.add('bg-neutral-200', 'dark:bg-neutral-700', 'text-neutral-900', 'dark:text-white');
+          icon.classList.remove('sidebar-icon-open');
+          icon.classList.add('bg-slate-200', 'dark:bg-neutral-700', 'text-neutral-900', 'dark:text-white', 'group-hover:bg-primary-200', 'dark:group-hover:bg-primary-800');
         }
       }
 
       if (chevronWrap) {
         if (isOpen) {
-          chevronWrap.classList.add('bg-white/20');
-          chevronWrap.classList.remove('bg-transparent');
+          chevronWrap.classList.add('sidebar-chevron-open');
+          chevronWrap.classList.remove('bg-transparent', 'group-hover:bg-slate-200', 'dark:group-hover:bg-neutral-700');
         } else {
-          chevronWrap.classList.remove('bg-white/20');
-          chevronWrap.classList.add('bg-transparent');
+          chevronWrap.classList.remove('sidebar-chevron-open');
+          chevronWrap.classList.add('bg-transparent', 'group-hover:bg-slate-200', 'dark:group-hover:bg-neutral-700');
         }
       }
     }
@@ -393,11 +393,11 @@ const defaultOpenSections = ['certifications'];
 
       if (content) {
         if (isOpen) {
-          content.classList.remove('grid-rows-[0fr]', 'opacity-0');
-          content.classList.add('grid-rows-[1fr]', 'opacity-100');
+          content.classList.remove('grid-rows-[0fr]', 'opacity-0', 'pointer-events-none');
+          content.classList.add('grid-rows-[1fr]', 'opacity-100', 'pointer-events-auto');
         } else {
-          content.classList.add('grid-rows-[0fr]', 'opacity-0');
-          content.classList.remove('grid-rows-[1fr]', 'opacity-100');
+          content.classList.add('grid-rows-[0fr]', 'opacity-0', 'pointer-events-none');
+          content.classList.remove('grid-rows-[1fr]', 'opacity-100', 'pointer-events-auto');
         }
       }
 

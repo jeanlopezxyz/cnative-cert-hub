@@ -61,10 +61,27 @@ const hreflangUrls = {
     <!-- Theme initialization - runs on every page load/navigation -->
     <script is:inline data-astro-rerun>
       (function() {
+        var PREFS_VERSION = '2';
         var theme;
-        try { theme = localStorage.getItem('theme'); } catch(e) {}
-        if (theme !== 'dark' && theme !== 'light') {
-          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        try {
+          // Check if we need to reset preferences to new defaults
+          var storedVersion = localStorage.getItem('prefsVersion');
+          if (storedVersion !== PREFS_VERSION) {
+            // Reset to new defaults: dark theme, collapsed sidebar
+            localStorage.setItem('prefsVersion', PREFS_VERSION);
+            localStorage.setItem('theme', 'dark');
+            localStorage.removeItem('sidebarOpenSections');
+            localStorage.removeItem('sidebarOpenCategories');
+            theme = 'dark';
+          } else {
+            theme = localStorage.getItem('theme');
+            // Default to dark if no preference saved (only light if explicitly set)
+            if (theme !== 'light') {
+              theme = 'dark';
+            }
+          }
+        } catch(e) {
+          theme = 'dark';
         }
         document.documentElement.classList.remove('dark', 'light');
         document.documentElement.classList.add(theme);
@@ -152,10 +169,10 @@ const hreflangUrls = {
 
     <!-- Critical anti-flash CSS - Minimal inline styles for instant render -->
     <style is:global>
-      /* Theme colors - Blue-tinted neutral palette */
+      /* Theme colors - Clean white palette */
       :root {
         color-scheme: light dark;
-        --bg-primary: #E2E8F0; /* neutral-200 - light gray for body */
+        --bg-primary: #FFFFFF; /* white - clean background */
         --text-primary: #0F172A;
       }
 
@@ -200,7 +217,7 @@ const hreflangUrls = {
       html.light ::view-transition,
       html.light ::view-transition-group(root),
       html.light ::view-transition-image-pair(root) {
-        background-color: #E2E8F0 !important; /* light mode color */
+        background-color: #FFFFFF !important; /* light mode color - white */
       }
 
       /* Hide old snapshot immediately, show new one instantly */
@@ -220,9 +237,10 @@ const hreflangUrls = {
         function getTheme() {
           try {
             var t = localStorage.getItem('theme');
-            if (t === 'dark' || t === 'light') return t;
+            if (t === 'light') return 'light';
           } catch(e) {}
-          return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          // Default to dark
+          return 'dark';
         }
 
         document.addEventListener('astro:before-swap', function(event) {
@@ -288,7 +306,7 @@ const hreflangUrls = {
     <header
       transition:persist={`header-${lang}`}
       transition:animate="none"
-      class={`header-persistent fixed top-0 z-50 bg-neutral-100 dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800 transition-all duration-300 left-0 right-0 ${showSidebar ? 'lg:left-[280px]' : ''}`}
+      class={`header-persistent fixed top-0 z-50 bg-white dark:bg-neutral-900 border-b border-slate-200 dark:border-neutral-800 transition-all duration-300 left-0 right-0 ${showSidebar ? 'lg:left-[280px]' : ''}`}
     >
       <div class="h-16 px-4 flex items-center">
         {/* Left: Mobile Menu Button + Logo (mobile only) */}
@@ -428,7 +446,7 @@ const hreflangUrls = {
           {/* Static sidebar shell - visible immediately while React loads */}
           <aside
             id="sidebar-placeholder"
-            class="fixed top-0 h-screen z-40 w-[280px] bg-neutral-100 dark:bg-neutral-900 hidden lg:block"
+            class="fixed top-0 h-screen z-40 w-[280px] bg-white dark:bg-neutral-900 hidden lg:block"
           >
             <div class="h-16 px-5 flex items-center border-b border-neutral-200 dark:border-neutral-800 lg:border-0">
               <span class="text-3xl font-bold text-neutral-900 dark:text-white">CN</span>
@@ -449,7 +467,7 @@ const hreflangUrls = {
           <slot />
         </main>
         
-        <footer transition:persist={`footer-${lang}`} class={`relative bg-neutral-100 dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 ${compactFooter ? 'mt-0' : 'mt-20'}`} id="footer">
+        <footer transition:persist={`footer-${lang}`} class={`relative bg-white dark:bg-neutral-900 border-t border-slate-200 dark:border-neutral-800 ${compactFooter ? 'mt-0' : 'mt-20'}`} id="footer">
           <div class="w-full px-4 sm:px-6 lg:px-8 py-8">
             <div class="flex flex-col md:flex-row items-center justify-between gap-6">
               {/* Description */}

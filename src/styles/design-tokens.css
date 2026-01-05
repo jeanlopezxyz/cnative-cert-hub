@@ -156,24 +156,82 @@
 }
 
 @layer base {
-  /* Base font rendering optimizations */
+  /*
+   * WCAG 2.1 Compliant Typography
+   * SC 1.4.4: Resize text up to 200% - using rem units
+   * SC 1.4.12: Text spacing - line-height 1.5+, adequate letter/word spacing
+   * SC 1.4.3: Contrast - handled by color choices
+   */
+
+  /*
+   * WCAG 2.1 AA Compliant Typography System
+   * - Minimum body text: 16px (1rem)
+   * - Line height: 1.5+ for body text
+   * - Scalable with rem units
+   */
+
+  /* Base font */
   body {
     font-family: var(--font-sans);
+    font-size: 1rem; /* 16px - WCAG minimum */
+    line-height: 1.6;
+    letter-spacing: 0.01em;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
     font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
   }
 
-  /* Fix Plus Jakarta Sans narrow word spacing */
-  p, .body-text {
-    word-spacing: var(--word-spacing-wide);
+  /* Body text - WCAG compliant 16px minimum */
+  p, li, .body-text {
+    font-size: 1rem; /* 16px */
+    line-height: 1.6;
+    margin-bottom: 0.75em;
   }
 
-  /* Display font for headings */
+  p:last-child, li:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Headings - prominent for clear visual hierarchy */
   h1, h2, h3, h4, h5, h6, .heading {
     font-family: var(--font-display);
-    letter-spacing: var(--tracking-tight);
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5em;
+  }
+
+  /* Heading scale - clear hierarchy, all WCAG large text compliant */
+  h1 { font-size: 2.25rem; font-weight: 700; }   /* 36px */
+  h2 { font-size: 1.75rem; font-weight: 700; }   /* 28px */
+  h3 { font-size: 1.25rem; font-weight: 600; }   /* 20px */
+  h4 { font-size: 1.125rem; font-weight: 600; }  /* 18px */
+  h5 { font-size: 1rem; font-weight: 600; }      /* 16px */
+  h6 { font-size: 0.875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; } /* 14px - labels only */
+
+  /* Secondary/metadata text - 14px minimum for non-critical info */
+  small, .text-sm, .text-secondary {
+    font-size: 0.875rem; /* 14px - WCAG allows for secondary text */
+    line-height: 1.5;
+  }
+
+  /* Links - ensure they're distinguishable */
+  a {
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  /* Small text - ensure minimum 12px but prefer 14px+ */
+  small, .text-sm {
+    font-size: var(--font-size-sm); /* 14-16px - WCAG compliant */
+    line-height: 1.5;
+  }
+
+  /* Focus visible for keyboard navigation - WCAG 2.4.7 */
+  :focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
   }
 }
 

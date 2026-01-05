@@ -6,8 +6,8 @@
   function applyTheme() {
     try {
       const savedTheme = localStorage.getItem('theme') || '';
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const shouldBeDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
+      // Default to dark theme if no preference is saved
+      const shouldBeDark = savedTheme === 'dark' || !savedTheme || savedTheme !== 'light';
       
       // Apply theme class
       document.documentElement.classList.remove('light', 'dark');

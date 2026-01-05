@@ -208,6 +208,23 @@
 }
 
 @layer components {
+  /* Sidebar Section Open States */
+  .sidebar-section-open {
+    @apply bg-primary-600 text-white shadow-md;
+  }
+
+  .sidebar-section-open:hover {
+    @apply bg-primary-700;
+  }
+
+  .sidebar-icon-open {
+    @apply bg-white/20 text-white;
+  }
+
+  .sidebar-chevron-open {
+    @apply bg-white/20;
+  }
+
   /* WowDash-style Card Component - Optimized transitions */
   .card {
     @apply bg-white dark:bg-neutral-700 shadow-sm;
