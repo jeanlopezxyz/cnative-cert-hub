@@ -76,7 +76,7 @@ export const ACHIEVEMENTS_ITEMS = [
   },
 ];
 
-export const DOCUMENTATION_ITEMS = [
+export const RESOURCES_ITEMS = [
   {
     id: 'project-docs',
     translationKey: 'sidebar.projectDocs',
@@ -89,6 +89,15 @@ export const DOCUMENTATION_ITEMS = [
     href: 'best-practices',
     icon: 'check-badge',
   },
+];
+
+export const NEWS_UPDATES_ITEMS = [
+  {
+    id: 'news',
+    translationKey: 'sidebar.news',
+    href: 'news',
+    icon: 'newspaper',
+  },
   {
     id: 'upcoming',
     translationKey: 'sidebar.upcoming',
@@ -97,7 +106,7 @@ export const DOCUMENTATION_ITEMS = [
   },
 ];
 
-export const QUICK_LINKS_ITEMS = [
+export const EXTERNAL_LINKS_ITEMS = [
   {
     id: 'discounts',
     translationKey: 'sidebar.discounts',

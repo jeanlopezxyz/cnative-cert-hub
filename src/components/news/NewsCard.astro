@@ -1,0 +1,74 @@
+---
+/**
+ * NewsCard Component
+ * Minimal, clean card for news items
+ */
+import type { NewsItem } from '../../data/news/types';
+import { useTranslations } from '../../i18n/utils';
+
+interface Props {
+  item: NewsItem;
+  lang: string;
+  index?: number;
+}
+
+const { item, lang, index = 0 } = Astro.props;
+const t = useTranslations(lang as 'en' | 'es' | 'pt');
+
+// Category colors - minimal text only
+const categoryColors = {
+  certifications: 'text-emerald-600 dark:text-emerald-400',
+  scholarships: 'text-amber-600 dark:text-amber-400',
+  events: 'text-blue-600 dark:text-blue-400',
+  announcements: 'text-violet-600 dark:text-violet-400',
+};
+
+const colors = categoryColors[item.category];
+const formattedDate = new Intl.DateTimeFormat(lang, {
+  month: 'short',
+  day: 'numeric',
+}).format(item.publishedAt);
+---
+
+<article
+  class="news-card group"
+  data-category={item.category}
+>
+  <a
+    href={item.url}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="block h-full py-4 border-b border-neutral-100 dark:border-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-600 transition-colors"
+  >
+    <!-- Meta row -->
+    <div class="flex items-center gap-2 mb-2 text-xs">
+      <span class={`font-medium ${colors}`}>
+        {t(`news.category.${item.category}`)}
+      </span>
+      <span class="text-neutral-300 dark:text-neutral-600">•</span>
+      <time class="text-neutral-400 dark:text-neutral-500">
+        {formattedDate}
+      </time>
+      <span class="text-neutral-300 dark:text-neutral-600">•</span>
+      <span class="text-neutral-400 dark:text-neutral-500 truncate">
+        {item.source}
+      </span>
+    </div>
+
+    <!-- Title -->
+    <h3 class="text-sm sm:text-base font-medium text-neutral-900 dark:text-white mb-1.5 line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors leading-snug">
+      {item.title}
+    </h3>
+
+    <!-- Description -->
+    <p class="text-sm text-neutral-500 dark:text-neutral-400 line-clamp-2 leading-relaxed">
+      {item.description}
+    </p>
+  </a>
+</article>
+
+<style>
+  .news-card.hidden {
+    display: none;
+  }
+</style>

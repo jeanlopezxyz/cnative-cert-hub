@@ -228,8 +228,9 @@ export const en = {
   'sidebar.changelogDesc': 'Latest updates and improvements',
   'sidebar.sections.achievementPaths': 'Achievement Paths',
   'sidebar.sections.studyResources': 'Study Resources',
-  'sidebar.sections.documentation': 'Documentation',
-  'sidebar.sections.externalResources': 'External Resources',
+  'sidebar.sections.resources': 'Resources',
+  'sidebar.sections.newsUpdates': 'News & Updates',
+  'sidebar.sections.externalLinks': 'External Links',
   'sidebar.projectDocs': 'Project Documentation',
   'sidebar.curriculum': 'CNCF Curriculum',
   'sidebar.practice': 'Practice Platform',
@@ -237,7 +238,38 @@ export const en = {
   'sidebar.discounts': 'Monthly Discounts',
   'sidebar.bestPractices': 'Best Practices',
   'sidebar.upcoming': 'Upcoming Certifications',
+  'sidebar.news': 'Cloud Native News',
   'sidebar.new': 'New',
+
+  // News Section
+  'news.title': 'Cloud Native News',
+  'news.subtitle': 'Latest updates from CNCF, Linux Foundation, and the cloud native ecosystem',
+  'news.readMore': 'Read more',
+  'news.lastUpdated': 'Last updated',
+  'news.sources': 'Sources',
+  'news.fetchError': 'Unable to load news at this time',
+  'news.tryAgainLater': 'News will be available on the next build',
+  'news.noNews': 'No news available at this time',
+  'news.noResults': 'No news found for this category',
+  'news.featured': 'Featured',
+  'news.latestNews': 'Latest News',
+  'news.loadMore': 'Load More',
+  'news.remaining': 'remaining',
+  'news.of': 'of',
+  'news.articles': 'articles',
+
+  // News Filters
+  'news.filter.all': 'All News',
+  'news.filter.certifications': 'Certifications',
+  'news.filter.scholarships': 'Scholarships',
+  'news.filter.events': 'Events',
+  'news.filter.announcements': 'Announcements',
+
+  // News Categories
+  'news.category.certifications': 'Certification',
+  'news.category.scholarships': 'Scholarship',
+  'news.category.events': 'Event',
+  'news.category.announcements': 'Announcement',
 
   // Sidebar Tips
   'sidebar.tips.exam': 'Exam Preparation',

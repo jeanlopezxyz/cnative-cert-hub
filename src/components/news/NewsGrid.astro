@@ -1,0 +1,318 @@
+---
+/**
+ * NewsGrid Component
+ * Improved UX: Featured card + paginated grid with filters
+ */
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+import { fetchAllNews, getFallbackNewsData } from '../../data/news/rss-fetcher';
+import FeaturedNewsCard from './FeaturedNewsCard.astro';
+import NewsCard from './NewsCard.astro';
+import type { NewsCategory } from '../../data/news/types';
+
+interface Props {
+  lang?: string;
+}
+
+const { lang: propLang } = Astro.props;
+const lang = propLang || getLangFromUrl(Astro.url);
+const t = useTranslations(lang as 'en' | 'es' | 'pt');
+
+// Fetch news at build time
+let newsData;
+try {
+  newsData = await fetchAllNews();
+} catch (error) {
+  console.error('Failed to fetch news:', error);
+  newsData = getFallbackNewsData();
+}
+
+// Configuration
+const INITIAL_VISIBLE = 6; // Show 6 items initially (excluding featured)
+const LOAD_MORE_COUNT = 6; // Load 6 more each time
+
+// Separate featured and rest
+const featuredNews = newsData.items[0];
+const restNews = newsData.items.slice(1);
+
+// Category filter definitions - more compact
+const filters: Array<{
+  value: 'all' | NewsCategory;
+  labelKey: string;
+  color: string;
+}> = [
+  { value: 'all', labelKey: 'news.filter.all', color: 'neutral' },
+  { value: 'certifications', labelKey: 'news.filter.certifications', color: 'emerald' },
+  { value: 'scholarships', labelKey: 'news.filter.scholarships', color: 'amber' },
+  { value: 'events', labelKey: 'news.filter.events', color: 'blue' },
+  { value: 'announcements', labelKey: 'news.filter.announcements', color: 'violet' },
+];
+---
+
+<section class="pb-12 sm:pb-16">
+  <div class="w-full px-4 sm:px-6 lg:px-8 xl:px-8 2xl:px-12">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-xl sm:text-2xl font-bold mb-2 text-neutral-900 dark:text-white">
+        {t('news.title')}
+      </h1>
+      <p class="text-base text-neutral-600 dark:text-neutral-400 max-w-3xl">
+        {t('news.subtitle')}
+      </p>
+    </div>
+
+    <!-- Error State -->
+    {newsData.errors.length > 0 && newsData.items.length === 0 && (
+      <div class="p-6 rounded-xl border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/20 text-center">
+        <svg class="w-12 h-12 mx-auto mb-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        <p class="text-amber-700 dark:text-amber-300 mb-2 font-medium">
+          {t('news.fetchError')}
+        </p>
+        <p class="text-sm text-amber-600 dark:text-amber-400">
+          {t('news.tryAgainLater')}
+        </p>
+      </div>
+    )}
+
+    <!-- Empty State -->
+    {newsData.items.length === 0 && newsData.errors.length === 0 && (
+      <div class="p-6 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800/50 text-center">
+        <svg class="w-12 h-12 mx-auto mb-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+        </svg>
+        <p class="text-neutral-600 dark:text-neutral-400">
+          {t('news.noNews')}
+        </p>
+      </div>
+    )}
+
+    <!-- News Content -->
+    {newsData.items.length > 0 && (
+      <div id="news-container" data-total={restNews.length} data-initial={INITIAL_VISIBLE} data-load-more={LOAD_MORE_COUNT}>
+        <!-- Featured News -->
+        <div class="mb-8" id="featured-section">
+          <FeaturedNewsCard item={featuredNews} lang={lang} />
+        </div>
+
+        <!-- Filter & Counter Row -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+          <!-- Filters - Minimal -->
+          <div class="flex flex-wrap items-center gap-1.5" id="news-filters">
+            {filters.map((filter, idx) => (
+              <button
+                type="button"
+                data-filter={filter.value}
+                data-color={filter.color}
+                class={`news-filter-btn px-2.5 py-1 rounded-md text-xs font-medium transition-all ${
+                  idx === 0
+                    ? 'bg-neutral-800 dark:bg-white text-white dark:text-neutral-900'
+                    : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800'
+                }`}
+              >
+                {t(filter.labelKey)}
+              </button>
+            ))}
+          </div>
+
+          <!-- Counter - Subtle -->
+          <div class="text-xs text-neutral-400 dark:text-neutral-500" id="news-counter">
+            <span id="visible-count">{Math.min(INITIAL_VISIBLE, restNews.length)}</span>
+            <span> {t('news.of')} </span>
+            <span id="total-count">{restNews.length}</span>
+          </div>
+        </div>
+
+        <!-- News List -->
+        <div
+          id="news-grid"
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8"
+        >
+          {restNews.map((item, index) => (
+            <div
+              class={`news-item ${index >= INITIAL_VISIBLE ? 'hidden' : ''}`}
+              data-index={index}
+              data-category={item.category}
+            >
+              <NewsCard item={item} lang={lang} index={index} />
+            </div>
+          ))}
+        </div>
+
+        <!-- No Results (after filtering) -->
+        <div id="no-results" class="hidden p-6 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800/50 text-center mt-6">
+          <p class="text-neutral-600 dark:text-neutral-400">
+            {t('news.noResults')}
+          </p>
+        </div>
+
+        <!-- Load More Button -->
+        {restNews.length > INITIAL_VISIBLE && (
+          <div class="mt-6 pt-6 border-t border-neutral-100 dark:border-neutral-800" id="load-more-container">
+            <button
+              type="button"
+              id="load-more-btn"
+              class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors"
+            >
+              {t('news.loadMore')} (<span id="remaining-count">{restNews.length - INITIAL_VISIBLE}</span> {t('news.remaining')}) →
+            </button>
+          </div>
+        )}
+
+        <!-- Last Updated -->
+        <div class="mt-8 text-xs text-neutral-400 dark:text-neutral-500">
+          {t('news.lastUpdated')}: {new Intl.DateTimeFormat(lang, {
+            dateStyle: 'medium',
+            timeStyle: 'short',
+          }).format(newsData.fetchedAt)}
+          {newsData.sources.length > 0 && (
+            <span> · {newsData.sources.join(', ')}</span>
+          )}
+        </div>
+      </div>
+    )}
+  </div>
+</section>
+
+<script>
+  function initNewsSection() {
+    const container = document.getElementById('news-container');
+    if (!container) return;
+
+    const initialVisible = parseInt(container.dataset.initial || '6');
+    const loadMoreCount = parseInt(container.dataset.loadMore || '6');
+
+    const buttons = document.querySelectorAll('.news-filter-btn');
+    const items = document.querySelectorAll('.news-item');
+    const featuredSection = document.getElementById('featured-section');
+    const noResults = document.getElementById('no-results');
+    const loadMoreContainer = document.getElementById('load-more-container');
+    const loadMoreBtn = document.getElementById('load-more-btn');
+    const visibleCountEl = document.getElementById('visible-count');
+    const totalCountEl = document.getElementById('total-count');
+    const remainingCountEl = document.getElementById('remaining-count');
+
+    let currentFilter = 'all';
+    let currentVisibleCount = initialVisible;
+
+    // Filter color mapping
+    const filterColors: Record<string, { active: string; inactive: string }> = {
+      neutral: {
+        active: 'bg-neutral-800 dark:bg-neutral-200 text-white dark:text-neutral-900',
+        inactive: 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700',
+      },
+      emerald: {
+        active: 'bg-emerald-600 text-white',
+        inactive: 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-800/40',
+      },
+      amber: {
+        active: 'bg-amber-600 text-white',
+        inactive: 'bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-800/40',
+      },
+      blue: {
+        active: 'bg-blue-600 text-white',
+        inactive: 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-800/40',
+      },
+      violet: {
+        active: 'bg-violet-600 text-white',
+        inactive: 'bg-violet-50 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 hover:bg-violet-100 dark:hover:bg-violet-800/40',
+      },
+    };
+
+    function getFilteredItems() {
+      return Array.from(items).filter(item => {
+        const category = item.getAttribute('data-category');
+        return currentFilter === 'all' || category === currentFilter;
+      });
+    }
+
+    function updateDisplay() {
+      const filtered = getFilteredItems();
+      const totalFiltered = filtered.length;
+
+      // Update button styles
+      buttons.forEach(btn => {
+        const btnFilter = btn.getAttribute('data-filter');
+        const color = btn.getAttribute('data-color') || 'neutral';
+        const colors = filterColors[color];
+
+        // Remove all color classes
+        Object.values(filterColors).forEach(c => {
+          c.active.split(' ').forEach(cls => cls && btn.classList.remove(cls));
+          c.inactive.split(' ').forEach(cls => cls && btn.classList.remove(cls));
+        });
+
+        // Add appropriate classes
+        if (btnFilter === currentFilter) {
+          colors.active.split(' ').forEach(cls => cls && btn.classList.add(cls));
+        } else {
+          colors.inactive.split(' ').forEach(cls => cls && btn.classList.add(cls));
+        }
+      });
+
+      // Show/hide featured based on filter
+      if (featuredSection) {
+        featuredSection.style.display = currentFilter === 'all' ? 'block' : 'none';
+      }
+
+      // Show/hide items
+      items.forEach(item => {
+        const category = item.getAttribute('data-category');
+        const matchesFilter = currentFilter === 'all' || category === currentFilter;
+        const index = filtered.indexOf(item as Element);
+        const shouldShow = matchesFilter && index < currentVisibleCount;
+
+        if (shouldShow) {
+          item.classList.remove('hidden');
+        } else {
+          item.classList.add('hidden');
+        }
+      });
+
+      // Update counters
+      const visibleNow = Math.min(currentVisibleCount, totalFiltered);
+      if (visibleCountEl) visibleCountEl.textContent = String(visibleNow);
+      if (totalCountEl) totalCountEl.textContent = String(totalFiltered);
+
+      const remaining = totalFiltered - visibleNow;
+      if (remainingCountEl) remainingCountEl.textContent = String(remaining);
+
+      // Show/hide load more button
+      if (loadMoreContainer) {
+        loadMoreContainer.style.display = remaining > 0 ? 'block' : 'none';
+      }
+
+      // Show/hide no results
+      if (noResults) {
+        noResults.classList.toggle('hidden', totalFiltered > 0);
+      }
+    }
+
+    // Filter button handlers
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const filter = btn.getAttribute('data-filter');
+        if (filter) {
+          currentFilter = filter;
+          currentVisibleCount = initialVisible; // Reset to initial
+          updateDisplay();
+        }
+      });
+    });
+
+    // Load more handler
+    if (loadMoreBtn) {
+      loadMoreBtn.addEventListener('click', () => {
+        currentVisibleCount += loadMoreCount;
+        updateDisplay();
+      });
+    }
+
+    // Initial display
+    updateDisplay();
+  }
+
+  // Initialize on load and after navigation
+  initNewsSection();
+  document.addEventListener('astro:after-swap', initNewsSection);
+</script>

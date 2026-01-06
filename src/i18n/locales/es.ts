@@ -225,8 +225,9 @@ export const es = {
   'sidebar.changelogDesc': 'Últimas actualizaciones y mejoras',
   'sidebar.sections.achievementPaths': 'Rutas de Logros',
   'sidebar.sections.studyResources': 'Recursos de Estudio',
-  'sidebar.sections.documentation': 'Documentación',
-  'sidebar.sections.externalResources': 'Recursos Externos',
+  'sidebar.sections.resources': 'Recursos',
+  'sidebar.sections.newsUpdates': 'Noticias y Novedades',
+  'sidebar.sections.externalLinks': 'Enlaces Externos',
   'sidebar.projectDocs': 'Documentación de Proyectos',
   'sidebar.curriculum': 'Currículum CNCF',
   'sidebar.practice': 'Plataforma de Práctica',
@@ -234,7 +235,38 @@ export const es = {
   'sidebar.discounts': 'Descuentos del Mes',
   'sidebar.bestPractices': 'Buenas Prácticas',
   'sidebar.upcoming': 'Próximas Certificaciones',
+  'sidebar.news': 'Noticias Cloud Native',
   'sidebar.new': 'Nuevo',
+
+  // News Section
+  'news.title': 'Noticias Cloud Native',
+  'news.subtitle': 'Últimas actualizaciones de CNCF, Linux Foundation y el ecosistema cloud native',
+  'news.readMore': 'Leer más',
+  'news.lastUpdated': 'Última actualización',
+  'news.sources': 'Fuentes',
+  'news.fetchError': 'No se pueden cargar las noticias en este momento',
+  'news.tryAgainLater': 'Las noticias estarán disponibles en la próxima compilación',
+  'news.noNews': 'No hay noticias disponibles en este momento',
+  'news.noResults': 'No se encontraron noticias para esta categoría',
+  'news.featured': 'Destacado',
+  'news.latestNews': 'Últimas Noticias',
+  'news.loadMore': 'Cargar Más',
+  'news.remaining': 'restantes',
+  'news.of': 'de',
+  'news.articles': 'artículos',
+
+  // News Filters
+  'news.filter.all': 'Todas las Noticias',
+  'news.filter.certifications': 'Certificaciones',
+  'news.filter.scholarships': 'Becas',
+  'news.filter.events': 'Eventos',
+  'news.filter.announcements': 'Anuncios',
+
+  // News Categories
+  'news.category.certifications': 'Certificación',
+  'news.category.scholarships': 'Beca',
+  'news.category.events': 'Evento',
+  'news.category.announcements': 'Anuncio',
 
   // Sidebar Tips
   'sidebar.tips.exam': 'Preparación del Examen',

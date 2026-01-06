@@ -224,8 +224,9 @@ export const pt = {
   'sidebar.changelogDesc': 'Últimas atualizações e melhorias',
   'sidebar.sections.achievementPaths': 'Rotas de Conquistas',
   'sidebar.sections.studyResources': 'Recursos de Estudo',
-  'sidebar.sections.documentation': 'Documentação',
-  'sidebar.sections.externalResources': 'Recursos Externos',
+  'sidebar.sections.resources': 'Recursos',
+  'sidebar.sections.newsUpdates': 'Notícias e Novidades',
+  'sidebar.sections.externalLinks': 'Links Externos',
   'sidebar.projectDocs': 'Documentação de Projetos',
   'sidebar.curriculum': 'Currículo CNCF',
   'sidebar.practice': 'Plataforma de Prática',
@@ -233,7 +234,38 @@ export const pt = {
   'sidebar.discounts': 'Descontos do Mês',
   'sidebar.bestPractices': 'Boas Práticas',
   'sidebar.upcoming': 'Próximas Certificações',
+  'sidebar.news': 'Notícias Cloud Native',
   'sidebar.new': 'Novo',
+
+  // News Section
+  'news.title': 'Notícias Cloud Native',
+  'news.subtitle': 'Últimas atualizações da CNCF, Linux Foundation e do ecossistema cloud native',
+  'news.readMore': 'Leia mais',
+  'news.lastUpdated': 'Última atualização',
+  'news.sources': 'Fontes',
+  'news.fetchError': 'Não foi possível carregar as notícias no momento',
+  'news.tryAgainLater': 'As notícias estarão disponíveis na próxima compilação',
+  'news.noNews': 'Não há notícias disponíveis no momento',
+  'news.noResults': 'Nenhuma notícia encontrada para esta categoria',
+  'news.featured': 'Destaque',
+  'news.latestNews': 'Últimas Notícias',
+  'news.loadMore': 'Carregar Mais',
+  'news.remaining': 'restantes',
+  'news.of': 'de',
+  'news.articles': 'artigos',
+
+  // News Filters
+  'news.filter.all': 'Todas as Notícias',
+  'news.filter.certifications': 'Certificações',
+  'news.filter.scholarships': 'Bolsas',
+  'news.filter.events': 'Eventos',
+  'news.filter.announcements': 'Anúncios',
+
+  // News Categories
+  'news.category.certifications': 'Certificação',
+  'news.category.scholarships': 'Bolsa',
+  'news.category.events': 'Evento',
+  'news.category.announcements': 'Anúncio',
 
   // Sidebar Tips
   'sidebar.tips.exam': 'Preparação para Exame',

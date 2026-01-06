@@ -1,0 +1,84 @@
+---
+/**
+ * FeaturedNewsCard Component
+ * Clean, minimal hero card for the most recent news item
+ */
+import type { NewsItem } from '../../data/news/types';
+import { useTranslations } from '../../i18n/utils';
+
+interface Props {
+  item: NewsItem;
+  lang: string;
+}
+
+const { item, lang } = Astro.props;
+const t = useTranslations(lang as 'en' | 'es' | 'pt');
+
+// Category colors - minimal approach
+const categoryColors = {
+  certifications: 'text-emerald-600 dark:text-emerald-400',
+  scholarships: 'text-amber-600 dark:text-amber-400',
+  events: 'text-blue-600 dark:text-blue-400',
+  announcements: 'text-violet-600 dark:text-violet-400',
+};
+
+const colors = categoryColors[item.category];
+const formattedDate = new Intl.DateTimeFormat(lang, {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+}).format(item.publishedAt);
+---
+
+<article class="featured-news group">
+  <a
+    href={item.url}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="block"
+  >
+    <!-- Minimal featured indicator -->
+    <div class="flex items-center gap-3 mb-4">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-primary-500 animate-pulse"></span>
+        <span class="text-xs font-semibold uppercase tracking-wider text-primary-600 dark:text-primary-400">
+          {t('news.featured')}
+        </span>
+      </div>
+      <span class="text-xs text-neutral-400 dark:text-neutral-500">•</span>
+      <span class={`text-xs font-medium uppercase tracking-wider ${colors}`}>
+        {t(`news.category.${item.category}`)}
+      </span>
+      <span class="text-xs text-neutral-400 dark:text-neutral-500">•</span>
+      <time class="text-xs text-neutral-500 dark:text-neutral-400">
+        {formattedDate}
+      </time>
+    </div>
+
+    <!-- Title - Large and prominent -->
+    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-neutral-900 dark:text-white mb-4 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors leading-tight">
+      {item.title}
+    </h2>
+
+    <!-- Description -->
+    <p class="text-base sm:text-lg text-neutral-600 dark:text-neutral-400 mb-6 line-clamp-2 leading-relaxed max-w-4xl">
+      {item.description}
+    </p>
+
+    <!-- Footer - Minimal -->
+    <div class="flex items-center gap-4">
+      <span class="text-sm text-neutral-500 dark:text-neutral-400">
+        {item.source}
+      </span>
+      <span class="inline-flex items-center gap-1.5 text-sm font-medium text-primary-600 dark:text-primary-400 group-hover:gap-2.5 transition-all">
+        {t('news.readMore')}
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </span>
+    </div>
+  </a>
+</article>
+
+<!-- Subtle separator -->
+<div class="mt-8 mb-6 border-b border-neutral-200 dark:border-neutral-800"></div>
