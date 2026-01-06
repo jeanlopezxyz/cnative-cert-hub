@@ -235,18 +235,21 @@ async function fetchFeed(source: RSSFeedSource, timeout: number = 10000): Promis
     return rawItems
       .filter(item => item.title && item.link)
       .map(item => {
-        const description = item.description || item.content || '';
+        const description = item.description || '';
+        const content = item.content || '';
         const title = stripHtml(item.title || '');
+        // Use full content for category detection (scholarships info is often in full article)
+        const fullText = `${description} ${content}`;
 
         return {
           id: generateId(item.link!),
           title,
-          description: truncateDescription(description),
+          description: truncateDescription(description || content),
           url: item.link!,
           publishedAt: item.pubDate ? new Date(item.pubDate) : new Date(),
           source: source.name,
           sourceUrl: source.url.replace(/\/feed\/?$/, '').replace(/\/feed\.xml$/, ''),
-          category: detectCategory(title, description, source.defaultCategory),
+          category: detectCategory(title, fullText, source.defaultCategory),
           author: item.author ? stripHtml(item.author) : undefined,
         };
       });
