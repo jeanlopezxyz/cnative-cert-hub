@@ -14,27 +14,43 @@ interface Props {
 const { item, lang } = Astro.props;
 const t = useTranslations(lang as 'en' | 'es' | 'pt');
 
-// Category styling
+// Category styling with backgrounds
 const categoryStyles = {
   certifications: {
+    bg: 'bg-emerald-50 dark:bg-emerald-900/20',
+    border: 'border-emerald-200 dark:border-emerald-800/50',
     badge: 'bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300',
     icon: 'text-emerald-500',
-    accent: 'from-emerald-500/10 to-transparent',
+    iconBg: 'bg-emerald-600',
+    title: 'text-emerald-700 dark:text-emerald-300',
+    hover: 'hover:border-emerald-300 dark:hover:border-emerald-700',
   },
   scholarships: {
+    bg: 'bg-amber-50 dark:bg-amber-900/20',
+    border: 'border-amber-200 dark:border-amber-800/50',
     badge: 'bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300',
     icon: 'text-amber-500',
-    accent: 'from-amber-500/10 to-transparent',
+    iconBg: 'bg-amber-600',
+    title: 'text-amber-700 dark:text-amber-300',
+    hover: 'hover:border-amber-300 dark:hover:border-amber-700',
   },
   events: {
+    bg: 'bg-blue-50 dark:bg-blue-900/20',
+    border: 'border-blue-200 dark:border-blue-800/50',
     badge: 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300',
     icon: 'text-blue-500',
-    accent: 'from-blue-500/10 to-transparent',
+    iconBg: 'bg-blue-600',
+    title: 'text-blue-700 dark:text-blue-300',
+    hover: 'hover:border-blue-300 dark:hover:border-blue-700',
   },
   announcements: {
+    bg: 'bg-violet-50 dark:bg-violet-900/20',
+    border: 'border-violet-200 dark:border-violet-800/50',
     badge: 'bg-violet-100 dark:bg-violet-900/50 text-violet-700 dark:text-violet-300',
     icon: 'text-violet-500',
-    accent: 'from-violet-500/10 to-transparent',
+    iconBg: 'bg-violet-600',
+    title: 'text-violet-700 dark:text-violet-300',
+    hover: 'hover:border-violet-300 dark:hover:border-violet-700',
   },
 };
 
@@ -59,54 +75,59 @@ const categoryIcons = {
     href={item.url}
     target="_blank"
     rel="noopener noreferrer"
-    class="block relative overflow-hidden rounded-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800/50 p-6 sm:p-8 transition-all duration-300 hover:shadow-xl hover:border-primary-300 dark:hover:border-primary-700 hover:-translate-y-1"
+    class={`block rounded-xl border p-5 sm:p-6 transition-all duration-200 ${styles.bg} ${styles.border} ${styles.hover} hover:shadow-lg hover:-translate-y-0.5`}
   >
-    <!-- Gradient accent -->
-    <div class={`absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l ${styles.accent} pointer-events-none`}></div>
-
-    <!-- Content -->
-    <div class="relative">
-      <!-- Top badges row -->
-      <div class="flex flex-wrap items-center gap-3 mb-5">
-        <!-- Featured badge -->
-        <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 text-xs font-semibold uppercase tracking-wider">
-          <span class="w-2 h-2 rounded-full bg-primary-500 animate-pulse"></span>
-          {t('news.featured')}
-        </span>
-
-        <!-- Category badge -->
-        <span class={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium ${styles.badge}`}>
-          <svg class={`w-3.5 h-3.5 ${styles.icon}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d={categoryIcons[item.category]} />
-          </svg>
-          {t(`news.category.${item.category}`)}
-        </span>
+    <div class="flex gap-4 sm:gap-5">
+      <!-- Icon -->
+      <div class={`w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 inline-flex items-center justify-center ${styles.iconBg} text-white rounded-xl`}>
+        <svg class="w-7 h-7 sm:w-8 sm:h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d={categoryIcons[item.category]} />
+        </svg>
       </div>
 
-      <!-- Title -->
-      <h2 class="text-xl sm:text-2xl lg:text-3xl font-bold text-neutral-900 dark:text-white mb-4 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors leading-tight">
-        {item.title}
-      </h2>
+      <!-- Content -->
+      <div class="flex-1 min-w-0">
+        <!-- Badges row -->
+        <div class="flex flex-wrap items-center gap-2 mb-3">
+          <!-- Featured badge -->
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 text-xs font-semibold uppercase tracking-wider">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary-500 animate-pulse"></span>
+            {t('news.featured')}
+          </span>
 
-      <!-- Description -->
-      <p class="text-base sm:text-lg text-neutral-600 dark:text-neutral-400 mb-6 line-clamp-3 leading-relaxed max-w-4xl">
-        {item.description}
-      </p>
+          <!-- Category badge -->
+          <span class={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium ${styles.badge}`}>
+            {t(`news.category.${item.category}`)}
+          </span>
 
-      <!-- Footer -->
-      <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-neutral-100 dark:border-neutral-700">
-        <div class="flex items-center gap-4 text-sm text-neutral-500 dark:text-neutral-400">
-          <span class="font-medium">{item.source}</span>
-          <span class="hidden sm:inline">·</span>
-          <time class="hidden sm:inline">{formattedDate}</time>
+          <!-- Date -->
+          <time class="text-xs text-neutral-500 dark:text-neutral-400 ml-auto">
+            {formattedDate}
+          </time>
         </div>
 
-        <span class="inline-flex items-center gap-2 text-sm font-semibold text-primary-600 dark:text-primary-400 group-hover:gap-3 transition-all">
-          {t('news.readMore')}
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-          </svg>
-        </span>
+        <!-- Title -->
+        <h2 class={`text-lg sm:text-xl lg:text-2xl font-bold mb-2 group-hover:underline transition-colors leading-tight ${styles.title}`}>
+          {item.title}
+        </h2>
+
+        <!-- Description -->
+        <p class="text-sm sm:text-base text-neutral-600 dark:text-neutral-400 mb-4 line-clamp-2 leading-relaxed">
+          {item.description}
+        </p>
+
+        <!-- Footer -->
+        <div class="flex items-center justify-between">
+          <span class="text-xs text-neutral-500 dark:text-neutral-400 font-medium">
+            {item.source}
+          </span>
+          <span class={`inline-flex items-center gap-1.5 text-xs font-semibold ${styles.title} group-hover:gap-2 transition-all`}>
+            {t('news.readMore')}
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </span>
+        </div>
       </div>
     </div>
   </a>
