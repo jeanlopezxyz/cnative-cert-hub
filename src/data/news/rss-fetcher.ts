@@ -46,22 +46,16 @@ export const RSS_FEEDS: RSSFeedSource[] = [
  */
 const CATEGORY_KEYWORDS: Record<NewsCategory, string[]> = {
   events: [
-    'kubecon',
-    'cloudnativecon',
-    'open source summit',
-    'ossummit',
-    'wasmcon',
-    'cfp',
+    // Only match actual event ANNOUNCEMENTS, not blog posts about events
+    'announces schedule for',
+    'announces keynote',
+    'registration is open for',
+    'registration opens for',
     'call for proposals',
     'call for papers',
-    'keynote speaker',
-    'schedule for',
-    'registration is open',
-    'contribfest',
-    'sustainability month',
-    'community day',
-    'kcd ',
-    'co-locating',
+    'cfp is open',
+    'cfp closes',
+    'co-locating with kubecon',
   ],
   scholarships: [
     'scholarship',
