@@ -18,25 +18,59 @@ export const RSS_FEEDS: RSSFeedSource[] = [
     enabled: true,
   },
   {
-    id: 'linux-foundation',
-    name: 'Linux Foundation',
-    url: 'https://www.linuxfoundation.org/blog/feed/',
+    id: 'cncf-announcements',
+    name: 'CNCF Announcements',
+    url: 'https://www.cncf.io/announcements/feed/',
     defaultCategory: 'announcements',
+    enabled: true,
+  },
+  {
+    id: 'lf-events',
+    name: 'LF Events',
+    url: 'https://events.linuxfoundation.org/feed/',
+    defaultCategory: 'events',
     enabled: true,
   },
   {
     id: 'kubernetes-blog',
     name: 'Kubernetes Blog',
     url: 'https://kubernetes.io/feed.xml',
-    defaultCategory: 'announcements',
+    defaultCategory: 'certifications',
     enabled: true,
   },
 ];
 
 /**
- * Keywords for category detection
+ * Keywords for category detection (order matters - first match wins)
  */
 const CATEGORY_KEYWORDS: Record<NewsCategory, string[]> = {
+  events: [
+    'kubecon',
+    'cloudnativecon',
+    'open source summit',
+    'ossummit',
+    'cfp',
+    'call for proposals',
+    'call for papers',
+    'speaker',
+    'keynote',
+    'schedule',
+    'registration',
+    'conference',
+    'summit',
+    'meetup',
+    'webinar',
+    'workshop',
+    'kcd',
+    'community day',
+    'event',
+    'india',
+    'europe',
+    'asia',
+    'north america',
+    'japan',
+    'china',
+  ],
   certifications: [
     'certification',
     'certified',
@@ -46,10 +80,12 @@ const CATEGORY_KEYWORDS: Record<NewsCategory, string[]> = {
     'cks',
     'kcna',
     'kcsa',
+    'lfcs',
     'training',
     'kubestronaut',
     'credential',
     'badge',
+    'proctored',
   ],
   scholarships: [
     'scholarship',
@@ -62,20 +98,20 @@ const CATEGORY_KEYWORDS: Record<NewsCategory, string[]> = {
     'financial assistance',
     'diversity',
     'need-based',
+    'dan kohn',
   ],
-  events: [
-    'kubecon',
-    'cloudnativecon',
-    'event',
-    'conference',
-    'summit',
-    'meetup',
-    'webinar',
-    'workshop',
-    'kcd',
-    'community day',
+  announcements: [
+    'announce',
+    'release',
+    'launch',
+    'new member',
+    'graduate',
+    'sandbox',
+    'incubating',
+    'graduated',
+    'welcome',
+    'joins',
   ],
-  announcements: ['announce', 'release', 'launch', 'new', 'update', 'version', 'graduate'],
 };
 
 /**
@@ -84,8 +120,9 @@ const CATEGORY_KEYWORDS: Record<NewsCategory, string[]> = {
 function detectCategory(title: string, description: string, defaultCategory: NewsCategory): NewsCategory {
   const text = `${title} ${description}`.toLowerCase();
 
-  // Check in priority order (certifications > scholarships > events > announcements)
-  const categoryOrder: NewsCategory[] = ['certifications', 'scholarships', 'events', 'announcements'];
+  // Check in priority order (events > scholarships > certifications > announcements)
+  // Events first because KubeCon/CFP keywords are very specific
+  const categoryOrder: NewsCategory[] = ['events', 'scholarships', 'certifications', 'announcements'];
 
   for (const category of categoryOrder) {
     const keywords = CATEGORY_KEYWORDS[category];
@@ -280,8 +317,14 @@ export async function fetchAllNews(): Promise<CachedNewsData> {
     return true;
   });
 
+  // Filter to last 60 days for relevance
+  const sixtyDaysAgo = new Date();
+  sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
+
+  const recentItems = uniqueItems.filter(item => item.publishedAt >= sixtyDaysAgo);
+
   return {
-    items: uniqueItems.slice(0, 50), // Limit to 50 most recent
+    items: recentItems.slice(0, 30), // Limit to 30 most recent from last 60 days
     fetchedAt: new Date(),
     sources,
     errors,
