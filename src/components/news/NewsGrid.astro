@@ -96,18 +96,18 @@ const filters: Array<{
         </div>
 
         <!-- Filter & Counter Row -->
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
-          <!-- Filters - Minimal -->
-          <div class="flex flex-wrap items-center gap-1.5" id="news-filters">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+          <!-- Filters -->
+          <div class="flex flex-wrap items-center gap-2" id="news-filters">
             {filters.map((filter, idx) => (
               <button
                 type="button"
                 data-filter={filter.value}
                 data-color={filter.color}
-                class={`news-filter-btn px-2.5 py-1 rounded-md text-xs font-medium transition-all ${
+                class={`news-filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                   idx === 0
-                    ? 'bg-neutral-800 dark:bg-white text-white dark:text-neutral-900'
-                    : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800'
+                    ? 'bg-neutral-800 dark:bg-white text-white dark:text-neutral-900 shadow-lg shadow-neutral-500/25'
+                    : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700'
                 }`}
               >
                 {t(filter.labelKey)}
@@ -115,18 +115,19 @@ const filters: Array<{
             ))}
           </div>
 
-          <!-- Counter - Subtle -->
-          <div class="text-xs text-neutral-400 dark:text-neutral-500" id="news-counter">
-            <span id="visible-count">{Math.min(INITIAL_VISIBLE, restNews.length)}</span>
+          <!-- Counter -->
+          <div class="text-sm text-neutral-500 dark:text-neutral-400" id="news-counter">
+            <span class="font-medium text-neutral-900 dark:text-white" id="visible-count">{Math.min(INITIAL_VISIBLE, restNews.length)}</span>
             <span> {t('news.of')} </span>
-            <span id="total-count">{restNews.length}</span>
+            <span class="font-medium text-neutral-900 dark:text-white" id="total-count">{restNews.length}</span>
+            <span> {t('news.articles')}</span>
           </div>
         </div>
 
-        <!-- News List -->
+        <!-- News Grid -->
         <div
           id="news-grid"
-          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8"
+          class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5 lg:gap-6"
         >
           {restNews.map((item, index) => (
             <div
@@ -148,13 +149,19 @@ const filters: Array<{
 
         <!-- Load More Button -->
         {restNews.length > INITIAL_VISIBLE && (
-          <div class="mt-6 pt-6 border-t border-neutral-100 dark:border-neutral-800" id="load-more-container">
+          <div class="mt-8 text-center" id="load-more-container">
             <button
               type="button"
               id="load-more-btn"
-              class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors"
+              class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700 font-medium transition-all hover:shadow-md"
             >
-              {t('news.loadMore')} (<span id="remaining-count">{restNews.length - INITIAL_VISIBLE}</span> {t('news.remaining')}) →
+              {t('news.loadMore')}
+              <span class="text-sm text-neutral-500 dark:text-neutral-400">
+                (<span id="remaining-count">{restNews.length - INITIAL_VISIBLE}</span> {t('news.remaining')})
+              </span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
             </button>
           </div>
         )}
