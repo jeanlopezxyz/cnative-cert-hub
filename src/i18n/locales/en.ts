@@ -193,7 +193,7 @@ export const en = {
 
   // Certification Levels
   'certifications.level.entry': 'Entry',
-  'certifications.level.intermediate': 'Intermediate',
+  'certifications.level.intermediate': 'Mid-Level',
   'certifications.level.advanced': 'Advanced',
 
   // Certification Types

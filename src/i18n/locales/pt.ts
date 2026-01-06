@@ -188,7 +188,7 @@ export const pt = {
 
   // Certification Levels
   'certifications.level.entry': 'Básico',
-  'certifications.level.intermediate': 'Intermediário',
+  'certifications.level.intermediate': 'Médio',
   'certifications.level.advanced': 'Avançado',
 
   // Certification Types

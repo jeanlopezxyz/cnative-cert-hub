@@ -189,7 +189,7 @@ export const es = {
 
   // Certification Levels
   'certifications.level.entry': 'Básico',
-  'certifications.level.intermediate': 'Intermedio',
+  'certifications.level.intermediate': 'Medio',
   'certifications.level.advanced': 'Avanzado',
 
   // Certification Types
