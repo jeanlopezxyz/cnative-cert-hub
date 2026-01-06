@@ -85,20 +85,26 @@ const CATEGORY_KEYWORDS: Record<NewsCategory, string[]> = {
 
 /**
  * Detect category based on title and content keywords
+ * For scholarships: only check title (to avoid false positives from event announcements)
+ * For other categories: check title + description
  */
 function detectCategory(title: string, description: string, defaultCategory: NewsCategory): NewsCategory {
-  const text = `${title} ${description}`.toLowerCase();
+  const titleLower = title.toLowerCase();
+  const fullText = `${title} ${description}`.toLowerCase();
 
-  // Check in priority order (scholarships > certifications > events > announcements)
-  // Scholarships first because they're more specific and important for users
-  // (Dan Kohn Scholarship info is often embedded in KubeCon announcements)
-  const categoryOrder: NewsCategory[] = ['scholarships', 'certifications', 'events', 'announcements'];
+  // 1. Scholarships: ONLY check title (avoid false positives from KubeCon announcements)
+  if (CATEGORY_KEYWORDS.scholarships.some(keyword => titleLower.includes(keyword))) {
+    return 'scholarships';
+  }
 
-  for (const category of categoryOrder) {
-    const keywords = CATEGORY_KEYWORDS[category];
-    if (keywords.some(keyword => text.includes(keyword))) {
-      return category;
-    }
+  // 2. Certifications: check full text
+  if (CATEGORY_KEYWORDS.certifications.some(keyword => fullText.includes(keyword))) {
+    return 'certifications';
+  }
+
+  // 3. Events: check full text
+  if (CATEGORY_KEYWORDS.events.some(keyword => fullText.includes(keyword))) {
+    return 'events';
   }
 
   return defaultCategory;
