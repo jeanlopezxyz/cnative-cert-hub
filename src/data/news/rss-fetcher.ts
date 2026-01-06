@@ -97,9 +97,10 @@ const CATEGORY_KEYWORDS: Record<NewsCategory, string[]> = {
 function detectCategory(title: string, description: string, defaultCategory: NewsCategory): NewsCategory {
   const text = `${title} ${description}`.toLowerCase();
 
-  // Check in priority order (events > scholarships > certifications > announcements)
-  // Events first because KubeCon/CFP keywords are very specific
-  const categoryOrder: NewsCategory[] = ['events', 'scholarships', 'certifications', 'announcements'];
+  // Check in priority order (scholarships > certifications > events > announcements)
+  // Scholarships first because they're more specific and important for users
+  // (Dan Kohn Scholarship info is often embedded in KubeCon announcements)
+  const categoryOrder: NewsCategory[] = ['scholarships', 'certifications', 'events', 'announcements'];
 
   for (const category of categoryOrder) {
     const keywords = CATEGORY_KEYWORDS[category];
