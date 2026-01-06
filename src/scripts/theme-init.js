@@ -1,59 +1,54 @@
-// Theme initialization script for maximum performance
+// Theme initialization script - Dark mode only
 (function() {
   'use strict';
-  
-  // Immediately apply theme to prevent flash
-  function applyTheme() {
+
+  // Always apply dark theme
+  function applyDarkTheme() {
     try {
-      const savedTheme = localStorage.getItem('theme') || '';
-      // Default to dark theme if no preference is saved
-      const shouldBeDark = savedTheme === 'dark' || !savedTheme || savedTheme !== 'light';
-      
-      // Apply theme class
-      document.documentElement.classList.remove('light', 'dark');
-      document.documentElement.classList.add(shouldBeDark ? 'dark' : 'light');
-      
-      // Set CSS custom properties
+      // Force dark theme always
+      document.documentElement.classList.remove('light');
+      document.documentElement.classList.add('dark');
+
+      // Set dark theme CSS custom properties
       const root = document.documentElement;
       const themeVars = {
-        '--bg-primary': shouldBeDark ? '#0a0b1e' : '#fff',
-        '--text-primary': shouldBeDark ? '#f8fafc' : '#111827',
-        '--bg-secondary': shouldBeDark ? '#141328' : '#f8fafc',
-        '--bg-tertiary': shouldBeDark ? '#1e1b3a' : '#f1f5f9',
-        '--border': shouldBeDark ? '#334155' : '#e5e7eb'
+        '--bg-primary': '#0a0b1e',
+        '--text-primary': '#f8fafc',
+        '--bg-secondary': '#141328',
+        '--bg-tertiary': '#1e1b3a',
+        '--border': '#334155'
       };
-      
+
       // Apply all theme variables at once
       Object.entries(themeVars).forEach(([prop, value]) => {
         root.style.setProperty(prop, value);
       });
-      
+
+      // Save dark theme preference
+      localStorage.setItem('theme', 'dark');
+
       // Show content after theme is applied
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           document.documentElement.classList.add('visible');
         });
       });
-      
+
     } catch (error) {
       console.error('Theme initialization failed:', error);
       // Fallback: show content immediately
       document.documentElement.classList.add('visible');
     }
   }
-  
-  // Apply theme immediately
-  applyTheme();
-  
-  // Listen for system theme changes
-  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-  if (mediaQuery.addEventListener) {
-    mediaQuery.addEventListener('change', applyTheme);
-  } else {
-    // Fallback for older browsers
-    mediaQuery.addListener(applyTheme);
-  }
-  
-  // Listen for storage changes (sync across tabs)
-  window.addEventListener('storage', applyTheme);
+
+  // Apply dark theme immediately
+  applyDarkTheme();
 })();
+
+/*
+ * Light theme support commented out - dark mode only
+ *
+ * To re-enable light theme:
+ * 1. Uncomment ThemeToggleAstro in Layout.astro
+ * 2. Restore the original theme-init.js logic with savedTheme check
+ */
