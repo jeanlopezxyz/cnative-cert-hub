@@ -8,80 +8,78 @@ import type { NewsItem, NewsCategory, RSSFeedSource, RawRSSItem, CachedNewsData 
 
 /**
  * RSS Feed Sources Configuration
+ * Focus on official announcements, not technical tutorials
  */
 export const RSS_FEEDS: RSSFeedSource[] = [
-  {
-    id: 'cncf-blog',
-    name: 'CNCF Blog',
-    url: 'https://www.cncf.io/blog/feed/',
-    defaultCategory: 'announcements',
-    enabled: true,
-  },
   {
     id: 'cncf-announcements',
     name: 'CNCF Announcements',
     url: 'https://www.cncf.io/announcements/feed/',
     defaultCategory: 'announcements',
-    enabled: true,
+    enabled: true, // Official CNCF news: graduations, new projects, certifications
   },
   {
     id: 'lf-events',
     name: 'LF Events',
     url: 'https://events.linuxfoundation.org/feed/',
     defaultCategory: 'events',
-    enabled: true,
+    enabled: true, // KubeCon, Open Source Summit schedules
+  },
+  {
+    id: 'cncf-blog',
+    name: 'CNCF Blog',
+    url: 'https://www.cncf.io/blog/feed/',
+    defaultCategory: 'announcements',
+    enabled: false, // Disabled: mostly technical tutorials, not news
   },
   {
     id: 'kubernetes-blog',
     name: 'Kubernetes Blog',
     url: 'https://kubernetes.io/feed.xml',
-    defaultCategory: 'announcements', // K8s releases and features are announcements
-    enabled: true,
+    defaultCategory: 'announcements',
+    enabled: false, // Disabled: too many K8s release details
   },
 ];
 
 /**
  * Keywords for category detection (order matters - first match wins)
- * Be specific to avoid false positives
+ * Tuned for CNCF Announcements feed content
  */
 const CATEGORY_KEYWORDS: Record<NewsCategory, string[]> = {
-  events: [
-    // Only match actual event ANNOUNCEMENTS, not blog posts about events
-    'announces schedule for',
-    'announces keynote',
-    'registration is open for',
-    'registration opens for',
-    'call for proposals',
-    'call for papers',
-    'cfp is open',
-    'cfp closes',
-    'co-locating with kubecon',
-  ],
   scholarships: [
     'scholarship',
-    'dan kohn scholarship',
+    'dan kohn',
     'travel funding',
     'registration scholarship',
     'need-based',
     'complimentary registration',
-    'free certification exam',
   ],
   certifications: [
-    'certification exam',
+    'certification',
+    'launches cnpe',
+    'launches cka',
+    'launches ckad',
+    'launches cks',
+    'launches kcna',
+    'launches kcsa',
     'certified kubernetes',
-    'cka exam',
-    'ckad exam',
-    'cks exam',
-    'kcna exam',
-    'kcsa exam',
-    'lfcs exam',
     'kubestronaut',
-    'proctored exam',
-    'linux foundation training',
+    'training and certification',
+    'exam update',
+    'conformance program',
+  ],
+  events: [
+    'kubecon',
+    'cloudnativecon',
+    'open source summit',
+    'schedule for',
+    'keynote speaker',
+    'registration is open',
+    'call for proposals',
   ],
   announcements: [
-    // Default category - most news falls here
-    // Kubernetes releases, CNCF project updates, technical articles
+    // Default: project graduations, new members, releases
+    // ArgoCD, Crossplane, Helm, Falco, etc.
   ],
 };
 
@@ -292,14 +290,8 @@ export async function fetchAllNews(): Promise<CachedNewsData> {
     return true;
   });
 
-  // Filter to last 60 days for relevance
-  const sixtyDaysAgo = new Date();
-  sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
-
-  const recentItems = uniqueItems.filter(item => item.publishedAt >= sixtyDaysAgo);
-
   return {
-    items: recentItems.slice(0, 30), // Limit to 30 most recent from last 60 days
+    items: uniqueItems.slice(0, 50), // Get up to 50 most recent items
     fetchedAt: new Date(),
     sources,
     errors,
