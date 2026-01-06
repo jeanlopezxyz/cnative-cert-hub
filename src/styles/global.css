@@ -208,21 +208,21 @@
 }
 
 @layer components {
-  /* Sidebar Section Open States */
+  /* Sidebar Section Open States - Subtle styling */
   .sidebar-section-open {
-    @apply bg-primary-600 text-white shadow-md;
+    @apply bg-slate-100 dark:bg-neutral-800 text-neutral-900 dark:text-white;
   }
 
   .sidebar-section-open:hover {
-    @apply bg-primary-700;
+    @apply bg-slate-200 dark:bg-neutral-700;
   }
 
   .sidebar-icon-open {
-    @apply bg-white/20 text-white;
+    @apply bg-primary-100 dark:bg-primary-900/50 text-primary-600 dark:text-primary-400;
   }
 
   .sidebar-chevron-open {
-    @apply bg-white/20;
+    @apply bg-slate-200 dark:bg-neutral-700 text-primary-600 dark:text-primary-400;
   }
 
   /* WowDash-style Card Component - Optimized transitions */
