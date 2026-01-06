@@ -65,11 +65,12 @@ const CATEGORY_KEYWORDS: Record<NewsCategory, string[]> = {
   ],
   scholarships: [
     'scholarship',
-    'dan kohn',
-    'free certification',
-    'mentorship program',
-    'mentorship flywheel',
-    'diversity program',
+    'dan kohn scholarship',
+    'travel funding',
+    'registration scholarship',
+    'need-based',
+    'complimentary registration',
+    'free certification exam',
   ],
   certifications: [
     'certification exam',
