@@ -167,14 +167,11 @@ const filters: Array<{
         )}
 
         <!-- Last Updated -->
-        <div class="mt-8 text-xs text-neutral-400 dark:text-neutral-500">
+        <div class="mt-8 text-xs text-neutral-400 dark:text-neutral-500 text-right">
           {t('news.lastUpdated')}: {new Intl.DateTimeFormat(lang, {
             dateStyle: 'medium',
             timeStyle: 'short',
           }).format(newsData.fetchedAt)}
-          {newsData.sources.length > 0 && (
-            <span> · {newsData.sources.join(', ')}</span>
-          )}
         </div>
       </div>
     )}
