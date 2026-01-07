@@ -479,6 +479,35 @@ const defaultOpenSections: string[] = [];
       }
     }
 
+    // Auto-expand sections and categories with active items
+    function autoExpandActiveItems() {
+      // Find active links (with bg-primary-600 class)
+      document.querySelectorAll('.sidebar-nav-link').forEach(link => {
+        if (link.classList.contains('bg-primary-600')) {
+          // Expand parent category if exists
+          const category = link.closest('.sidebar-category');
+          if (category) {
+            const categoryId = category.getAttribute('data-category');
+            if (categoryId && !openCategories.includes(categoryId)) {
+              openCategories = [...openCategories, categoryId];
+            }
+          }
+
+          // Expand parent section
+          const section = link.closest('.sidebar-section');
+          if (section) {
+            const sectionId = section.getAttribute('data-section');
+            if (sectionId && !openSections.includes(sectionId)) {
+              openSections = [...openSections, sectionId];
+            }
+          }
+        }
+      });
+    }
+
+    // Auto-expand before initializing UI
+    autoExpandActiveItems();
+
     // Initialize sections
     document.querySelectorAll('.sidebar-section').forEach(section => {
       const sectionId = section.getAttribute('data-section');
