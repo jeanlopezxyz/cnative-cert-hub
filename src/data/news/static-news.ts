@@ -1,9 +1,12 @@
-// Static news data - automatically updated by n8n workflow
-// Format: [category, date, source, title, description, url]
+/**
+ * Static News Data
+ * Supplementary news items added by n8n automation
+ * Format matches NewsItem interface from types.ts
+ */
 
-export type NewsCategory = 'scholarships' | 'certifications' | 'events' | 'announcements';
-export type NewsItem = [NewsCategory, string, string, string, string, string];
+import type { NewsItem } from './types';
 
+// Static news entries - automation adds new items at MARKER below
 export const staticNewsData: NewsItem[] = [
-  // Weekly updates will be added here by automation
+  // __NEWS_MARKER__ - Do not remove this line, automation inserts here
 ];
